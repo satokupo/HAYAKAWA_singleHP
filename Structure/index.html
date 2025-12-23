@@ -12,26 +12,84 @@
     
     <meta name="robots" content="index, follow">
     
-    <title>Template - STRUCTURE</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;500;800&family=Noto+Sans+JP:wght@300;500&display=swap" rel="stylesheet">
+    <title>HAYAKAWA餃子 | 飯田市の手包み餃子専門店</title>
+    <meta name="description" content="長野県飯田市のカウンター6席の小さな餃子屋。東京の餃子専門店で修行した店主が一つひとつ手包みでお作りしています。女性おひとりさま、お子さま連れも歓迎。">
+
+    <script>
+/*
+ * ========================================
+ * PROJECT RULES - HAYAKAWA餃子
+ * ========================================
+ *
+ * [トンマナ]
+ * - キーワード: おしゃれ、かっこいい、落ち着き、親しみやすい
+ * - イメージ: カフェのような餃子屋さん
+ * - 避ける: 可愛い、がっつり系、中華の赤×金
+ *
+ * [カラーパレット] 案B・白のれん系
+ * - --bg-main: #FAFAFA / 用途: ページ背景
+ * - --bg-section: #FFFFFF / 用途: カード・セクション背景
+ * - --color-primary: #6B6560 / 用途: 見出し・強調
+ * - --color-accent: #D4A574 / 用途: ボタン・リンク
+ * - --color-text: #2D2926 / 用途: 本文
+ * - --color-text-sub: #9C9590 / 用途: 補助テキスト・注記
+ *
+ * [フォント]
+ * - 日本語: Zen Kaku Gothic New (400, 500)
+ * - 英字: Manrope (300, 400, 500)
+ *
+ * [サイト幅]
+ * - メインエリア: 1200px
+ * - コンテンツ幅: 900px（テンプレート準拠）
+ *
+ * [ブレークポイント]
+ * - SP: ~899px
+ * - PC: 900px~（2カラム構成のため）
+ *
+ * [z-index]
+ * - --z-default: 1
+ * - --z-sticky: 10
+ * - --z-sidebar: 100
+ * - --z-modal-overlay: 1000
+ * - --z-modal-content: 1001
+ *
+ * [画像]
+ * - 写真: webp推奨
+ * - 命名: {セクションID}-{n}.webp
+ * - ファーストビュー外: loading="lazy"
+ *
+ */
+</script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500&family=Zen+Kaku+Gothic+New:wght@400;500&display=swap" rel="stylesheet">
     
     <style>
         /* =========================================
            基本設定 (配色などを変更したい場合はここ)
            ========================================= */
         :root {
-            --bg: #e6e6e6;       /* 背景色 */
-            --card-bg: #ffffff;  /* カードの背景色 */
-            --text: #333;        /* 文字色 */
+            /* カラー */
+            --bg-main: #FAFAFA;
+            --bg-section: #FFFFFF;
+            --color-primary: #6B6560;
+            --color-accent: #D4A574;
+            --color-text: #2D2926;
+            --color-text-sub: #9C9590;
+
+            /* z-index */
+            --z-default: 1;
+            --z-sticky: 10;
+            --z-sidebar: 100;
+            --z-modal-overlay: 1000;
+            --z-modal-content: 1001;
         }
 
         html { scroll-behavior: smooth; }
 
         body {
-            background-color: var(--bg);
-            color: var(--text);
-            font-family: 'Manrope', 'Noto Sans JP', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--color-text);
+            font-family: 'Zen Kaku Gothic New', sans-serif;
             margin: 0; padding: 0;
         }
 
@@ -44,7 +102,7 @@
             position: sticky; top: 0;
             padding: 4rem; box-sizing: border-box;
             display: flex; flex-direction: column; justify-content: space-between;
-            z-index: 100;
+            z-index: var(--z-sidebar);
         }
         .logo { font-weight: 800; font-size: 1.5rem; letter-spacing: -0.02em; }
         
@@ -63,7 +121,7 @@
 
         /* カード共通デザイン */
         .sticky-card {
-            background: var(--card-bg);
+            background: var(--bg-section);
             padding: 5rem;
             margin-bottom: 4rem;
             min-height: 80vh;
@@ -73,29 +131,37 @@
         }
 
         /* --- 各セクションの位置調整 --- */
-        #intro {
+        #hero {
             top: 2rem; z-index: 1;
             justify-content: flex-end;
-            background-image: url('image/main.jpg'); /* トップ画像の設定 */
+            background-image: url('image/hero.webp');
             background-size: cover; background-position: center;
             color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.5);
         }
-        #philosophy { top: 4rem; z-index: 2; border-top: 1px solid #eee; }
-        #company { top: 5rem; z-index: 3; border-top: 1px solid #eee; }
-        #projects { 
-            position: relative; top: auto; z-index: 4; 
-            border-top: 1px solid #eee; margin-top: -3rem; margin-bottom: 0; 
-            padding-bottom: 8rem; min-height: auto; 
+        #menu { top: 4rem; z-index: 2; border-top: 1px solid #eee; }
+        #interior { top: 5rem; z-index: 3; border-top: 1px solid #eee; }
+        #owner {
+            position: relative; top: auto; z-index: 4;
+            border-top: 1px solid #eee;
+            margin-top: -3rem;
+            min-height: auto;
         }
-        #contact { 
-            position: relative; top: auto; z-index: 5; 
-            background: #111; color: #fff; border: none;
-            margin-top: -4rem; margin-bottom: 0;
-            min-height: 50vh;
+        #access {
+            position: relative; top: auto; z-index: 5;
+            border-top: 1px solid #eee;
+            margin-top: -3rem; margin-bottom: 0;
+            min-height: auto;
         }
 
         .hero-title { font-size: 4rem; font-weight: 300; line-height: 1.1; margin: 0; }
         .hero-title strong { font-weight: 800; display: block; }
+
+        .hero-copy {
+            font-size: 1.25rem;
+            font-weight: 400;
+            margin-top: 1rem;
+            opacity: 0.95;
+        }
 
         /* カード内部の要素 */
         .card-header {
@@ -105,63 +171,255 @@
         .card-label { font-weight: 800; text-transform: uppercase; font-size: 0.9rem; }
         .card-body p { font-size: 1.1rem; line-height: 2; opacity: 0.9; max-width: 700px; }
 
-        .company-table { width: 100%; border-collapse: collapse; margin-top: 2rem; }
-        .company-table th, .company-table td { text-align: left; padding: 1.5rem 0; border-bottom: 1px solid #eee; }
-        .company-table th { width: 30%; opacity: 0.6; font-weight: 500; }
+        /* ===== メニューセクション ===== */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
 
-        /* 制作実績（Projects）のグリッド表示 */
-        .proj-grid {
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; margin-top: 3rem;
+        .menu-item {
+            text-align: center;
         }
-        .proj-item { cursor: pointer; transition: 0.3s; position: relative; display: none; }
-        .proj-item.loaded { display: block; animation: fadein 0.5s; }
-        .proj-item:hover { opacity: 0.8; transform: translateY(-5px); }
-        .proj-img { width: 100%; height: 300px; object-fit: cover; background: #eee; display: block; }
-        .proj-title { font-weight: 800; margin-top: 1rem; display: block; }
-        .proj-loc { font-size: 0.8rem; color: #888; }
 
-        /* 画像拡大（Lightbox）の設定 */
-        .lightbox {
-            display: none; position: fixed; z-index: 2000; left: 0; top: 0;
-            width: 100%; height: 100%; overflow: hidden;
-            background-color: rgba(0,0,0,0.95);
-            justify-content: center; align-items: center; flex-direction: column;
+        .menu-img {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            border-radius: 4px;
+            background: #eee;
         }
-        .lightbox-content { max-width: 90%; max-height: 80vh; object-fit: contain; animation: fadein 0.3s; }
-        .lb-controls {
-            position: absolute; width: 100%; top: 50%; transform: translateY(-50%);
-            display: flex; justify-content: space-between; padding: 0 2rem; box-sizing: border-box; pointer-events: none;
+
+        .menu-name {
+            display: block;
+            font-weight: 500;
+            margin-top: 0.75rem;
+            color: var(--color-text);
         }
-        .lb-btn {
-            pointer-events: auto; cursor: pointer; color: #fff; font-size: 3rem; user-select: none;
-            background: rgba(255,255,255,0.1); width: 60px; height: 60px;
-            display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: 0.3s;
+
+        .menu-price {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--color-text-sub);
+            margin-top: 0.25rem;
         }
-        .lb-btn:hover { background: rgba(255,255,255,0.3); }
-        .close {
-            position: absolute; top: 20px; right: 35px; color: #f1f1f1; font-size: 40px; font-weight: bold; cursor: pointer; z-index: 2001;
+
+        .menu-note {
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--color-text-sub);
+            margin-top: 2rem;
         }
-        @keyframes fadein { from {opacity:0} to {opacity:1} }
+
+        /* ===== 店内雰囲気セクション ===== */
+        .interior-img {
+            width: 100%;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+        }
+
+        .interior-text {
+            font-size: 1rem;
+            line-height: 2;
+            color: var(--color-text);
+        }
+
+        /* ===== オーナー紹介セクション ===== */
+        .owner-container {
+            display: flex;
+            gap: 2rem;
+            align-items: flex-start;
+            margin-top: 2rem;
+        }
+
+        .owner-photo {
+            flex: 0 0 40%;
+            max-width: 200px;
+        }
+
+        .owner-photo img {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .owner-profile {
+            flex: 1;
+        }
+
+        .owner-name {
+            font-weight: 500;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: var(--color-primary);
+        }
+
+        .owner-text {
+            font-size: 1rem;
+            line-height: 2;
+            color: var(--color-text);
+        }
+
+        /* ===== アクセスセクション ===== */
+        .access-container {
+            display: flex;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .access-info {
+            flex: 1;
+        }
+
+        .access-info dl {
+            margin: 0;
+        }
+
+        .access-info dt {
+            font-size: 0.8rem;
+            color: var(--color-text-sub);
+            margin-bottom: 0.25rem;
+        }
+
+        .access-info dd {
+            margin: 0 0 1.5rem 0;
+            font-size: 1rem;
+            line-height: 1.8;
+        }
+
+        .access-note {
+            font-size: 0.85rem;
+            color: var(--color-text-sub);
+            margin-top: 1rem;
+        }
+
+        .access-btn {
+            display: inline-block;
+            background: var(--color-accent);
+            color: #fff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-top: 1rem;
+        }
+
+        @media (hover: hover) {
+            .access-btn:hover {
+                opacity: 0.9;
+            }
+        }
+
+        .access-embed {
+            flex: 1;
+            min-height: 300px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-text-sub);
+            font-size: 0.9rem;
+        }
+
+        /* ===== フッター ===== */
+        .site-footer {
+            background: var(--bg-section);
+            padding: 3rem 2rem;
+            text-align: center;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-icons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-icons a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--color-primary);
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.25rem;
+        }
+
+        @media (hover: hover) {
+            .footer-icons a:hover {
+                background: var(--color-accent);
+            }
+        }
+
+        .footer-copy {
+            font-size: 0.75rem;
+            color: var(--color-text-sub);
+        }
+
+        /* ===== サイドバー GBPボタン ===== */
+        .sidebar-btn {
+            display: inline-block;
+            background: var(--color-accent);
+            color: #fff;
+            padding: 0.6rem 1.2rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-top: 1rem;
+        }
+
+        @media (hover: hover) {
+            .sidebar-btn:hover {
+                opacity: 0.9;
+            }
+        }
 
         /* スマートフォン向けレスポンシブ設定 */
         @media (max-width: 900px) {
             .wrapper { flex-direction: column; width: 100%; overflow-x: hidden; }
-            .sidebar { 
-                width: 100%; height: auto; position: relative; 
+            .sidebar {
+                width: 100%; height: auto; position: relative;
                 padding: 2rem; padding-bottom: 0;
             }
             .sidebar-desc { margin-top: 2rem; margin-bottom: 2rem; }
             .main { padding: 2rem; width: 100%; box-sizing: border-box; }
-            .sticky-card, #projects, #contact { 
-                padding: 2rem; 
-                top: auto !important; position: relative !important; 
-                min-height: auto; margin-top: 0 !important; margin-bottom: 2rem !important; 
+            .sticky-card, #owner, #access {
+                padding: 2rem;
+                top: auto !important; position: relative !important;
+                min-height: auto; margin-top: 0 !important; margin-bottom: 2rem !important;
                 width: 100%; box-sizing: border-box;
             }
             .hero-title { font-size: 2.5rem; word-break: break-all; }
-            .proj-grid { grid-template-columns: 1fr; }
-            .proj-img { height: 200px; }
-            #intro { min-height: 50vh; }
+            .menu-grid { grid-template-columns: 1fr; }
+            #hero { min-height: 50vh; }
+
+            .owner-container {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .owner-photo {
+                flex: none;
+                max-width: 150px;
+            }
+
+            .access-container {
+                flex-direction: column;
+            }
+
+            .access-embed {
+                min-height: 250px;
+            }
         }
     </style>
 </head>
@@ -169,64 +427,118 @@
 
     <div class="wrapper">
         <aside class="sidebar">
-            <div id="brand-logo" class="logo"></div>
-            <div id="sidebar-desc" class="sidebar-desc"></div>
-            <div class="contact-info" id="sidebar-contact"></div>
+            <div>
+                <div id="brand-logo" class="logo"></div>
+                <div id="sidebar-desc" class="sidebar-desc"></div>
+            </div>
+            <div class="contact-info">
+                <div id="sidebar-hours"></div>
+                <a id="sidebar-gbp-link" class="sidebar-btn" href="#" target="_blank" rel="noopener noreferrer">
+                    Googleで見る
+                </a>
+            </div>
         </aside>
 
         <main class="main">
-            <section id="intro" class="sticky-card">
-                <h1 id="hero-title" class="hero-title"></h1>
+            <section id="hero" class="sticky-card">
+                <div class="hero-content">
+                    <h1 id="hero-title" class="hero-title"></h1>
+                    <p id="hero-copy" class="hero-copy"></p>
+                </div>
             </section>
 
-            <section id="philosophy" class="sticky-card">
+            <section id="menu" class="sticky-card">
                 <div class="card-header">
-                    <span class="card-label">01 / Philosophy</span>
+                    <span class="card-label">01 / Menu</span>
                 </div>
                 <div class="card-body">
-                    <h2 style="font-size: 2rem; margin-bottom: 2rem;">Structure follows Life.</h2>
-                    <div id="philo-text"></div>
+                    <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">メニュー</h2>
+                    <div id="menu-grid" class="menu-grid"></div>
+                    <p class="menu-note">テイクアウトもできます</p>
                 </div>
             </section>
 
-            <section id="company" class="sticky-card">
+            <section id="interior" class="sticky-card">
                 <div class="card-header">
-                    <span class="card-label">02 / Company Profile</span>
+                    <span class="card-label">02 / Interior</span>
                 </div>
                 <div class="card-body">
-                    <h2 style="font-size: 2rem; margin-bottom: 2rem;">About Us.</h2>
-                    <table class="company-table" id="company-data">
-                        </table>
+                    <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">店内</h2>
+                    <img id="interior-img" class="interior-img" src="" alt="店内の様子" loading="lazy">
+                    <p id="interior-text" class="interior-text"></p>
                 </div>
             </section>
 
-            <section id="projects" class="sticky-card">
+            <section id="owner" class="sticky-card">
                 <div class="card-header">
-                    <span class="card-label">03 / Selected Works</span>
-                </div>
-                <div id="proj-container" class="proj-grid"></div>
-            </section>
-
-            <section id="contact" class="sticky-card">
-                <div class="card-header" style="border-color: #555;">
-                    <span class="card-label">04 / Contact</span>
+                    <span class="card-label">03 / Owner</span>
                 </div>
                 <div class="card-body">
-                    <h2 style="font-size: 3rem;">Ready to build?</h2>
-                    <p style="color: #999;">私たちが提案するのは、単なる建物ではありません。<br>未来への基盤です。</p>
-                    <a href="#" id="mail-link" style="color: #fff; font-size: 1.5rem; margin-top: 2rem; display: inline-block;"></a>
+                    <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">店主について</h2>
+                    <div class="owner-container">
+                        <div class="owner-photo">
+                            <img id="owner-img" src="" alt="店主" loading="lazy">
+                        </div>
+                        <div class="owner-profile">
+                            <p id="owner-name" class="owner-name"></p>
+                            <p id="owner-text" class="owner-text"></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="access" class="sticky-card">
+                <div class="card-header">
+                    <span class="card-label">04 / Access</span>
+                </div>
+                <div class="card-body">
+                    <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">アクセス</h2>
+                    <div class="access-container">
+                        <div class="access-info">
+                            <dl>
+                                <dt>住所</dt>
+                                <dd id="access-address"></dd>
+
+                                <dt>駐車場</dt>
+                                <dd id="access-parking"></dd>
+
+                                <dt>営業日</dt>
+                                <dd id="access-hours"></dd>
+                            </dl>
+                            <p class="access-note">※最新の営業情報はGoogleビジネスプロフィールをご確認ください</p>
+                            <a id="access-map-link" class="access-btn" href="#" target="_blank" rel="noopener noreferrer">
+                                Googleマップで見る
+                            </a>
+                        </div>
+                        <div class="access-embed" id="access-embed">
+                            <!-- SNS埋め込みエリア（後で設定） -->
+                            <span>営業日カレンダー（準備中）</span>
+                        </div>
+                    </div>
                 </div>
             </section>
         </main>
-    </div>
 
-    <div id="lightbox" class="lightbox">
-        <span class="close">&times;</span>
-        <div class="lb-controls">
-            <div class="lb-btn" id="prev-btn">&#10094;</div>
-            <div class="lb-btn" id="next-btn">&#10095;</div>
-        </div>
-        <img class="lightbox-content" id="lightbox-img">
+        <footer class="site-footer">
+            <div class="footer-icons">
+                <a id="footer-instagram" href="#" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                    <!-- Instagram SVGアイコン -->
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                    </svg>
+                </a>
+                <a id="footer-gbp" href="#" target="_blank" rel="noopener noreferrer" aria-label="Google">
+                    <!-- Google SVGアイコン -->
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                    </svg>
+                </a>
+            </div>
+            <p class="footer-copy">&copy; 2025 HAYAKAWA餃子</p>
+        </footer>
     </div>
 
     <script>
@@ -234,42 +546,44 @@
         //  簡単設定エリア：ここを書き換えてサイトを作ります
         // ===============================================
         const config = {
-            // 1. サイトのタイトル・ブランド名
-            name: "STRUCTURE LAB.",
-            
-            // 2. サイドバーの説明文（\n で改行）
-            description: "私たちは、東京を拠点とする建築設計事務所です。\n\n環境と調和する構造美を追求し、人々の生活に寄り添う空間をデザインします。静寂と光、そして物質の強さを組み合わせ、永く愛される建築を目指しています。",
-            
-            // 3. サイドバーの連絡先情報（<br> で改行）
-            address: "Tokyo, Minami-Aoyama 0-1-2<br>+81 3 0000 0000",
-            
-            // 4. トップページのキャッチコピー（<strong>タグで太字）
-            hero: "Designing<br><strong>The Unseen Foundation.</strong>",
-            
-            // 5. 理念（Philosophy）の本文
-            philo: "建築は、環境との対話である。<br>私たちは光、風、そして人々の動線を計算し尽くし、<br>必然性のあるフォルムだけを導き出します。<br>余計な装飾を削ぎ落とし、機能美の極致を目指します。",
+            // サイト基本情報
+            name: "HAYAKAWA餃子",
+            tagline: "カウンター6席の小さな餃子屋です。\nひとりでも、お子さま連れでも、\nどうぞお気軽にお越しください。",
 
-            // 6. 会社概要のデータリスト
-            company: [
-                { label: "Company Name", value: "STRUCTURE LAB. Inc." },
-                { label: "Founded", value: "2015" },
-                { label: "CEO", value: "TARO YAMADA" },
-                { label: "Address", value: "0-1-2  Minami-Aoyama, Minato-ku, Tokyo" },
-                { label: "Business", value: "Architectural Design, Urban Planning, Interior Design" }
+            // ヒーロー
+            heroTitle: "HAYAKAWA餃子",
+            heroCopy: "今日も、ていねいに包んでいます。",
+            heroImage: "image/hero.webp",
+
+            // 営業情報（サイドバー用）
+            businessHours: "営業日：月・水・金・土\n11:00〜15:00（売り切れ次第終了）",
+
+            // メニュー
+            menuItems: [
+                { name: "焼き餃子", price: "600円〜", image: "image/menu-1.webp" },
+                { name: "水餃子", price: "600円〜", image: "image/menu-2.webp" },
+                { name: "ランチセット", price: "900円", image: "image/menu-3.webp" },
+                { name: "お持ち帰り", price: "600円〜", image: "image/menu-4.webp" }
             ],
-            
-            // 7. 実績（Works）のタイトルと場所
-            // ※画像ファイルは image/image1.jpg, image2.jpg... と連番で保存してください
-            // ※下のリストは画像の番号順に対応しています（1番目、2番目...）
-            workMeta: [
-                { title: "Museum of Nature", loc: "Kyoto, Japan" },
-                { title: "Glass House", loc: "Nagano, Japan" },
-                { title: "Urban Office", loc: "Tokyo, Japan" },
-                { title: "Silent Library", loc: "Kanagawa, Japan" }
-            ],
-            
-            // 8. お問い合わせメールアドレス
-            email: "contact@example.com"
+
+            // 店内雰囲気
+            interiorImage: "image/interior-1.webp",
+            interiorText: "モルタルの壁と白木のカウンター。\n小さいけれど、ゆっくりくつろげる空間です。",
+
+            // オーナー紹介
+            ownerName: "店主",
+            ownerImage: "image/owner.webp",
+            ownerProfile: "東京の餃子専門店で修行を積んだあと、地元・飯田でこのお店を開きました。\n女性やお子さんが気軽に入れるお店を作りたい、そんな想いでやっています。\nカウンター越しにお話しできるのを楽しみにしています。",
+
+            // アクセス
+            address: "〒395-0000\n長野県飯田市○○町0-0-0",
+            parking: "専用駐車場はありません。\n近隣の市営駐車場をご利用ください（徒歩3分）",
+            regularHours: "営業日：月・水・金・土\n11:00〜15:00（売り切れ次第終了）\n定休日：火・木・日",
+            mapUrl: "https://maps.google.com/?q=HAYAKAWA餃子",
+
+            // 外部リンク
+            gbpUrl: "https://g.page/xxxxx",
+            instagramUrl: "https://instagram.com/xxxxx"
         };
 
         // ===============================================
@@ -277,106 +591,62 @@
         // ===============================================
 
         document.addEventListener('DOMContentLoaded', () => {
-            // テキストデータの反映処理
+            // ----- サイドバー -----
             document.getElementById('brand-logo').textContent = config.name;
-            document.getElementById('sidebar-contact').innerHTML = config.address;
-            document.getElementById('sidebar-desc').textContent = config.description;
+            document.getElementById('sidebar-desc').textContent = config.tagline;
+            document.getElementById('sidebar-hours').textContent = config.businessHours;
+            document.getElementById('sidebar-gbp-link').href = config.gbpUrl;
 
-            document.getElementById('hero-title').innerHTML = config.hero;
-            document.getElementById('philo-text').innerHTML = config.philo;
-            document.getElementById('mail-link').textContent = config.email;
-            document.getElementById('mail-link').href = `mailto:${config.email}`;
+            // ----- ヒーロー -----
+            const heroSection = document.getElementById('hero');
+            if (heroSection) {
+                heroSection.style.backgroundImage = `url('${config.heroImage}')`;
+            }
+            document.getElementById('hero-title').textContent = config.heroTitle;
+            document.getElementById('hero-copy').textContent = config.heroCopy;
 
-            // 会社概要テーブルの生成
-            const cTable = document.getElementById('company-data');
-            if(cTable) {
-                config.company.forEach(item => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `<th>${item.label}</th><td>${item.value}</td>`;
-                    cTable.appendChild(tr);
+            // ----- メニュー -----
+            const menuGrid = document.getElementById('menu-grid');
+            if (menuGrid) {
+                config.menuItems.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'menu-item';
+                    div.innerHTML = `
+                        <img src="${item.image}" alt="${item.name}" class="menu-img" loading="lazy" width="300" height="300">
+                        <span class="menu-name">${item.name}</span>
+                        <span class="menu-price">${item.price}</span>
+                    `;
+                    menuGrid.appendChild(div);
                 });
             }
 
-            // 画像の自動検出と表示処理
-            const pCont = document.getElementById('proj-container');
-            const lightbox = document.getElementById('lightbox');
-            const lightboxImg = document.getElementById('lightbox-img');
-            
-            let activeImages = [];
-            const maxImages = 18; // 読み込みを試行する最大枚数
-            const loadPromises = [];
-
-            // 画像の存在確認
-            for (let i = 1; i <= maxImages; i++) {
-                const imgPath = `image/image${i}.jpg`;
-                // メタデータがない場合はデフォルト値を設定
-                const meta = config.workMeta[i - 1] || { 
-                    title: `Project ${String(i).padStart(2, '0')}`, 
-                    loc: "Japan" 
-                };
-
-                const p = new Promise((resolve) => {
-                    const img = new Image();
-                    img.src = imgPath;
-                    img.onload = () => resolve({ status: true, path: imgPath, meta: meta });
-                    img.onerror = () => resolve({ status: false });
-                });
-                loadPromises.push(p);
+            // ----- 店内雰囲気 -----
+            const interiorImg = document.getElementById('interior-img');
+            if (interiorImg) {
+                interiorImg.src = config.interiorImage;
+            }
+            const interiorText = document.getElementById('interior-text');
+            if (interiorText) {
+                interiorText.textContent = config.interiorText;
             }
 
-            // 読み込み完了後に一覧を表示
-            Promise.all(loadPromises).then(results => {
-                results.forEach(res => {
-                    if (res.status) {
-                        const div = document.createElement('div');
-                        div.className = 'proj-item loaded'; 
-                        div.innerHTML = `
-                            <img src="${res.path}" class="proj-img" alt="${res.meta.title}">
-                            <span class="proj-title">${res.meta.title}</span>
-                            <span class="proj-loc">${res.meta.loc}</span>
-                        `;
-                        
-                        div.onclick = () => openLightbox(res.path);
-                        pCont.appendChild(div);
-                        activeImages.push(res.path);
-                    }
-                });
-            });
-
-            // ライトボックス（拡大表示）の制御
-            let currentIdx = 0;
-            function openLightbox(src) {
-                const index = activeImages.indexOf(src);
-                if(index !== -1) {
-                    updateLightboxImage(index);
-                    lightbox.style.display = "flex";
-                }
+            // ----- オーナー -----
+            const ownerImg = document.getElementById('owner-img');
+            if (ownerImg) {
+                ownerImg.src = config.ownerImage;
             }
+            document.getElementById('owner-name').textContent = config.ownerName;
+            document.getElementById('owner-text').textContent = config.ownerProfile;
 
-            function updateLightboxImage(index) {
-                currentIdx = index;
-                lightboxImg.src = activeImages[currentIdx];
-            }
-            
-            document.querySelector('.close').onclick = () => lightbox.style.display = "none";
-            
-            document.getElementById('next-btn').onclick = (e) => {
-                e.stopPropagation();
-                if(activeImages.length > 0) {
-                    updateLightboxImage((currentIdx + 1) % activeImages.length);
-                }
-            };
-            
-            document.getElementById('prev-btn').onclick = (e) => {
-                e.stopPropagation();
-                if(activeImages.length > 0) {
-                    updateLightboxImage((currentIdx - 1 + activeImages.length) % activeImages.length);
-                }
-            };
-            
-            lightbox.onclick = (e) => {
-                if (e.target === lightbox) lightbox.style.display = "none";
-            };
+            // ----- アクセス -----
+            document.getElementById('access-address').textContent = config.address;
+            document.getElementById('access-parking').textContent = config.parking;
+            document.getElementById('access-hours').textContent = config.regularHours;
+            document.getElementById('access-map-link').href = config.mapUrl;
+
+            // ----- フッター -----
+            document.getElementById('footer-instagram').href = config.instagramUrl;
+            document.getElementById('footer-gbp').href = config.gbpUrl;
         });
     </script>
 </body>
