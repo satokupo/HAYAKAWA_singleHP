@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<!--
+  Template: TITAN v1.0
+  Author: Haruki Tominaga
+  License: https://amix-design.com/tominaga/eyan-theme/license 
+  © 2025 EYAN / トミナガハルキ
+-->
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow">
+    
+    <title>Template - TITAN</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@300;500;700&family=Noto+Sans+JP:wght@500;900&display=swap" rel="stylesheet">
+    <style>
+        /* 修正1: ボックスサイズの計算をボーダーボックスに変更し、スマホでの横はみ出しを防止 */
+        * { box-sizing: border-box; }
+
+        :root {
+            /* ★サイト全体の配色設定 */
+            --dark: #1a1a1a;       /* メインの黒背景色 */
+            --steel: #8e9eab;      /* 鉄のようなグレー（文字色など） */
+            --accent: #ffae00;     /* ★アクセントカラー（現在の黄色） */
+            --bg: #f0f2f5;         /* 全体の背景色 */
+        }
+        body {
+            margin: 0; background: var(--bg); color: var(--dark);
+            font-family: 'Teko', 'Noto Sans JP', sans-serif;
+            overflow-x: hidden;
+        }
+        
+        /* 斜めカットのユーティリティ */
+        .clip-box { clip-path: polygon(0 0, 100% 0, 100% 85%, 95% 100%, 0 100%); }
+
+        /* ヘッダー */
+        header {
+            background: var(--dark); color: #fff; padding: 1rem 5%;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        /* 修正3: 行間（line-height）を詰める */
+        .brand { font-size: 2rem; font-weight: 700; letter-spacing: 0.1em; line-height: 0.9; }
+        .nav { display: none; } 
+
+        /* ヒーロー（トップ画像エリア） */
+        .hero {
+            height: 80vh; background: #333; position: relative;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; text-align: center;
+            overflow: hidden;
+        }
+        /* スライドショー画像のスタイル */
+        .hero-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover;
+            transition: opacity 2s ease-in-out;
+            opacity: 0;
+            z-index: 0;
+        }
+        /* 修正5: 画像が読み込まれ(.loaded)、かつアクティブ(.active)な場合のみ表示 */
+        .hero-bg.active.loaded { opacity: 1; }
+        
+        .hero-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 1;
+        }
+        .hero-content { position: relative; z-index: 2; }
+        .hero-h1 { font-size: 8rem; line-height: 0.9; margin: 0; text-transform: uppercase; }
+        .hero-sub { font-size: 1.5rem; letter-spacing: 0.2em; color: var(--accent); display: block; margin-bottom: 1rem; }
+
+        /* マーキー（流れる文字エリア） */
+        .stats-marquee {
+            background: var(--dark); color: #fff; padding: 3rem 0;
+            margin-top: -3rem; position: relative; z-index: 10;
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+            overflow: hidden; /* はみ出し隠す */
+            display: flex; align-items: center;
+        }
+        .marquee-inner {
+            display: flex;
+            white-space: nowrap;
+            /* ここを60sに変更してゆっくりにしました */
+            animation: scroll-left 60s linear infinite;
+        }
+        .marquee-item {
+            font-size: 4rem; color: var(--steel); font-weight: 700;
+            margin-right: 4rem; opacity: 0.8;
+        }
+        @keyframes scroll-left {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* 事業領域（グリッドレイアウト） */
+        /* ここを変更: 上部の余白を8remから4remに縮小 */
+        .sector-sec { padding: 4rem 5% 8rem 5%; }
+        
+        .sec-title { font-size: 4rem; margin-bottom: 4rem; text-transform: uppercase; border-left: 10px solid var(--accent); padding-left: 1rem; line-height: 1; }
+        
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; }
+        .card {
+            background: #fff; position: relative; height: 400px;
+            transition: 0.3s; cursor: pointer;
+            display: none;
+        }
+        .card.loaded { display: block; }
+
+        .card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+        .c-img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); transition: 0.5s; }
+        .card:hover .c-img { filter: grayscale(0%); }
+        
+        .c-overlay {
+            position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.8);
+            padding: 2rem; color: #fff;
+            clip-path: polygon(0 0, 100% 15%, 100% 100%, 0 100%);
+            pointer-events: none; /* クリックを親の.cardに通す */
+        }
+        .c-title { font-size: 2rem; margin: 0; color: var(--accent); }
+        .c-desc { font-size: 1.1rem; opacity: 0.8; font-family: sans-serif; }
+
+        /* 会社概要セクション */
+        .company-sec {
+            background: #e0e0e0; padding: 6rem 5%;
+            color: var(--dark);
+        }
+        .profile-table {
+            width: 100%; max-width: 800px; border-collapse: collapse; margin-top: 2rem;
+            font-family: 'Noto Sans JP', sans-serif;
+        }
+        .profile-table th, .profile-table td {
+            text-align: left; padding: 1.5rem; border-bottom: 1px solid #ccc;
+        }
+        .profile-table th { width: 30%; font-weight: 700; color: #555; }
+
+        footer { background: #111; color: #555; padding: 4rem; text-align: center; }
+
+        /* モーダル（ポップアップ詳細画面） */
+        .modal {
+            display: none; position: fixed; z-index: 1000; left: 0; top: 0;
+            width: 100%; height: 100%; overflow: auto;
+            background-color: rgba(0,0,0,0.9);
+            justify-content: center; align-items: center;
+        }
+        .modal.show { display: flex; animation: fadeIn 0.3s; }
+        .modal-content-box {
+            position: relative; background: #fff; max-width: 90%; width: 800px;
+            display: flex; flex-direction: column;
+            clip-path: polygon(0 0, 100% 0, 100% 95%, 95% 100%, 0 100%);
+        }
+        .modal-img { width: 100%; height: auto; max-height: 60vh; object-fit: cover; display: block; }
+        .modal-text { padding: 2rem; background: var(--dark); color: #fff; }
+        .modal-title { color: var(--accent); margin: 0 0 0.5rem 0; font-size: 2.5rem; }
+        .modal-desc { margin: 0; font-family: sans-serif; opacity: 0.9; line-height: 1.8; white-space: pre-wrap; }
+        .close-btn {
+            position: absolute; top: 1rem; right: 1rem;
+            color: #fff; font-size: 2rem; font-weight: bold; cursor: pointer;
+            background: rgba(0,0,0,0.5); width: 40px; height: 40px; line-height: 40px; text-align: center;
+            z-index: 10; border-radius: 50%;
+        }
+        .close-btn:hover { background: var(--accent); color: var(--dark); }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        @media (max-width: 768px) {
+            .hero-h1 { font-size: 4rem; }
+            .grid { grid-template-columns: 1fr; }
+            .profile-table th, .profile-table td { display: block; width: 100%; padding: 0.5rem 0; border: none; }
+            .profile-table tr { border-bottom: 1px solid #ccc; display: block; padding: 1rem 0; }
+            .marquee-item { font-size: 2.5rem; margin-right: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div id="brand" class="brand"></div>
+    </header>
+
+    <div class="hero">
+        <div id="hero-slides"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <span id="hero-sub" class="hero-sub"></span>
+            <h1 id="hero-title" class="hero-h1"></h1>
+        </div>
+    </div>
+
+    <div class="stats-marquee" id="marquee-area">
+        <div class="marquee-inner" id="marquee-content">
+            </div>
+    </div>
+
+    <section class="sector-sec">
+        <h2 class="sec-title">Core Sectors</h2>
+        <div id="grid" class="grid">
+            </div>
+    </section>
+
+    <section class="company-sec">
+        <h2 class="sec-title" style="font-size: 3rem; margin-bottom: 2rem;">Company Profile</h2>
+        <table class="profile-table">
+            <tr>
+                <th>会社名</th>
+                <td id="cp-name">TITAN HEAVY INDUSTRIES</td>
+            </tr>
+            <tr>
+                <th>所在地</th>
+                <td>大阪府大阪市北区空想一丁目10番8号<br>イマジネーションオフィス702</td>
+            </tr>
+            <tr>
+                <th>設立</th>
+                <td>1924年 4月</td>
+            </tr>
+            <tr>
+                <th>代表者</th>
+                <td>代表取締役 山田太郎</td>
+            </tr>
+            <tr>
+                <th>事業内容</th>
+                <td>
+                    インフラ用鋼材製造、エネルギー・プラント事業、<br>
+                    航空宇宙部品開発、産業用ロボット製造
+                </td>
+            </tr>
+        </table>
+    </section>
+
+    <footer>
+        <p>&copy; <span id="year"></span> <span id="footer-name"></span></p>
+    </footer>
+
+    <div id="modal" class="modal">
+        <div class="modal-content-box">
+            <span class="close-btn" id="close-btn">&times;</span>
+            <img id="modal-img" class="modal-img" src="" alt="">
+            <div class="modal-text">
+                <h3 id="modal-title" class="modal-title"></h3>
+                <p id="modal-desc" class="modal-desc"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* * ★設定エリア
+         * サイトの主なテキストやコンテンツはここで変更できます。
+         * AIを使って「このconfigの中身を書き換えて」と指示するとスムーズです。
+         */
+        const config = {
+            name: "TITAN HEAVY INDUSTRIES", // ★会社名・ブランド名
+            hero: { 
+                title: "Building<br>The Future", // ★トップの巨大文字（<br>で改行）
+                sub: "ENGINEERING EXCELLENCE"    // ★その上のサブタイトル
+            },
+            
+            // ★グリッドカードの設定
+            // 1～4は固定で表示、それ以降は画像があれば表示されます
+            // desc: 一覧用（短め）, detail: モーダル用（長め・改行には \n を使用）
+            sectorText: {
+                1: { 
+                    title: "STEEL", 
+                    desc: "インフラ向け高張力鋼の製造",
+                    detail: "インフラ構築に向けた高張力鋼の製造プロセス。\n超高層ビルや巨大橋梁を支えるTITANの鉄鋼技術は、100年の歴史と共に進化し続けています。\n詳細なスペックや耐久性テストの結果はこちら..."
+                },
+                2: { 
+                    title: "ENERGY", 
+                    desc: "ガスタービンと再生可能エネルギー",
+                    detail: "次世代型ガスタービンと再生可能エネルギー・プラント事業。\n効率的なエネルギー供給システムの構築により、持続可能な社会の実現に貢献します。"
+                },
+                3: { 
+                    title: "AEROSPACE", 
+                    desc: "ジェットエンジン部品と機体製造",
+                    detail: "航空宇宙部門では、ジェットエンジンのコア部品および胴体の製造を行っています。\n極限環境に耐えうる素材開発と精密加工技術が強みです。"
+                },
+                4: { 
+                    title: "MACHINERY", 
+                    desc: "産業オートメーションとロボット",
+                    detail: "産業用オートメーションとロボティクス。\n工場の無人化を推進する多関節ロボットや、AI制御による生産ラインの最適化ソリューションを提供。"
+                }
+            }
+        };
+
+        // --- 以下は動作ロジック（変更不要） ---
+        let currentSlide = 0;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('brand').textContent = config.name;
+            document.getElementById('footer-name').textContent = config.name;
+            document.getElementById('cp-name').textContent = config.name;
+            document.getElementById('hero-title').innerHTML = config.hero.title;
+            document.getElementById('hero-sub').textContent = config.hero.sub;
+            document.getElementById('year').textContent = new Date().getFullYear();
+
+            // --- マーキー（流れる文字）生成 ---
+            const marqueeContent = document.getElementById('marquee-content');
+            
+            // ★流れる文字の内容を変更したい場合はここを編集
+            const textToScroll = "ENGINEERING EXCELLENCE"; 
+            
+            // ループを滑らかにするため、テキストを複数回繰り返す
+            let marqueeHTML = "";
+            for(let i=0; i<8; i++){
+                marqueeHTML += `<span class="marquee-item">${textToScroll}</span>`;
+            }
+            marqueeContent.innerHTML = marqueeHTML + marqueeHTML; // 重複させて切れ目をなくす
+
+            // --- ヒーロースライドショー生成 ---
+            const heroSlides = document.getElementById('hero-slides');
+            
+            // ★スライドショー画像の最大枚数（image/main1.jpg ～ main5.jpg を探します）
+            const maxSlides = 5;
+
+            for (let i = 1; i <= maxSlides; i++) {
+                // 変更点: onerror="this.remove()" を設定
+                // 画像が存在しない場合は自動的に削除され、スライドショー対象外となります
+                const imgHTML = `
+                    <img src="image/main${i}.jpg" 
+                         class="hero-bg ${i === 1 ? 'active' : ''}" 
+                         onload="this.classList.add('loaded')"
+                         onerror="this.remove()"
+                         alt="Main Visual ${i}">
+                `;
+                heroSlides.insertAdjacentHTML('beforeend', imgHTML);
+            }
+
+            setInterval(() => {
+                // 現在DOMに存在している画像のみを対象にする
+                const slides = document.querySelectorAll('.hero-bg');
+                if (slides.length > 1) { 
+                    slides[currentSlide].classList.remove('active');
+                    currentSlide = (currentSlide + 1) % slides.length;
+                    slides[currentSlide].classList.add('active');
+                }
+            }, 3000);
+
+            // --- 画像グリッド生成 ---
+            const grid = document.getElementById('grid');
+            
+            // ★グリッド画像の最大チェック枚数（image/image1.jpg ～ image18.jpg を探します）
+            const maxImages = 18;
+
+            for (let i = 1; i <= maxImages; i++) {
+                const textInfo = config.sectorText[i] || { 
+                    title: `PROJECT ${String(i).padStart(2, '0')}`, 
+                    desc: "革新的な産業ソリューション",
+                    detail: "このプロジェクトに関する詳細な情報がここに記載されます。"
+                };
+
+                // detailが設定されていなければdescを使うフォールバック
+                const detailText = textInfo.detail || textInfo.desc;
+
+                // 修正2: onerror削除によるカクつき防止（ギャラリー側）
+                const cardHTML = `
+                    <div class="card clip-box" id="card-${i}" 
+                         data-img="image/image${i}.jpg" 
+                         data-title="${textInfo.title}" 
+                         data-desc="${textInfo.desc}"
+                         data-detail="${detailText}">
+                        <img src="image/image${i}.jpg" class="c-img" 
+                             onload="document.getElementById('card-${i}').classList.add('loaded')"
+                             onerror="">
+                        <div class="c-overlay">
+                            <h3 class="c-title">${textInfo.title}</h3>
+                            <p class="c-desc">${textInfo.desc}</p>
+                        </div>
+                    </div>
+                `;
+                grid.insertAdjacentHTML('beforeend', cardHTML);
+            }
+
+            // --- モーダル制御 ---
+            const modal = document.getElementById('modal');
+            const modalImg = document.getElementById('modal-img');
+            const modalTitle = document.getElementById('modal-title');
+            const modalDesc = document.getElementById('modal-desc');
+            const closeBtn = document.getElementById('close-btn');
+
+            grid.addEventListener('click', (e) => {
+                const card = e.target.closest('.card');
+                if (!card) return;
+
+                modalImg.src = card.dataset.img;
+                modalTitle.textContent = card.dataset.title;
+                // ここを変更: dataset.desc ではなく dataset.detail を使用
+                modalDesc.textContent = card.dataset.detail;
+
+                modal.classList.add('show');
+            });
+
+            const closeModal = () => modal.classList.remove('show');
+            closeBtn.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal();
+            });
+
+            // 修正4: 画像クリックでも閉じるように追加
+            modalImg.addEventListener('click', closeModal);
+        });
+    </script>
+</body>
+</html>

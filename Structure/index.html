@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<!--
+  Template: STRUCTURE v1.0
+  Author: Haruki Tominaga
+  License: https://amix-design.com/tominaga/eyan-theme/license 
+  © 2025 EYAN / トミナガハルキ
+-->
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name="robots" content="index, follow">
+    
+    <title>Template - STRUCTURE</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;500;800&family=Noto+Sans+JP:wght@300;500&display=swap" rel="stylesheet">
+    
+    <style>
+        /* =========================================
+           基本設定 (配色などを変更したい場合はここ)
+           ========================================= */
+        :root {
+            --bg: #e6e6e6;       /* 背景色 */
+            --card-bg: #ffffff;  /* カードの背景色 */
+            --text: #333;        /* 文字色 */
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Manrope', 'Noto Sans JP', sans-serif;
+            margin: 0; padding: 0;
+        }
+
+        /* --- レイアウト設定（変更非推奨） --- */
+        .wrapper { display: flex; min-height: 100vh; }
+        
+        /* 左サイドバー */
+        .sidebar {
+            width: 350px; height: 100vh;
+            position: sticky; top: 0;
+            padding: 4rem; box-sizing: border-box;
+            display: flex; flex-direction: column; justify-content: space-between;
+            z-index: 100;
+        }
+        .logo { font-weight: 800; font-size: 1.5rem; letter-spacing: -0.02em; }
+        
+        /* サイドバーの説明文 */
+        .sidebar-desc { 
+            font-size: 0.85rem; 
+            line-height: 2; 
+            color: #666; 
+            white-space: pre-wrap; /* 改行をそのまま反映 */
+        }
+
+        .contact-info { font-size: 0.8rem; color: #888; line-height: 1.8; }
+
+        /* 右メインコンテンツエリア */
+        .main { flex: 1; padding: 4rem; max-width: 1200px; }
+
+        /* カード共通デザイン */
+        .sticky-card {
+            background: var(--card-bg);
+            padding: 5rem;
+            margin-bottom: 4rem;
+            min-height: 80vh;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            display: flex; flex-direction: column;
+            position: sticky; top: 2rem;
+        }
+
+        /* --- 各セクションの位置調整 --- */
+        #intro {
+            top: 2rem; z-index: 1;
+            justify-content: flex-end;
+            background-image: url('image/main.jpg'); /* トップ画像の設定 */
+            background-size: cover; background-position: center;
+            color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+        #philosophy { top: 4rem; z-index: 2; border-top: 1px solid #eee; }
+        #company { top: 5rem; z-index: 3; border-top: 1px solid #eee; }
+        #projects { 
+            position: relative; top: auto; z-index: 4; 
+            border-top: 1px solid #eee; margin-top: -3rem; margin-bottom: 0; 
+            padding-bottom: 8rem; min-height: auto; 
+        }
+        #contact { 
+            position: relative; top: auto; z-index: 5; 
+            background: #111; color: #fff; border: none;
+            margin-top: -4rem; margin-bottom: 0;
+            min-height: 50vh;
+        }
+
+        .hero-title { font-size: 4rem; font-weight: 300; line-height: 1.1; margin: 0; }
+        .hero-title strong { font-weight: 800; display: block; }
+
+        /* カード内部の要素 */
+        .card-header {
+            display: flex; justify-content: space-between; margin-bottom: 3rem;
+            border-bottom: 2px solid currentColor; padding-bottom: 1rem;
+        }
+        .card-label { font-weight: 800; text-transform: uppercase; font-size: 0.9rem; }
+        .card-body p { font-size: 1.1rem; line-height: 2; opacity: 0.9; max-width: 700px; }
+
+        .company-table { width: 100%; border-collapse: collapse; margin-top: 2rem; }
+        .company-table th, .company-table td { text-align: left; padding: 1.5rem 0; border-bottom: 1px solid #eee; }
+        .company-table th { width: 30%; opacity: 0.6; font-weight: 500; }
+
+        /* 制作実績（Projects）のグリッド表示 */
+        .proj-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; margin-top: 3rem;
+        }
+        .proj-item { cursor: pointer; transition: 0.3s; position: relative; display: none; }
+        .proj-item.loaded { display: block; animation: fadein 0.5s; }
+        .proj-item:hover { opacity: 0.8; transform: translateY(-5px); }
+        .proj-img { width: 100%; height: 300px; object-fit: cover; background: #eee; display: block; }
+        .proj-title { font-weight: 800; margin-top: 1rem; display: block; }
+        .proj-loc { font-size: 0.8rem; color: #888; }
+
+        /* 画像拡大（Lightbox）の設定 */
+        .lightbox {
+            display: none; position: fixed; z-index: 2000; left: 0; top: 0;
+            width: 100%; height: 100%; overflow: hidden;
+            background-color: rgba(0,0,0,0.95);
+            justify-content: center; align-items: center; flex-direction: column;
+        }
+        .lightbox-content { max-width: 90%; max-height: 80vh; object-fit: contain; animation: fadein 0.3s; }
+        .lb-controls {
+            position: absolute; width: 100%; top: 50%; transform: translateY(-50%);
+            display: flex; justify-content: space-between; padding: 0 2rem; box-sizing: border-box; pointer-events: none;
+        }
+        .lb-btn {
+            pointer-events: auto; cursor: pointer; color: #fff; font-size: 3rem; user-select: none;
+            background: rgba(255,255,255,0.1); width: 60px; height: 60px;
+            display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: 0.3s;
+        }
+        .lb-btn:hover { background: rgba(255,255,255,0.3); }
+        .close {
+            position: absolute; top: 20px; right: 35px; color: #f1f1f1; font-size: 40px; font-weight: bold; cursor: pointer; z-index: 2001;
+        }
+        @keyframes fadein { from {opacity:0} to {opacity:1} }
+
+        /* スマートフォン向けレスポンシブ設定 */
+        @media (max-width: 900px) {
+            .wrapper { flex-direction: column; width: 100%; overflow-x: hidden; }
+            .sidebar { 
+                width: 100%; height: auto; position: relative; 
+                padding: 2rem; padding-bottom: 0;
+            }
+            .sidebar-desc { margin-top: 2rem; margin-bottom: 2rem; }
+            .main { padding: 2rem; width: 100%; box-sizing: border-box; }
+            .sticky-card, #projects, #contact { 
+                padding: 2rem; 
+                top: auto !important; position: relative !important; 
+                min-height: auto; margin-top: 0 !important; margin-bottom: 2rem !important; 
+                width: 100%; box-sizing: border-box;
+            }
+            .hero-title { font-size: 2.5rem; word-break: break-all; }
+            .proj-grid { grid-template-columns: 1fr; }
+            .proj-img { height: 200px; }
+            #intro { min-height: 50vh; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <aside class="sidebar">
+            <div id="brand-logo" class="logo"></div>
+            <div id="sidebar-desc" class="sidebar-desc"></div>
+            <div class="contact-info" id="sidebar-contact"></div>
+        </aside>
+
+        <main class="main">
+            <section id="intro" class="sticky-card">
+                <h1 id="hero-title" class="hero-title"></h1>
+            </section>
+
+            <section id="philosophy" class="sticky-card">
+                <div class="card-header">
+                    <span class="card-label">01 / Philosophy</span>
+                </div>
+                <div class="card-body">
+                    <h2 style="font-size: 2rem; margin-bottom: 2rem;">Structure follows Life.</h2>
+                    <div id="philo-text"></div>
+                </div>
+            </section>
+
+            <section id="company" class="sticky-card">
+                <div class="card-header">
+                    <span class="card-label">02 / Company Profile</span>
+                </div>
+                <div class="card-body">
+                    <h2 style="font-size: 2rem; margin-bottom: 2rem;">About Us.</h2>
+                    <table class="company-table" id="company-data">
+                        </table>
+                </div>
+            </section>
+
+            <section id="projects" class="sticky-card">
+                <div class="card-header">
+                    <span class="card-label">03 / Selected Works</span>
+                </div>
+                <div id="proj-container" class="proj-grid"></div>
+            </section>
+
+            <section id="contact" class="sticky-card">
+                <div class="card-header" style="border-color: #555;">
+                    <span class="card-label">04 / Contact</span>
+                </div>
+                <div class="card-body">
+                    <h2 style="font-size: 3rem;">Ready to build?</h2>
+                    <p style="color: #999;">私たちが提案するのは、単なる建物ではありません。<br>未来への基盤です。</p>
+                    <a href="#" id="mail-link" style="color: #fff; font-size: 1.5rem; margin-top: 2rem; display: inline-block;"></a>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="lightbox" class="lightbox">
+        <span class="close">&times;</span>
+        <div class="lb-controls">
+            <div class="lb-btn" id="prev-btn">&#10094;</div>
+            <div class="lb-btn" id="next-btn">&#10095;</div>
+        </div>
+        <img class="lightbox-content" id="lightbox-img">
+    </div>
+
+    <script>
+        // ===============================================
+        //  簡単設定エリア：ここを書き換えてサイトを作ります
+        // ===============================================
+        const config = {
+            // 1. サイトのタイトル・ブランド名
+            name: "STRUCTURE LAB.",
+            
+            // 2. サイドバーの説明文（\n で改行）
+            description: "私たちは、東京を拠点とする建築設計事務所です。\n\n環境と調和する構造美を追求し、人々の生活に寄り添う空間をデザインします。静寂と光、そして物質の強さを組み合わせ、永く愛される建築を目指しています。",
+            
+            // 3. サイドバーの連絡先情報（<br> で改行）
+            address: "Tokyo, Minami-Aoyama 0-1-2<br>+81 3 0000 0000",
+            
+            // 4. トップページのキャッチコピー（<strong>タグで太字）
+            hero: "Designing<br><strong>The Unseen Foundation.</strong>",
+            
+            // 5. 理念（Philosophy）の本文
+            philo: "建築は、環境との対話である。<br>私たちは光、風、そして人々の動線を計算し尽くし、<br>必然性のあるフォルムだけを導き出します。<br>余計な装飾を削ぎ落とし、機能美の極致を目指します。",
+
+            // 6. 会社概要のデータリスト
+            company: [
+                { label: "Company Name", value: "STRUCTURE LAB. Inc." },
+                { label: "Founded", value: "2015" },
+                { label: "CEO", value: "TARO YAMADA" },
+                { label: "Address", value: "0-1-2  Minami-Aoyama, Minato-ku, Tokyo" },
+                { label: "Business", value: "Architectural Design, Urban Planning, Interior Design" }
+            ],
+            
+            // 7. 実績（Works）のタイトルと場所
+            // ※画像ファイルは image/image1.jpg, image2.jpg... と連番で保存してください
+            // ※下のリストは画像の番号順に対応しています（1番目、2番目...）
+            workMeta: [
+                { title: "Museum of Nature", loc: "Kyoto, Japan" },
+                { title: "Glass House", loc: "Nagano, Japan" },
+                { title: "Urban Office", loc: "Tokyo, Japan" },
+                { title: "Silent Library", loc: "Kanagawa, Japan" }
+            ],
+            
+            // 8. お問い合わせメールアドレス
+            email: "contact@example.com"
+        };
+
+        // ===============================================
+        //  ここから下はプログラム本体（変更不要）
+        // ===============================================
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // テキストデータの反映処理
+            document.getElementById('brand-logo').textContent = config.name;
+            document.getElementById('sidebar-contact').innerHTML = config.address;
+            document.getElementById('sidebar-desc').textContent = config.description;
+
+            document.getElementById('hero-title').innerHTML = config.hero;
+            document.getElementById('philo-text').innerHTML = config.philo;
+            document.getElementById('mail-link').textContent = config.email;
+            document.getElementById('mail-link').href = `mailto:${config.email}`;
+
+            // 会社概要テーブルの生成
+            const cTable = document.getElementById('company-data');
+            if(cTable) {
+                config.company.forEach(item => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `<th>${item.label}</th><td>${item.value}</td>`;
+                    cTable.appendChild(tr);
+                });
+            }
+
+            // 画像の自動検出と表示処理
+            const pCont = document.getElementById('proj-container');
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            
+            let activeImages = [];
+            const maxImages = 18; // 読み込みを試行する最大枚数
+            const loadPromises = [];
+
+            // 画像の存在確認
+            for (let i = 1; i <= maxImages; i++) {
+                const imgPath = `image/image${i}.jpg`;
+                // メタデータがない場合はデフォルト値を設定
+                const meta = config.workMeta[i - 1] || { 
+                    title: `Project ${String(i).padStart(2, '0')}`, 
+                    loc: "Japan" 
+                };
+
+                const p = new Promise((resolve) => {
+                    const img = new Image();
+                    img.src = imgPath;
+                    img.onload = () => resolve({ status: true, path: imgPath, meta: meta });
+                    img.onerror = () => resolve({ status: false });
+                });
+                loadPromises.push(p);
+            }
+
+            // 読み込み完了後に一覧を表示
+            Promise.all(loadPromises).then(results => {
+                results.forEach(res => {
+                    if (res.status) {
+                        const div = document.createElement('div');
+                        div.className = 'proj-item loaded'; 
+                        div.innerHTML = `
+                            <img src="${res.path}" class="proj-img" alt="${res.meta.title}">
+                            <span class="proj-title">${res.meta.title}</span>
+                            <span class="proj-loc">${res.meta.loc}</span>
+                        `;
+                        
+                        div.onclick = () => openLightbox(res.path);
+                        pCont.appendChild(div);
+                        activeImages.push(res.path);
+                    }
+                });
+            });
+
+            // ライトボックス（拡大表示）の制御
+            let currentIdx = 0;
+            function openLightbox(src) {
+                const index = activeImages.indexOf(src);
+                if(index !== -1) {
+                    updateLightboxImage(index);
+                    lightbox.style.display = "flex";
+                }
+            }
+
+            function updateLightboxImage(index) {
+                currentIdx = index;
+                lightboxImg.src = activeImages[currentIdx];
+            }
+            
+            document.querySelector('.close').onclick = () => lightbox.style.display = "none";
+            
+            document.getElementById('next-btn').onclick = (e) => {
+                e.stopPropagation();
+                if(activeImages.length > 0) {
+                    updateLightboxImage((currentIdx + 1) % activeImages.length);
+                }
+            };
+            
+            document.getElementById('prev-btn').onclick = (e) => {
+                e.stopPropagation();
+                if(activeImages.length > 0) {
+                    updateLightboxImage((currentIdx - 1 + activeImages.length) % activeImages.length);
+                }
+            };
+            
+            lightbox.onclick = (e) => {
+                if (e.target === lightbox) lightbox.style.display = "none";
+            };
+        });
+    </script>
+</body>
+</html>

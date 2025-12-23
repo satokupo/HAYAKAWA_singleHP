@@ -1,0 +1,50 @@
+## 作業環境
+vendor/
+vendor/*
+composer.lock
+.vscode/
+.vscode/*
+.cursor/
+.cursor/*
+.claude/
+.workbench/
+.workbench/*
+.DS_Store
+node_modules/
+node_modules/*
+.venv/
+_doc/temp/
+*.zip
+README.txt
+
+
+## 機密ファイル
+env.php
+.env
+.env*
+!.env.example
+
+dev/tests/logs/
+dev/tests/logs/*
+
+**/__pycache__
+
+**/temp/
+
+
+# --------------------------------
+# 大きなバイナリファイル
+# --------------------------------
+*.pdf
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.mp4
+*.mov
+
+
+# --------------------------------
+# obsidian
+# --------------------------------
+.obsidian
