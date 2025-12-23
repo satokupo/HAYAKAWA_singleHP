@@ -117,17 +117,49 @@
         .contact-info { font-size: 0.8rem; color: #888; line-height: 1.8; }
 
         /* 右メインコンテンツエリア */
-        .main { flex: 1; padding: 4rem; max-width: 1200px; }
+        .main {
+            flex: 1;
+            padding: 4rem;
+            max-width: 1200px;
+            container-type: inline-size;
+            container-name: main-content;
+        }
 
         /* カード共通デザイン */
         .sticky-card {
             background: var(--bg-section);
             padding: 5rem;
             margin-bottom: 4rem;
-            min-height: 80vh;
+            max-height: 85vh;
+            overflow-y: auto;
             box-shadow: 0 5px 20px rgba(0,0,0,0.05);
             display: flex; flex-direction: column;
             position: sticky; top: 2rem;
+        }
+
+        /* ===== カスタムスクロールバー ===== */
+        .sticky-card::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .sticky-card::-webkit-scrollbar-track {
+            background: #eee;
+            border-radius: 4px;
+        }
+
+        .sticky-card::-webkit-scrollbar-thumb {
+            background: var(--color-accent);
+            border-radius: 4px;
+        }
+
+        .sticky-card::-webkit-scrollbar-thumb:hover {
+            background: var(--color-primary);
+        }
+
+        /* Firefox */
+        .sticky-card {
+            scrollbar-width: thin;
+            scrollbar-color: var(--color-accent) #eee;
         }
 
         /* --- 各セクションの位置調整 --- */
@@ -138,19 +170,30 @@
             background-size: cover; background-position: center;
             color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.5);
         }
-        #menu { top: 4rem; z-index: 2; border-top: 1px solid #eee; }
-        #interior { top: 5rem; z-index: 3; border-top: 1px solid #eee; }
-        #owner {
-            position: relative; top: auto; z-index: 4;
-            border-top: 1px solid #eee;
-            margin-top: -3rem;
-            min-height: auto;
+        #menu { top: 3rem; z-index: 2; border-top: 1px solid #eee; }
+        #interior { top: 4rem; z-index: 3; border-top: 1px solid #eee; }
+        #owner { top: 5rem; z-index: 4; border-top: 1px solid #eee; }
+        #access { top: 5.5rem; z-index: 5; border-top: 1px solid #eee; }
+        #closing { top: 6rem; z-index: 6; }
+
+        /* ===== 締めセクション ===== */
+        .closing-section {
+            background: var(--color-text);
+            color: #fff;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        #access {
-            position: relative; top: auto; z-index: 5;
-            border-top: 1px solid #eee;
-            margin-top: -3rem; margin-bottom: 0;
-            min-height: auto;
+
+        .closing-content {
+            text-align: center;
+        }
+
+        .closing-message {
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin: 0;
         }
 
         .hero-title { font-size: 4rem; font-weight: 300; line-height: 1.1; margin: 0; }
@@ -213,16 +256,22 @@
         }
 
         /* ===== 店内雰囲気セクション ===== */
+        .interior-gallery {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
         .interior-img {
             width: 100%;
             border-radius: 4px;
-            margin-bottom: 1.5rem;
         }
 
         .interior-text {
             font-size: 1rem;
             line-height: 2;
             color: var(--color-text);
+            margin-top: 1rem;
         }
 
         /* ===== オーナー紹介セクション ===== */
@@ -383,6 +432,34 @@
             }
         }
 
+        /* ===== コンテナクエリ：メインカラム幅550px以下で1カラム化 ===== */
+        @container main-content (max-width: 550px) {
+            /* メニューグリッド */
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+
+            /* オーナー */
+            .owner-container {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .owner-photo {
+                max-width: 150px;
+            }
+
+            /* アクセス */
+            .access-container {
+                flex-direction: column;
+            }
+
+            .access-embed {
+                min-height: 250px;
+            }
+        }
+
         /* スマートフォン向けレスポンシブ設定 */
         @media (max-width: 900px) {
             .wrapper { flex-direction: column; width: 100%; overflow-x: hidden; }
@@ -392,34 +469,15 @@
             }
             .sidebar-desc { margin-top: 2rem; margin-bottom: 2rem; }
             .main { padding: 2rem; width: 100%; box-sizing: border-box; }
-            .sticky-card, #owner, #access {
+            .sticky-card {
                 padding: 2rem;
                 top: auto !important; position: relative !important;
-                min-height: auto; margin-top: 0 !important; margin-bottom: 2rem !important;
+                max-height: none; overflow-y: visible;
+                margin-top: 0 !important; margin-bottom: 2rem !important;
                 width: 100%; box-sizing: border-box;
             }
             .hero-title { font-size: 2.5rem; word-break: break-all; }
-            .menu-grid { grid-template-columns: 1fr; }
             #hero { min-height: 50vh; }
-
-            .owner-container {
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
-            }
-
-            .owner-photo {
-                flex: none;
-                max-width: 150px;
-            }
-
-            .access-container {
-                flex-direction: column;
-            }
-
-            .access-embed {
-                min-height: 250px;
-            }
         }
     </style>
 </head>
@@ -464,7 +522,7 @@
                 </div>
                 <div class="card-body">
                     <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">店内</h2>
-                    <img id="interior-img" class="interior-img" src="" alt="店内の様子" loading="lazy">
+                    <div id="interior-gallery" class="interior-gallery"></div>
                     <p id="interior-text" class="interior-text"></p>
                 </div>
             </section>
@@ -517,6 +575,12 @@
                     </div>
                 </div>
             </section>
+
+            <section id="closing" class="sticky-card closing-section">
+                <div class="closing-content">
+                    <p class="closing-message">ご来店をお待ちしております</p>
+                </div>
+            </section>
         </main>
     </div>
 
@@ -567,7 +631,10 @@
             ],
 
             // 店内雰囲気（既存画像を流用）
-            interiorImage: "image/image1.jpg",
+            interiorImages: [
+                "image/image1.jpg",
+                "image/image2.jpg"
+            ],
             interiorText: "モルタルの壁と白木のカウンター。\n小さいけれど、ゆっくりくつろげる空間です。",
 
             // オーナー紹介（既存画像を流用）
@@ -621,9 +688,16 @@
             }
 
             // ----- 店内雰囲気 -----
-            const interiorImg = document.getElementById('interior-img');
-            if (interiorImg) {
-                interiorImg.src = config.interiorImage;
+            const interiorGallery = document.getElementById('interior-gallery');
+            if (interiorGallery && config.interiorImages) {
+                config.interiorImages.forEach((src, index) => {
+                    const img = document.createElement('img');
+                    img.src = src;
+                    img.alt = `店内の様子 ${index + 1}`;
+                    img.className = 'interior-img';
+                    img.loading = 'lazy';
+                    interiorGallery.appendChild(img);
+                });
             }
             const interiorText = document.getElementById('interior-text');
             if (interiorText) {
