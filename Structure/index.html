@@ -130,70 +130,74 @@
             background: var(--bg-section);
             padding: 5rem;
             margin-bottom: 4rem;
-            max-height: 85vh;
+            min-height: 80vh;
+            max-height: 90vh;
             overflow-y: auto;
             box-shadow: 0 5px 20px rgba(0,0,0,0.05);
             display: flex; flex-direction: column;
             position: sticky; top: 2rem;
+
+            /* スクロールバー非表示 */
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
 
-        /* ===== カスタムスクロールバー ===== */
+        /* Chrome, Safari */
         .sticky-card::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .sticky-card::-webkit-scrollbar-track {
-            background: #eee;
-            border-radius: 4px;
-        }
-
-        .sticky-card::-webkit-scrollbar-thumb {
-            background: var(--color-accent);
-            border-radius: 4px;
-        }
-
-        .sticky-card::-webkit-scrollbar-thumb:hover {
-            background: var(--color-primary);
-        }
-
-        /* Firefox */
-        .sticky-card {
-            scrollbar-width: thin;
-            scrollbar-color: var(--color-accent) #eee;
+            display: none;
         }
 
         /* --- 各セクションの位置調整 --- */
         #hero {
             top: 2rem; z-index: 1;
+            min-height: 80vh;
+            max-height: none;
+            overflow: visible;
             justify-content: flex-end;
-            background-image: url('image/hero.webp');
+            background-image: url('image/main.jpg');
             background-size: cover; background-position: center;
             color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.5);
         }
         #menu { top: 3rem; z-index: 2; border-top: 1px solid #eee; }
         #interior { top: 4rem; z-index: 3; border-top: 1px solid #eee; }
         #owner { top: 5rem; z-index: 4; border-top: 1px solid #eee; }
-        #access { top: 5.5rem; z-index: 5; border-top: 1px solid #eee; }
-        #closing { top: 6rem; z-index: 6; }
-
-        /* ===== 締めセクション ===== */
-        .closing-section {
+        #access {
+            top: 5.5rem; z-index: 5;
             background: var(--color-text);
             color: #fff;
             border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
-        .closing-content {
-            text-align: center;
+        /* アクセス内の要素の色調整 */
+        #access .card-header {
+            border-color: rgba(255, 255, 255, 0.3);
         }
 
-        .closing-message {
-            font-size: 1.5rem;
-            font-weight: 500;
-            margin: 0;
+        #access h2 {
+            color: #fff;
+        }
+
+        #access dt {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        #access dd {
+            color: #fff;
+        }
+
+        #access .access-note {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        #access .access-embed {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* ボタンはアクセントカラーのまま */
+        #access .access-btn {
+            background: var(--color-accent);
+            color: #fff;
         }
 
         .hero-title { font-size: 4rem; font-weight: 300; line-height: 1.1; margin: 0; }
@@ -230,6 +234,7 @@
             width: 100%;
             aspect-ratio: 1 / 1;
             object-fit: cover;
+            object-position: center;
             border-radius: 4px;
             background: #eee;
         }
@@ -259,19 +264,27 @@
         .interior-gallery {
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            gap: 2rem;
+        }
+
+        .interior-item {
+            /* 画像 + コメントのセット */
         }
 
         .interior-img {
             width: 100%;
+            aspect-ratio: 16 / 9;
+            object-fit: cover;
+            object-position: center;
             border-radius: 4px;
+            background: #eee;
         }
 
-        .interior-text {
-            font-size: 1rem;
-            line-height: 2;
+        .interior-caption {
+            font-size: 0.95rem;
+            line-height: 1.8;
             color: var(--color-text);
-            margin-top: 1rem;
+            margin-top: 0.75rem;
         }
 
         /* ===== オーナー紹介セクション ===== */
@@ -523,7 +536,6 @@
                 <div class="card-body">
                     <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">店内</h2>
                     <div id="interior-gallery" class="interior-gallery"></div>
-                    <p id="interior-text" class="interior-text"></p>
                 </div>
             </section>
 
@@ -573,12 +585,6 @@
                             <span>営業日カレンダー（準備中）</span>
                         </div>
                     </div>
-                </div>
-            </section>
-
-            <section id="closing" class="sticky-card closing-section">
-                <div class="closing-content">
-                    <p class="closing-message">ご来店をお待ちしております</p>
                 </div>
             </section>
         </main>
@@ -631,11 +637,20 @@
             ],
 
             // 店内雰囲気（既存画像を流用）
-            interiorImages: [
-                "image/image1.jpg",
-                "image/image2.jpg"
+            interiorItems: [
+                {
+                    image: "image/image1.jpg",
+                    caption: "モルタルの壁と白木のカウンター。"
+                },
+                {
+                    image: "image/image2.jpg",
+                    caption: "小さいけれど、ゆっくりくつろげる空間です。"
+                },
+                {
+                    image: "image/image3.jpg",
+                    caption: "お子さま用のチェアもご用意しています。"
+                }
             ],
-            interiorText: "モルタルの壁と白木のカウンター。\n小さいけれど、ゆっくりくつろげる空間です。",
 
             // オーナー紹介（既存画像を流用）
             ownerName: "店主",
@@ -689,19 +704,16 @@
 
             // ----- 店内雰囲気 -----
             const interiorGallery = document.getElementById('interior-gallery');
-            if (interiorGallery && config.interiorImages) {
-                config.interiorImages.forEach((src, index) => {
-                    const img = document.createElement('img');
-                    img.src = src;
-                    img.alt = `店内の様子 ${index + 1}`;
-                    img.className = 'interior-img';
-                    img.loading = 'lazy';
-                    interiorGallery.appendChild(img);
+            if (interiorGallery && config.interiorItems) {
+                config.interiorItems.forEach((item, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'interior-item';
+                    div.innerHTML = `
+                        <img src="${item.image}" alt="店内の様子 ${index + 1}" class="interior-img" loading="lazy">
+                        <p class="interior-caption">${item.caption}</p>
+                    `;
+                    interiorGallery.appendChild(div);
                 });
-            }
-            const interiorText = document.getElementById('interior-text');
-            if (interiorText) {
-                interiorText.textContent = config.interiorText;
             }
 
             // ----- オーナー -----
@@ -721,6 +733,53 @@
             // ----- フッター -----
             document.getElementById('footer-instagram').href = config.instagramUrl;
             document.getElementById('footer-gbp').href = config.gbpUrl;
+        });
+
+        // ===============================================
+        //  セクション内スクロールの伝播制御
+        // ===============================================
+        document.querySelectorAll('.sticky-card').forEach(section => {
+            // ヒーローは対象外
+            if (section.id === 'hero') return;
+
+            // Wheel イベント（PC）
+            section.addEventListener('wheel', (e) => {
+                const atTop = section.scrollTop === 0;
+                const atBottom = section.scrollTop + section.clientHeight >= section.scrollHeight - 1;
+
+                // 最上部で上スクロール、または最下部で下スクロールなら親に伝播
+                if ((atTop && e.deltaY < 0) || (atBottom && e.deltaY > 0)) {
+                    // デフォルト動作（親へ伝播）を許可
+                    return;
+                }
+
+                // それ以外はセクション内スクロール
+                e.stopPropagation();
+            }, { passive: true });
+
+            // Touch イベント（スマホ）
+            let touchStartY = 0;
+
+            section.addEventListener('touchstart', (e) => {
+                touchStartY = e.touches[0].clientY;
+            }, { passive: true });
+
+            section.addEventListener('touchmove', (e) => {
+                const touchY = e.touches[0].clientY;
+                const deltaY = touchStartY - touchY; // 正: 下スクロール、負: 上スクロール
+
+                const atTop = section.scrollTop === 0;
+                const atBottom = section.scrollTop + section.clientHeight >= section.scrollHeight - 1;
+
+                // 最上部で上スクロール、または最下部で下スクロールなら親に伝播
+                if ((atTop && deltaY < 0) || (atBottom && deltaY > 0)) {
+                    return;
+                }
+
+                // それ以外はセクション内スクロール（伝播を止める必要がある場合）
+                // ただし passive: true なので preventDefault は使えない
+                // 伝播制御は stopPropagation で行う
+            }, { passive: true });
         });
     </script>
 </body>
