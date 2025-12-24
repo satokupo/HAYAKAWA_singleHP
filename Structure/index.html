@@ -93,6 +93,11 @@
             margin: 0; padding: 0;
         }
 
+        /* セクションのレイアウト透明化（hero以外） */
+        main > section:not(#hero) {
+            display: contents;
+        }
+
         /* --- レイアウト設定（変更非推奨） --- */
         .wrapper { display: flex; min-height: 100vh; }
         
@@ -131,20 +136,23 @@
             padding: 5rem;
             margin-bottom: 4rem;
             min-height: 80vh;
-            max-height: 90vh;
-            overflow-y: auto;
             box-shadow: 0 5px 20px rgba(0,0,0,0.05);
             display: flex; flex-direction: column;
             position: sticky; top: 2rem;
-
-            /* スクロールバー非表示 */
-            -ms-overflow-style: none;
-            scrollbar-width: none;
         }
 
-        /* Chrome, Safari */
-        .sticky-card::-webkit-scrollbar {
-            display: none;
+        /* スタッキングブロック共通 */
+        .stack-block {
+            background: var(--bg-section);
+            padding: 5rem;
+            margin-bottom: 4rem;
+            min-height: 80vh;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            border-top: 1px solid #eee;
+            /* top と z-index は JS で動的に設定 */
         }
 
         /* --- 各セクションの位置調整 --- */
@@ -158,44 +166,41 @@
             background-size: cover; background-position: center;
             color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.5);
         }
-        #menu { top: 3rem; z-index: 2; border-top: 1px solid #eee; }
-        #interior { top: 4rem; z-index: 3; border-top: 1px solid #eee; }
-        #owner { top: 5rem; z-index: 4; border-top: 1px solid #eee; }
-        #access {
-            top: 5.5rem; z-index: 5;
+
+        /* アクセスセクションのダークテーマ */
+        .stack-block[data-group="access"] {
             background: var(--color-text);
             color: #fff;
             border: none;
         }
 
-        /* アクセス内の要素の色調整 */
-        #access .card-header {
+        .stack-block[data-group="access"] .card-header {
             border-color: rgba(255, 255, 255, 0.3);
         }
 
-        #access h2 {
+        .stack-block[data-group="access"] h2 {
             color: #fff;
         }
 
-        #access dt {
+        .stack-block[data-group="access"] dt {
             color: rgba(255, 255, 255, 0.7);
         }
 
-        #access dd {
+        .stack-block[data-group="access"] dd {
             color: #fff;
         }
 
-        #access .access-note {
+        .stack-block[data-group="access"] .access-note {
             color: rgba(255, 255, 255, 0.7);
         }
 
-        #access .access-embed {
+        .stack-block[data-group="access"] .access-embed {
             background: rgba(255, 255, 255, 0.1);
             color: rgba(255, 255, 255, 0.7);
         }
 
         /* ボタンはアクセントカラーのまま */
-        #access .access-btn {
+        .stack-block[data-group="access"] .access-btn {
             background: var(--color-accent);
             color: #fff;
         }
@@ -387,43 +392,13 @@
             font-size: 0.9rem;
         }
 
-        /* ===== フッター ===== */
-        .site-footer {
-            background: var(--bg-section);
-            padding: 3rem 2rem;
+        /* ===== コピーライト ===== */
+        .copyright {
             text-align: center;
-            border-top: 1px solid #eee;
-        }
-
-        .footer-icons {
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .footer-icons a {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: var(--color-primary);
-            color: #fff;
-            text-decoration: none;
-            font-size: 1.25rem;
-        }
-
-        @media (hover: hover) {
-            .footer-icons a:hover {
-                background: var(--color-accent);
-            }
-        }
-
-        .footer-copy {
+            padding: 2rem;
             font-size: 0.75rem;
             color: var(--color-text-sub);
+            background: var(--bg-main);
         }
 
         /* ===== サイドバー GBPボタン ===== */
@@ -482,7 +457,8 @@
             }
             .sidebar-desc { margin-top: 2rem; margin-bottom: 2rem; }
             .main { padding: 2rem; width: 100%; box-sizing: border-box; }
-            .sticky-card {
+            .sticky-card,
+            .stack-block {
                 padding: 2rem;
                 top: auto !important; position: relative !important;
                 max-height: none; overflow-y: visible;
@@ -518,71 +494,94 @@
                 </div>
             </section>
 
-            <section id="menu" class="sticky-card">
-                <div class="card-header">
-                    <span class="card-label">01 / Menu</span>
+            <section id="menu" aria-label="メニュー">
+                <div class="stack-block" data-group="menu" data-index="0">
+                    <div class="card-header">
+                        <span class="card-label">01 / Menu</span>
+                    </div>
+                    <div class="card-body">
+                        <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">メニュー</h2>
+                        <div class="menu-grid" data-menu-block="0"></div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">メニュー</h2>
-                    <div id="menu-grid" class="menu-grid"></div>
-                    <p class="menu-note">テイクアウトもできます</p>
-                </div>
-            </section>
-
-            <section id="interior" class="sticky-card">
-                <div class="card-header">
-                    <span class="card-label">02 / Interior</span>
-                </div>
-                <div class="card-body">
-                    <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">店内</h2>
-                    <div id="interior-gallery" class="interior-gallery"></div>
+                <div class="stack-block" data-group="menu" data-index="1">
+                    <div class="card-body">
+                        <div class="menu-grid" data-menu-block="1"></div>
+                        <p class="menu-note">テイクアウトもできます</p>
+                    </div>
                 </div>
             </section>
 
-            <section id="owner" class="sticky-card">
-                <div class="card-header">
-                    <span class="card-label">03 / Owner</span>
+            <section id="interior" aria-label="店内雰囲気">
+                <div class="stack-block" data-group="interior" data-index="0">
+                    <div class="card-header">
+                        <span class="card-label">02 / Interior</span>
+                    </div>
+                    <div class="card-body">
+                        <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">店内</h2>
+                        <div class="interior-gallery" data-interior-block="0"></div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">店主について</h2>
-                    <div class="owner-container">
-                        <div class="owner-photo">
-                            <img id="owner-img" src="" alt="店主" loading="lazy">
-                        </div>
-                        <div class="owner-profile">
-                            <p id="owner-name" class="owner-name"></p>
-                            <p id="owner-text" class="owner-text"></p>
+                <div class="stack-block" data-group="interior" data-index="1">
+                    <div class="card-body">
+                        <div class="interior-gallery" data-interior-block="1"></div>
+                    </div>
+                </div>
+                <div class="stack-block" data-group="interior" data-index="2">
+                    <div class="card-body">
+                        <div class="interior-gallery" data-interior-block="2"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="owner" aria-label="店主紹介">
+                <div class="stack-block" data-group="owner" data-index="0">
+                    <div class="card-header">
+                        <span class="card-label">03 / Owner</span>
+                    </div>
+                    <div class="card-body">
+                        <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">店主について</h2>
+                        <div class="owner-container">
+                            <div class="owner-photo">
+                                <img id="owner-img" src="" alt="店主" loading="lazy">
+                            </div>
+                            <div class="owner-profile">
+                                <p id="owner-name" class="owner-name"></p>
+                                <p id="owner-text" class="owner-text"></p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <section id="access" class="sticky-card">
-                <div class="card-header">
-                    <span class="card-label">04 / Access</span>
-                </div>
-                <div class="card-body">
-                    <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">アクセス</h2>
-                    <div class="access-container">
-                        <div class="access-info">
-                            <dl>
-                                <dt>住所</dt>
-                                <dd id="access-address"></dd>
+            <section id="access" aria-label="アクセス">
+                <div class="stack-block" data-group="access" data-index="0">
+                    <div class="card-header">
+                        <span class="card-label">04 / Access</span>
+                    </div>
+                    <div class="card-body">
+                        <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">アクセス</h2>
+                        <div class="access-container">
+                            <div class="access-info">
+                                <dl>
+                                    <dt>住所</dt>
+                                    <dd id="access-address"></dd>
 
-                                <dt>駐車場</dt>
-                                <dd id="access-parking"></dd>
+                                    <dt>駐車場</dt>
+                                    <dd id="access-parking"></dd>
 
-                                <dt>営業日</dt>
-                                <dd id="access-hours"></dd>
-                            </dl>
-                            <p class="access-note">※最新の営業情報はGoogleビジネスプロフィールをご確認ください</p>
-                            <a id="access-map-link" class="access-btn" href="#" target="_blank" rel="noopener noreferrer">
-                                Googleマップで見る
-                            </a>
-                        </div>
-                        <div class="access-embed" id="access-embed">
-                            <!-- SNS埋め込みエリア（後で設定） -->
-                            <span>営業日カレンダー（準備中）</span>
+                                    <dt>営業日</dt>
+                                    <dd id="access-hours"></dd>
+                                </dl>
+                                <p class="access-note">※最新の営業情報はGoogleビジネスプロフィールをご確認ください</p>
+                                <a id="access-map-link" class="access-btn" href="#" target="_blank" rel="noopener noreferrer">
+                                    Googleマップで見る
+                                </a>
+                            </div>
+                            <div class="access-embed" id="access-embed">
+                                <!-- SNS埋め込みエリア（後で設定） -->
+                                <span>営業日カレンダー（準備中）</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -590,26 +589,7 @@
         </main>
     </div>
 
-    <footer class="site-footer">
-        <div class="footer-icons">
-            <a id="footer-instagram" href="#" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-                <!-- Instagram SVGアイコン -->
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                </svg>
-            </a>
-            <a id="footer-gbp" href="#" target="_blank" rel="noopener noreferrer" aria-label="Google">
-                <!-- Google SVGアイコン -->
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                </svg>
-            </a>
-        </div>
-        <p class="footer-copy">&copy; 2025 HAYAKAWA餃子</p>
-    </footer>
+    <p class="copyright">&copy; 2025 HAYAKAWA餃子</p>
 
     <script>
         // ===============================================
@@ -688,31 +668,38 @@
             document.getElementById('hero-copy').textContent = config.heroCopy;
 
             // ----- メニュー -----
-            const menuGrid = document.getElementById('menu-grid');
-            if (menuGrid) {
-                config.menuItems.forEach(item => {
-                    const div = document.createElement('div');
-                    div.className = 'menu-item';
-                    div.innerHTML = `
-                        <img src="${item.image}" alt="${item.name}" class="menu-img" loading="lazy" width="300" height="300">
-                        <span class="menu-name">${item.name}</span>
-                        <span class="menu-price">${item.price}</span>
-                    `;
-                    menuGrid.appendChild(div);
+            const menuBlocks = document.querySelectorAll('[data-menu-block]');
+            if (menuBlocks.length > 0) {
+                config.menuItems.forEach((item, index) => {
+                    const blockIndex = Math.floor(index / 2); // 2個ずつ
+                    const targetBlock = menuBlocks[blockIndex];
+                    if (targetBlock) {
+                        const div = document.createElement('div');
+                        div.className = 'menu-item';
+                        div.innerHTML = `
+                            <img src="${item.image}" alt="${item.name}" class="menu-img" loading="lazy" width="300" height="300">
+                            <span class="menu-name">${item.name}</span>
+                            <span class="menu-price">${item.price}</span>
+                        `;
+                        targetBlock.appendChild(div);
+                    }
                 });
             }
 
             // ----- 店内雰囲気 -----
-            const interiorGallery = document.getElementById('interior-gallery');
-            if (interiorGallery && config.interiorItems) {
+            const interiorBlocks = document.querySelectorAll('[data-interior-block]');
+            if (interiorBlocks.length > 0 && config.interiorItems) {
                 config.interiorItems.forEach((item, index) => {
-                    const div = document.createElement('div');
-                    div.className = 'interior-item';
-                    div.innerHTML = `
-                        <img src="${item.image}" alt="店内の様子 ${index + 1}" class="interior-img" loading="lazy">
-                        <p class="interior-caption">${item.caption}</p>
-                    `;
-                    interiorGallery.appendChild(div);
+                    const targetBlock = interiorBlocks[index]; // 1個ずつ
+                    if (targetBlock) {
+                        const div = document.createElement('div');
+                        div.className = 'interior-item';
+                        div.innerHTML = `
+                            <img src="${item.image}" alt="店内の様子 ${index + 1}" class="interior-img" loading="lazy">
+                            <p class="interior-caption">${item.caption}</p>
+                        `;
+                        targetBlock.appendChild(div);
+                    }
                 });
             }
 
@@ -730,56 +717,28 @@
             document.getElementById('access-hours').textContent = config.regularHours;
             document.getElementById('access-map-link').href = config.mapUrl;
 
-            // ----- フッター -----
-            document.getElementById('footer-instagram').href = config.instagramUrl;
-            document.getElementById('footer-gbp').href = config.gbpUrl;
-        });
+            // ----- スタッキング位置の計算 -----
+            const blocks = document.querySelectorAll('.stack-block');
+            const baseTop = 32;      // 初期top値（px）= 2rem相当
+            const groupOffset = 16;  // グループ間のズレ幅（px）= 1rem相当
 
-        // ===============================================
-        //  セクション内スクロールの伝播制御
-        // ===============================================
-        document.querySelectorAll('.sticky-card').forEach(section => {
-            // ヒーローは対象外
-            if (section.id === 'hero') return;
+            let currentTop = baseTop;
+            let currentZIndex = 2;   // heroが1なので2から開始
 
-            // Wheel イベント（PC）
-            section.addEventListener('wheel', (e) => {
-                const atTop = section.scrollTop === 0;
-                const atBottom = section.scrollTop + section.clientHeight >= section.scrollHeight - 1;
+            blocks.forEach((block) => {
+                const indexInGroup = parseInt(block.dataset.index, 10);
 
-                // 最上部で上スクロール、または最下部で下スクロールなら親に伝播
-                if ((atTop && e.deltaY < 0) || (atBottom && e.deltaY > 0)) {
-                    // デフォルト動作（親へ伝播）を許可
-                    return;
+                if (indexInGroup === 0) {
+                    // グループの先頭ブロック → ズレを加算
+                    currentTop += groupOffset;
                 }
+                // グループ内の2番目以降 → currentTopはそのまま
 
-                // それ以外はセクション内スクロール
-                e.stopPropagation();
-            }, { passive: true });
+                block.style.top = `${currentTop}px`;
+                block.style.zIndex = currentZIndex;
 
-            // Touch イベント（スマホ）
-            let touchStartY = 0;
-
-            section.addEventListener('touchstart', (e) => {
-                touchStartY = e.touches[0].clientY;
-            }, { passive: true });
-
-            section.addEventListener('touchmove', (e) => {
-                const touchY = e.touches[0].clientY;
-                const deltaY = touchStartY - touchY; // 正: 下スクロール、負: 上スクロール
-
-                const atTop = section.scrollTop === 0;
-                const atBottom = section.scrollTop + section.clientHeight >= section.scrollHeight - 1;
-
-                // 最上部で上スクロール、または最下部で下スクロールなら親に伝播
-                if ((atTop && deltaY < 0) || (atBottom && deltaY > 0)) {
-                    return;
-                }
-
-                // それ以外はセクション内スクロール（伝播を止める必要がある場合）
-                // ただし passive: true なので preventDefault は使えない
-                // 伝播制御は stopPropagation で行う
-            }, { passive: true });
+                currentZIndex++;
+            });
         });
     </script>
 </body>

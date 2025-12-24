@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>スタッキングサンプル - display: contents版</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      background: #1a1a1a;
+      color: #fff;
+    }
+
+    /* ヒーローセクション */
+    .hero {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      text-align: center;
+    }
+
+    /* メインコンテナ */
+    main {
+      position: relative;
+    }
+
+    /* セクション - セマンティック用、レイアウトには影響しない */
+    section {
+      display: contents;
+    }
+
+    /* スタッキング対象のブロック */
+    .stack-block {
+      position: sticky;
+      min-height: 100vh;
+      padding: 4rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      border-radius: 1rem 1rem 0 0;
+      box-shadow: 0 -10px 30px rgba(0oonoo,0,0,0.3);
+    }
+
+    .stack-block h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .stack-block p {
+      font-size: 1.2rem;
+      opacity: 0.8;
+      max-width: 600px;
+      text-align: center;
+    }
+
+    /* グループラベル（デバッグ用） */
+    .group-label {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      background: rgba(255,255,255,0.2);
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+    }
+
+    /* 色分け */
+    .stack-block[data-group="menu"] {
+      background: #2d3748;
+    }
+    .stack-block[data-group="menu"][data-index="0"] {
+      background: #2d3748;
+    }
+    .stack-block[data-group="menu"][data-index="1"] {
+      background: #3d4758;
+    }
+    .stack-block[data-group="menu"][data-index="2"] {
+      background: #4d5768;
+    }
+
+    .stack-block[data-group="atmosphere"] {
+      background: #553c9a;
+    }
+    .stack-block[data-group="atmosphere"][data-index="0"] {
+      background: #553c9a;
+    }
+    .stack-block[data-group="atmosphere"][data-index="1"] {
+      background: #654caa;
+    }
+
+    .stack-block[data-group="access"] {
+      background: #276749;
+    }
+
+    .stack-block[data-group="contact"] {
+      background: #c05621;
+    }
+
+    /* フッター */
+    footer {
+      height: 50vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #000;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="hero">
+    <h1>スタッキングデモ<br>↓ スクロールしてください</h1>
+  </div>
+
+  <main>
+    <!-- メニューセクション（3ブロック） -->
+    <section aria-label="メニュー">
+      <div class="stack-block" data-group="menu" data-index="0">
+        <span class="group-label">メニュー A（グループ先頭）</span>
+        <h2>メニュー A</h2>
+        <p>グループの最初のブロック。通常のズレでスタックします。</p>
+      </div>
+      <div class="stack-block" data-group="menu" data-index="1">
+        <span class="group-label">メニュー B（グループ内）</span>
+        <h2>メニュー B</h2>
+        <p>グループ内2番目。Aと同じ位置でスタック（追加ズレなし）。</p>
+      </div>
+      <div class="stack-block" data-group="menu" data-index="2">
+        <span class="group-label">メニュー C（グループ内）</span>
+        <h2>メニュー C</h2>
+        <p>グループ内3番目。Aと同じ位置でスタック（追加ズレなし）。</p>
+      </div>
+    </section>
+
+    <!-- 雰囲気セクション（2ブロック） -->
+    <section aria-label="店内雰囲気">
+      <div class="stack-block" data-group="atmosphere" data-index="0">
+        <span class="group-label">雰囲気 A（グループ先頭）</span>
+        <h2>店内雰囲気 A</h2>
+        <p>新しいグループの先頭。前のグループからズレてスタック。</p>
+      </div>
+      <div class="stack-block" data-group="atmosphere" data-index="1">
+        <span class="group-label">雰囲気 B（グループ内）</span>
+        <h2>店内雰囲気 B</h2>
+        <p>グループ内2番目。Aと同じ位置でスタック。</p>
+      </div>
+    </section>
+
+    <!-- アクセスセクション（1ブロック） -->
+    <section aria-label="アクセス">
+      <div class="stack-block" data-group="access" data-index="0">
+        <span class="group-label">アクセス（単独セクション）</span>
+        <h2>アクセス</h2>
+        <p>単独ブロックのセクション。通常のズレでスタック。</p>
+      </div>
+    </section>
+
+    <!-- お問い合わせセクション（1ブロック） -->
+    <section aria-label="お問い合わせ">
+      <div class="stack-block" data-group="contact" data-index="0">
+        <span class="group-label">お問い合わせ（単独セクション）</span>
+        <h2>お問い合わせ</h2>
+        <p>最後のセクション。通常のズレでスタック。</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>フッター</p>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const blocks = document.querySelectorAll('.stack-block');
+      const baseOffset = 20; // グループ間のズレ幅（px）
+      
+      let currentTop = 0;
+      let lastGroup = null;
+
+      blocks.forEach((block, i) => {
+        const group = block.dataset.group;
+        const indexInGroup = parseInt(block.dataset.index, 10);
+
+        if (indexInGroup === 0) {
+          // グループの先頭ブロック → 通常のズレを加算
+          currentTop += baseOffset;
+        }
+        // グループ内の2番目以降 → currentTopはそのまま（ズレを加算しない）
+
+        block.style.top = `${currentTop}px`;
+        
+        // デバッグ用：top値を表示
+        console.log(`${group}-${indexInGroup}: top = ${currentTop}px`);
+
+        lastGroup = group;
+      });
+    });
+  </script>
+
+</body>
+</html>
