@@ -145,14 +145,35 @@
         .stack-block {
             background: var(--bg-section);
             padding: 5rem;
+            padding-top: 3rem; /* タイトル分離により上部余白を調整 */
             margin-bottom: 4rem;
-            min-height: 80vh;
+            min-height: 60vh; /* 80vh → 60vh に変更 */
             box-shadow: 0 5px 20px rgba(0,0,0,0.05);
             display: flex;
             flex-direction: column;
             position: sticky;
             border-top: 1px solid #eee;
             /* top と z-index は JS で動的に設定 */
+        }
+
+        /* セクションヘッダー（スタッキング対象外） */
+        .section-header {
+            background: var(--bg-section);
+            padding: 5rem;
+            padding-bottom: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            position: sticky;
+            z-index: var(--z-sticky);
+            /* top は JS で設定 */
+        }
+
+        .section-header .card-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+            margin: 0;
         }
 
         /* --- 各セクションの位置調整 --- */
@@ -456,15 +477,33 @@
                 padding: 2rem; padding-bottom: 0;
             }
             .sidebar-desc { margin-top: 2rem; margin-bottom: 2rem; }
-            .main { padding: 2rem; width: 100%; box-sizing: border-box; }
-            .sticky-card,
-            .stack-block {
+            .main { padding: 1rem; width: 100%; box-sizing: border-box; }
+
+            /* hero のみスタッキング解除 */
+            .sticky-card {
                 padding: 2rem;
                 top: auto !important; position: relative !important;
                 max-height: none; overflow-y: visible;
-                margin-top: 0 !important; margin-bottom: 2rem !important;
+                margin-top: 0 !important; margin-bottom: 1rem !important;
                 width: 100%; box-sizing: border-box;
             }
+
+            /* section-header: スタッキング維持 */
+            .section-header {
+                padding: 2rem;
+                padding-bottom: 1rem;
+                /* top, position はJSで設定されるため !important なし */
+            }
+
+            /* stack-block: スタッキング維持、余白調整 */
+            .stack-block {
+                padding: 2rem;
+                min-height: auto;
+                margin-bottom: 1rem;
+                width: 100%; box-sizing: border-box;
+                /* top, position, z-index はJSで設定されるため上書きしない */
+            }
+
             .hero-title { font-size: 2.5rem; word-break: break-all; }
             #hero { min-height: 50vh; }
         }
@@ -495,12 +534,14 @@
             </section>
 
             <section id="menu" aria-label="メニュー">
-                <div class="stack-block" data-group="menu" data-index="0">
+                <div class="section-header" data-group="menu" data-role="header">
                     <div class="card-header">
                         <span class="card-label">01 / Menu</span>
                     </div>
+                    <h2>メニュー</h2>
+                </div>
+                <div class="stack-block" data-group="menu" data-index="0">
                     <div class="card-body">
-                        <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">メニュー</h2>
                         <div class="menu-grid" data-menu-block="0"></div>
                     </div>
                 </div>
@@ -513,12 +554,14 @@
             </section>
 
             <section id="interior" aria-label="店内雰囲気">
-                <div class="stack-block" data-group="interior" data-index="0">
+                <div class="section-header" data-group="interior" data-role="header">
                     <div class="card-header">
                         <span class="card-label">02 / Interior</span>
                     </div>
+                    <h2>店内</h2>
+                </div>
+                <div class="stack-block" data-group="interior" data-index="0">
                     <div class="card-body">
-                        <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">店内</h2>
                         <div class="interior-gallery" data-interior-block="0"></div>
                     </div>
                 </div>
@@ -603,38 +646,38 @@
             // ヒーロー
             heroTitle: "HAYAKAWA餃子",
             heroCopy: "今日も、ていねいに包んでいます。",
-            heroImage: "image/main.jpg",
+            heroImage: "image/main",  // 拡張子なし
 
             // 営業情報（サイドバー用）
             businessHours: "営業日：月・水・金・土\n11:00〜15:00（売り切れ次第終了）",
 
-            // メニュー（既存画像を流用）
+            // メニュー
             menuItems: [
-                { name: "焼き餃子", price: "600円〜", image: "image/image1.jpg" },
-                { name: "水餃子", price: "600円〜", image: "image/image2.jpg" },
-                { name: "ランチセット", price: "900円", image: "image/image3.jpg" },
-                { name: "お持ち帰り", price: "600円〜", image: "image/image4.jpg" }
+                { name: "焼き餃子", price: "600円〜", image: "image/menu-1" },
+                { name: "水餃子", price: "600円〜", image: "image/menu-2" },
+                { name: "ランチセット", price: "900円", image: "image/menu-3" },
+                { name: "お持ち帰り", price: "600円〜", image: "image/menu-4" }
             ],
 
-            // 店内雰囲気（既存画像を流用）
+            // 店内雰囲気
             interiorItems: [
                 {
-                    image: "image/image1.jpg",
+                    image: "image/interior-1",
                     caption: "モルタルの壁と白木のカウンター。"
                 },
                 {
-                    image: "image/image2.jpg",
+                    image: "image/interior-2",
                     caption: "小さいけれど、ゆっくりくつろげる空間です。"
                 },
                 {
-                    image: "image/image3.jpg",
+                    image: "image/interior-3",
                     caption: "お子さま用のチェアもご用意しています。"
                 }
             ],
 
-            // オーナー紹介（既存画像を流用）
+            // オーナー紹介
             ownerName: "店主",
-            ownerImage: "image/image2.jpg",
+            ownerImage: "image/owner-1",
             ownerProfile: "東京の餃子専門店で修行を積んだあと、地元・飯田でこのお店を開きました。\n女性やお子さんが気軽に入れるお店を作りたい、そんな想いでやっています。\nカウンター越しにお話しできるのを楽しみにしています。",
 
             // アクセス
@@ -653,6 +696,53 @@
         // ===============================================
 
         document.addEventListener('DOMContentLoaded', () => {
+            // ========================================
+            // 画像拡張子フォールバック
+            // ========================================
+            const imageExtensions = ['webp', 'png', 'jpg'];
+
+            /**
+             * 画像の存在チェックを行い、最初に見つかった拡張子のパスを返す
+             * @param {string} basePath - 拡張子なしの画像パス
+             * @returns {Promise<string>} - 見つかった画像のフルパス
+             */
+            function resolveImagePath(basePath) {
+                return new Promise((resolve) => {
+                    let index = 0;
+
+                    function tryNext() {
+                        if (index >= imageExtensions.length) {
+                            // 全部失敗 → 最後の拡張子でフォールバック
+                            resolve(`${basePath}.${imageExtensions[imageExtensions.length - 1]}`);
+                            return;
+                        }
+
+                        const ext = imageExtensions[index];
+                        const fullPath = `${basePath}.${ext}`;
+                        const img = new Image();
+
+                        img.onload = () => resolve(fullPath);
+                        img.onerror = () => {
+                            index++;
+                            tryNext();
+                        };
+
+                        img.src = fullPath;
+                    }
+
+                    tryNext();
+                });
+            }
+
+            /**
+             * 複数の画像パスを一括で解決
+             * @param {string[]} basePaths - 拡張子なしの画像パス配列
+             * @returns {Promise<string[]>} - 解決済みパス配列
+             */
+            function resolveImagePaths(basePaths) {
+                return Promise.all(basePaths.map(p => resolveImagePath(p)));
+            }
+
             // ----- サイドバー -----
             document.getElementById('brand-logo').textContent = config.name;
             document.getElementById('sidebar-desc').textContent = config.tagline;
@@ -662,7 +752,9 @@
             // ----- ヒーロー -----
             const heroSection = document.getElementById('hero');
             if (heroSection) {
-                heroSection.style.backgroundImage = `url('${config.heroImage}')`;
+                resolveImagePath(config.heroImage).then(path => {
+                    heroSection.style.backgroundImage = `url('${path}')`;
+                });
             }
             document.getElementById('hero-title').textContent = config.heroTitle;
             document.getElementById('hero-copy').textContent = config.heroCopy;
@@ -670,43 +762,53 @@
             // ----- メニュー -----
             const menuBlocks = document.querySelectorAll('[data-menu-block]');
             if (menuBlocks.length > 0) {
-                config.menuItems.forEach((item, index) => {
-                    const blockIndex = Math.floor(index / 2); // 2個ずつ
-                    const targetBlock = menuBlocks[blockIndex];
-                    if (targetBlock) {
-                        const div = document.createElement('div');
-                        div.className = 'menu-item';
-                        div.innerHTML = `
-                            <img src="${item.image}" alt="${item.name}" class="menu-img" loading="lazy" width="300" height="300">
-                            <span class="menu-name">${item.name}</span>
-                            <span class="menu-price">${item.price}</span>
-                        `;
-                        targetBlock.appendChild(div);
-                    }
+                const menuImagePaths = config.menuItems.map(item => item.image);
+
+                resolveImagePaths(menuImagePaths).then(resolvedPaths => {
+                    config.menuItems.forEach((item, index) => {
+                        const blockIndex = Math.floor(index / 2); // 2個ずつ
+                        const targetBlock = menuBlocks[blockIndex];
+                        if (targetBlock) {
+                            const div = document.createElement('div');
+                            div.className = 'menu-item';
+                            div.innerHTML = `
+                                <img src="${resolvedPaths[index]}" alt="${item.name}" class="menu-img" loading="lazy" width="300" height="300">
+                                <span class="menu-name">${item.name}</span>
+                                <span class="menu-price">${item.price}</span>
+                            `;
+                            targetBlock.appendChild(div);
+                        }
+                    });
                 });
             }
 
             // ----- 店内雰囲気 -----
             const interiorBlocks = document.querySelectorAll('[data-interior-block]');
             if (interiorBlocks.length > 0 && config.interiorItems) {
-                config.interiorItems.forEach((item, index) => {
-                    const targetBlock = interiorBlocks[index]; // 1個ずつ
-                    if (targetBlock) {
-                        const div = document.createElement('div');
-                        div.className = 'interior-item';
-                        div.innerHTML = `
-                            <img src="${item.image}" alt="店内の様子 ${index + 1}" class="interior-img" loading="lazy">
-                            <p class="interior-caption">${item.caption}</p>
-                        `;
-                        targetBlock.appendChild(div);
-                    }
+                const interiorImagePaths = config.interiorItems.map(item => item.image);
+
+                resolveImagePaths(interiorImagePaths).then(resolvedPaths => {
+                    config.interiorItems.forEach((item, index) => {
+                        const targetBlock = interiorBlocks[index]; // 1個ずつ
+                        if (targetBlock) {
+                            const div = document.createElement('div');
+                            div.className = 'interior-item';
+                            div.innerHTML = `
+                                <img src="${resolvedPaths[index]}" alt="店内の様子 ${index + 1}" class="interior-img" loading="lazy">
+                                <p class="interior-caption">${item.caption}</p>
+                            `;
+                            targetBlock.appendChild(div);
+                        }
+                    });
                 });
             }
 
             // ----- オーナー -----
             const ownerImg = document.getElementById('owner-img');
             if (ownerImg) {
-                ownerImg.src = config.ownerImage;
+                resolveImagePath(config.ownerImage).then(path => {
+                    ownerImg.src = path;
+                });
             }
             document.getElementById('owner-name').textContent = config.ownerName;
             document.getElementById('owner-text').textContent = config.ownerProfile;
@@ -718,6 +820,7 @@
             document.getElementById('access-map-link').href = config.mapUrl;
 
             // ----- スタッキング位置の計算 -----
+            const headers = document.querySelectorAll('.section-header');
             const blocks = document.querySelectorAll('.stack-block');
             const baseTop = 32;      // 初期top値（px）= 2rem相当
             const groupOffset = 16;  // グループ間のズレ幅（px）= 1rem相当
@@ -725,12 +828,39 @@
             let currentTop = baseTop;
             let currentZIndex = 2;   // heroが1なので2から開始
 
+            // グループごとのヘッダー高さを記録
+            const headerHeights = {};
+
+            // 1. section-header の位置設定と高さ取得
+            headers.forEach((header) => {
+                const group = header.dataset.group;
+                currentTop += groupOffset;
+
+                header.style.top = `${currentTop}px`;
+                header.style.zIndex = currentZIndex;
+                currentZIndex++;
+
+                // ヘッダーの高さを記録
+                headerHeights[group] = header.offsetHeight;
+            });
+
+            // 2. stack-block の位置設定（ヘッダー高さを考慮）
+            let lastGroup = null;
+
             blocks.forEach((block) => {
+                const group = block.dataset.group;
                 const indexInGroup = parseInt(block.dataset.index, 10);
 
-                if (indexInGroup === 0) {
-                    // グループの先頭ブロック → ズレを加算
-                    currentTop += groupOffset;
+                // 新しいグループの開始時
+                if (group !== lastGroup) {
+                    // ヘッダーがあるグループの場合、ヘッダー高さ分を加算
+                    if (headerHeights[group]) {
+                        currentTop += groupOffset + headerHeights[group];
+                    } else {
+                        // ヘッダーがないグループ（owner, access）
+                        currentTop += groupOffset;
+                    }
+                    lastGroup = group;
                 }
                 // グループ内の2番目以降 → currentTopはそのまま
 
