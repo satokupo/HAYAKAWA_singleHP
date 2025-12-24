@@ -791,6 +791,7 @@
             const blocks = document.querySelectorAll('.stack-block');
             const baseTop = 32;      // 初期top値（px）= 2rem相当
             const groupOffset = 16;  // グループ間のズレ幅（px）= 1rem相当
+            const followingOffset = 120; // h2タイトルを避けるためのオフセット（px）
 
             let currentTop = baseTop;
             let currentZIndex = 2;   // heroが1なので2から開始
@@ -801,10 +802,17 @@
                 if (indexInGroup === 0) {
                     // グループの先頭ブロック → ズレを加算
                     currentTop += groupOffset;
+                } else {
+                    // 2番目以降は .following クラスを付与
+                    block.classList.add('following');
                 }
-                // グループ内の2番目以降 → currentTopはそのまま
 
-                block.style.top = `${currentTop}px`;
+                // following ブロックは停止位置を下げる
+                const topValue = block.classList.contains('following')
+                    ? currentTop + followingOffset
+                    : currentTop;
+
+                block.style.top = `${topValue}px`;
                 block.style.zIndex = currentZIndex;
 
                 currentZIndex++;
