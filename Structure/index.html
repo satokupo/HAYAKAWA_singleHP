@@ -99,13 +99,17 @@
         }
 
         /* --- レイアウト設定（変更非推奨） --- */
-        .wrapper { display: flex; min-height: 100vh; }
+        .wrapper {
+            display: flex;
+            min-height: 100vh;
+            max-width: 1200px;
+            margin: 0 auto; }
         
         /* 左サイドバー */
         .sidebar {
-            width: 350px; height: 100vh;
+            width: 300px; height: 100vh;
             position: sticky; top: 0;
-            padding: 4rem; box-sizing: border-box;
+            padding: 4rem 2rem; box-sizing: border-box;
             display: flex; flex-direction: column; justify-content: space-between;
             z-index: var(--z-sidebar);
         }
@@ -124,8 +128,8 @@
         /* 右メインコンテンツエリア */
         .main {
             flex: 1;
-            padding: 4rem;
-            max-width: 1200px;
+            padding: 4rem 2rem;
+            max-width: 900px;
             container-type: inline-size;
             container-name: main-content;
         }
@@ -153,6 +157,15 @@
             position: sticky;
             border-top: 1px solid #eee;
             /* top と z-index は JS で動的に設定 */
+        }
+
+        /* following ブロック: 上端のボーダーとシャドウを解除 */
+        .stack-block.following {
+            border-top: none;
+            box-shadow: none;
+        }
+        .stack-block.endblock{
+            margin-bottom: 0;
         }
 
         /* --- 各セクションの位置調整 --- */
@@ -220,8 +233,8 @@
             display: flex; justify-content: space-between; margin-bottom: 3rem;
             border-bottom: 2px solid currentColor; padding-bottom: 1rem;
         }
-        .card-label { font-weight: 800; text-transform: uppercase; font-size: 0.9rem; }
-        .card-body p { font-size: 1.1rem; line-height: 2; opacity: 0.9; max-width: 700px; }
+        .card-label { font-weight: 800; text-transform: uppercase; font-size: 0.9rem; margin: 0; }
+        .card-body p { font-size: 1.1rem; line-height: 2; opacity: 0.9; max-width: 500px; }
 
         /* ===== メニューセクション ===== */
         .menu-grid {
@@ -237,6 +250,7 @@
 
         .menu-img {
             width: 100%;
+            height: auto;
             aspect-ratio: 1 / 1;
             object-fit: cover;
             object-position: center;
@@ -278,6 +292,8 @@
 
         .interior-img {
             width: 100%;
+            height: auto;
+            max-height: 50vh;
             aspect-ratio: 16 / 9;
             object-fit: cover;
             object-position: center;
@@ -395,10 +411,9 @@
         /* ===== コピーライト ===== */
         .copyright {
             text-align: center;
-            padding: 2rem;
-            font-size: 0.75rem;
-            color: var(--color-text-sub);
-            background: var(--bg-main);
+            padding: 2rem 0 0;
+            margin-bottom: 0;
+            font-size: 0.75rem !important;
         }
 
         /* ===== サイドバー GBPボタン ===== */
@@ -420,8 +435,8 @@
             }
         }
 
-        /* ===== コンテナクエリ：メインカラム幅550px以下で1カラム化 ===== */
-        @container main-content (max-width: 550px) {
+        /* ===== コンテナクエリ：メインカラム幅500px以下で1カラム化 ===== */
+        @container main-content (max-width: 500px) {
             /* メニューグリッド */
             .menu-grid {
                 grid-template-columns: 1fr;
@@ -437,7 +452,10 @@
             .owner-photo {
                 max-width: 150px;
             }
+        }
 
+        /* ===== コンテナクエリ：アクセスセクション700px以下で1カラム化 ===== */
+        @container main-content (max-width: 700px) {
             /* アクセス */
             .access-container {
                 flex-direction: column;
@@ -508,10 +526,9 @@
             <section id="menu" aria-label="メニュー">
                 <div class="stack-block" data-group="menu" data-index="0">
                     <div class="card-header">
-                        <span class="card-label">01 / Menu</span>
+                        <h2 class="card-label">01 / Menu</h2>
                     </div>
                     <div class="card-body">
-                        <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">メニュー</h2>
                         <div class="menu-grid" data-menu-block="0"></div>
                     </div>
                 </div>
@@ -526,10 +543,9 @@
             <section id="interior" aria-label="店内雰囲気">
                 <div class="stack-block" data-group="interior" data-index="0">
                     <div class="card-header">
-                        <span class="card-label">02 / Interior</span>
+                        <h2 class="card-label">02 / Interior</h2>
                     </div>
                     <div class="card-body">
-                        <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">店内</h2>
                         <div class="interior-gallery" data-interior-block="0"></div>
                     </div>
                 </div>
@@ -548,10 +564,9 @@
             <section id="owner" aria-label="店主紹介">
                 <div class="stack-block" data-group="owner" data-index="0">
                     <div class="card-header">
-                        <span class="card-label">03 / Owner</span>
+                        <h2 class="card-label">03 / Owner</h2>
                     </div>
                     <div class="card-body">
-                        <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">店主について</h2>
                         <div class="owner-container">
                             <div class="owner-photo">
                                 <img id="owner-img" src="" alt="店主" loading="lazy">
@@ -566,12 +581,11 @@
             </section>
 
             <section id="access" aria-label="アクセス">
-                <div class="stack-block" data-group="access" data-index="0">
+                <div class="stack-block endblock" data-group="access" data-index="0">
                     <div class="card-header">
-                        <span class="card-label">04 / Access</span>
+                        <h2 class="card-label">04 / Access</h2>
                     </div>
                     <div class="card-body">
-                        <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">アクセス</h2>
                         <div class="access-container">
                             <div class="access-info">
                                 <dl>
@@ -594,13 +608,14 @@
                                 <span>営業日カレンダー（準備中）</span>
                             </div>
                         </div>
+                <p class="copyright">&copy; 2025 HAYAKAWA餃子</p>
                     </div>
                 </div>
             </section>
         </main>
     </div>
 
-    <p class="copyright">&copy; 2025 HAYAKAWA餃子</p>
+    
 
     <script>
         // ===============================================
