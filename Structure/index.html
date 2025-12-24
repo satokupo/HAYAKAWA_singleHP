@@ -145,35 +145,14 @@
         .stack-block {
             background: var(--bg-section);
             padding: 5rem;
-            padding-top: 3rem; /* タイトル分離により上部余白を調整 */
             margin-bottom: 4rem;
-            min-height: 60vh; /* 80vh → 60vh に変更 */
+            min-height: 80vh;
             box-shadow: 0 5px 20px rgba(0,0,0,0.05);
             display: flex;
             flex-direction: column;
             position: sticky;
             border-top: 1px solid #eee;
             /* top と z-index は JS で動的に設定 */
-        }
-
-        /* セクションヘッダー（スタッキング対象外） */
-        .section-header {
-            background: var(--bg-section);
-            padding: 5rem;
-            padding-bottom: 2rem;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-            position: sticky;
-            z-index: var(--z-sticky);
-            /* top は JS で設定 */
-        }
-
-        .section-header .card-header {
-            margin-bottom: 1.5rem;
-        }
-
-        .section-header h2 {
-            font-size: 1.5rem;
-            margin: 0;
         }
 
         /* --- 各セクションの位置調整 --- */
@@ -488,13 +467,6 @@
                 width: 100%; box-sizing: border-box;
             }
 
-            /* section-header: スタッキング維持 */
-            .section-header {
-                padding: 2rem;
-                padding-bottom: 1rem;
-                /* top, position はJSで設定されるため !important なし */
-            }
-
             /* stack-block: スタッキング維持、余白調整 */
             .stack-block {
                 padding: 2rem;
@@ -534,14 +506,12 @@
             </section>
 
             <section id="menu" aria-label="メニュー">
-                <div class="section-header" data-group="menu" data-role="header">
+                <div class="stack-block" data-group="menu" data-index="0">
                     <div class="card-header">
                         <span class="card-label">01 / Menu</span>
                     </div>
-                    <h2>メニュー</h2>
-                </div>
-                <div class="stack-block" data-group="menu" data-index="0">
                     <div class="card-body">
+                        <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">メニュー</h2>
                         <div class="menu-grid" data-menu-block="0"></div>
                     </div>
                 </div>
@@ -554,14 +524,12 @@
             </section>
 
             <section id="interior" aria-label="店内雰囲気">
-                <div class="section-header" data-group="interior" data-role="header">
+                <div class="stack-block" data-group="interior" data-index="0">
                     <div class="card-header">
                         <span class="card-label">02 / Interior</span>
                     </div>
-                    <h2>店内</h2>
-                </div>
-                <div class="stack-block" data-group="interior" data-index="0">
                     <div class="card-body">
+                        <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">店内</h2>
                         <div class="interior-gallery" data-interior-block="0"></div>
                     </div>
                 </div>
@@ -820,7 +788,6 @@
             document.getElementById('access-map-link').href = config.mapUrl;
 
             // ----- スタッキング位置の計算 -----
-            const headers = document.querySelectorAll('.section-header');
             const blocks = document.querySelectorAll('.stack-block');
             const baseTop = 32;      // 初期top値（px）= 2rem相当
             const groupOffset = 16;  // グループ間のズレ幅（px）= 1rem相当
@@ -828,39 +795,12 @@
             let currentTop = baseTop;
             let currentZIndex = 2;   // heroが1なので2から開始
 
-            // グループごとのヘッダー高さを記録
-            const headerHeights = {};
-
-            // 1. section-header の位置設定と高さ取得
-            headers.forEach((header) => {
-                const group = header.dataset.group;
-                currentTop += groupOffset;
-
-                header.style.top = `${currentTop}px`;
-                header.style.zIndex = currentZIndex;
-                currentZIndex++;
-
-                // ヘッダーの高さを記録
-                headerHeights[group] = header.offsetHeight;
-            });
-
-            // 2. stack-block の位置設定（ヘッダー高さを考慮）
-            let lastGroup = null;
-
             blocks.forEach((block) => {
-                const group = block.dataset.group;
                 const indexInGroup = parseInt(block.dataset.index, 10);
 
-                // 新しいグループの開始時
-                if (group !== lastGroup) {
-                    // ヘッダーがあるグループの場合、ヘッダー高さ分を加算
-                    if (headerHeights[group]) {
-                        currentTop += groupOffset + headerHeights[group];
-                    } else {
-                        // ヘッダーがないグループ（owner, access）
-                        currentTop += groupOffset;
-                    }
-                    lastGroup = group;
+                if (indexInGroup === 0) {
+                    // グループの先頭ブロック → ズレを加算
+                    currentTop += groupOffset;
                 }
                 // グループ内の2番目以降 → currentTopはそのまま
 
