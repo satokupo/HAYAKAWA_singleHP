@@ -153,6 +153,10 @@
             line-height: 1.8;
         }
 
+        #sidebar-hours {
+            white-space: pre-wrap;
+        }
+
         /* 右メインコンテンツエリア */
         .main {
             flex: 1;
@@ -843,7 +847,14 @@
             // ----- サイドバー -----
             document.getElementById('brand-logo').textContent = config.name;
             document.getElementById('sidebar-desc').textContent = config.tagline;
-            document.getElementById('sidebar-hours').textContent = config.businessHours;
+
+            // 営業情報の最初の行を太字に
+            const sidebarHours = document.getElementById('sidebar-hours');
+            const businessHoursHtml = config.businessHours.split('\n').map((line, index) =>
+                index === 0 ? `<strong>${line}</strong>` : line
+            ).join('<br>');
+            sidebarHours.innerHTML = businessHoursHtml;
+
             document.getElementById('sidebar-reservation-link').href = config.reservationUrl;
             document.getElementById('sidebar-gbp-link').href = config.gbpUrl;
 
