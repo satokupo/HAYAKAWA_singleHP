@@ -323,6 +323,14 @@
             margin-top: 0.25rem;
         }
 
+        .menu-item-note {
+            display: block;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--color-text-sub);
+            margin-top: 0.5rem;
+        }
+
         .menu-note {
             text-align: center;
             font-size: 0.9rem;
@@ -352,6 +360,14 @@
             background: #eee;
         }
 
+        .interior-img.middle {
+            object-position: center;
+        }
+
+        .interior-img.bottom {
+            object-position: center bottom;
+        }
+
         .interior-caption {
             font-size: 0.95rem;
             line-height: 1.8;
@@ -362,8 +378,10 @@
         /* ===== オーナー紹介セクション ===== */
         .owner-container {
             display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
             gap: 2rem;
-            align-items: flex-start;
             margin-top: 2rem;
         }
 
@@ -380,7 +398,9 @@
         }
 
         .owner-profile {
-            flex: 1;
+            max-width: 500px;
+            margin: 0 auto;
+            text-align: left;
         }
 
         .owner-name {
@@ -399,6 +419,7 @@
         /* ===== アクセスセクション ===== */
         .access-container {
             display: flex;
+            flex-direction: column;
             gap: 2rem;
             margin-top: 2rem;
         }
@@ -618,7 +639,7 @@
                 <div class="stack-block" data-group="menu" data-index="1">
                     <div class="card-body">
                         <div class="menu-grid" data-menu-block="1"></div>
-                        <p class="menu-note">テイクアウトもできます</p>
+                        <p class="menu-note">テイクアウトも対応しています</p>
                     </div>
                 </div>
             </section>
@@ -730,15 +751,18 @@
             interiorItems: [
                 {
                     image: "image/interior-1",
-                    caption: "モルタルの壁と白木のカウンター。"
+                    caption: "ちいさいけれど、ゆっくりくつろげる空間です。",
+                    position: "middle"
                 },
                 {
                     image: "image/interior-2",
-                    caption: "小さいけれど、ゆっくりくつろげる空間です。"
+                    caption: "ちょっと自慢の天然木カウンター",
+                    position: "middle"
                 },
                 {
                     image: "image/interior-3",
-                    caption: "お子さま用のチェアもご用意しています。"
+                    caption: "絵本、チャイルドシートもあります",
+                    position: "middle"
                 }
             ],
 
@@ -842,6 +866,7 @@
                                 <img src="${resolvedPaths[index]}" alt="${item.name}" class="menu-img" loading="lazy" width="300" height="300">
                                 <span class="menu-name">${item.name}</span>
                                 <span class="menu-price">${item.price}</span>
+                                <span class="menu-item-note">${item.note}</span>
                             `;
                             targetBlock.appendChild(div);
                         }
@@ -860,8 +885,9 @@
                         if (targetBlock) {
                             const div = document.createElement('div');
                             div.className = 'interior-item';
+                            const positionClass = item.position ? ` ${item.position}` : '';
                             div.innerHTML = `
-                                <img src="${resolvedPaths[index]}" alt="店内の様子 ${index + 1}" class="interior-img" loading="lazy">
+                                <img src="${resolvedPaths[index]}" alt="店内の様子 ${index + 1}" class="interior-img${positionClass}" loading="lazy">
                                 <p class="interior-caption">${item.caption}</p>
                             `;
                             targetBlock.appendChild(div);
