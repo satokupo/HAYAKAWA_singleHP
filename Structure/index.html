@@ -6,63 +6,66 @@
   © 2025 EYAN / トミナガハルキ
 -->
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <meta name="robots" content="index, follow">
-    
+
     <title>HAYAKAWA餃子 | 飯田市の手包み餃子専門店</title>
     <meta name="description" content="長野県飯田市のカウンター6席の小さな餃子屋。東京の餃子専門店で修行した店主が一つひとつ手包みでお作りしています。女性おひとりさま、お子さま連れも歓迎。">
 
     <script>
-/*
- * ========================================
- * PROJECT RULES - HAYAKAWA餃子
- * ========================================
- *
- * [トンマナ]
- * - キーワード: おしゃれ、かっこいい、落ち着き、親しみやすい
- * - イメージ: カフェのような餃子屋さん
- * - 避ける: 可愛い、がっつり系、中華の赤×金
- *
- * [カラーパレット] 案B・白のれん系
- * - --bg-main: #FAFAFA / 用途: ページ背景
- * - --bg-section: #FFFFFF / 用途: カード・セクション背景
- * - --color-primary: #6B6560 / 用途: 見出し・強調
- * - --color-accent: #D4A574 / 用途: ボタン・リンク
- * - --color-text: #2D2926 / 用途: 本文
- * - --color-text-sub: #9C9590 / 用途: 補助テキスト・注記
- *
- * [フォント]
- * - 日本語: Zen Kaku Gothic New (400, 500)
- * - 英字: Manrope (300, 400, 500)
- *
- * [サイト幅]
- * - メインエリア: 1200px
- * - コンテンツ幅: 900px（テンプレート準拠）
- *
- * [ブレークポイント]
- * - SP: ~899px
- * - PC: 900px~（2カラム構成のため）
- *
- * [z-index]
- * - --z-default: 1
- * - --z-sticky: 10
- * - --z-sidebar: 100
- * - --z-modal-overlay: 1000
- * - --z-modal-content: 1001
- *
- * [画像]
- * - 写真: webp推奨
- * - 命名: {セクションID}-{n}.webp
- * - ファーストビュー外: loading="lazy"
- *
- */
-</script>
+        /*
+         * ========================================
+         * PROJECT RULES - HAYAKAWA餃子
+         * ========================================
+         *
+         * [トンマナ]
+         * - キーワード: おしゃれ、かっこいい、落ち着き、親しみやすい
+         * - イメージ: カフェのような餃子屋さん
+         * - 避ける: 可愛い、がっつり系、中華の赤×金
+         *
+         * [カラーパレット] 案B・白のれん系
+         * - --bg-main: #FAFAFA / 用途: ページ背景
+         * - --bg-section: #FFFFFF / 用途: カード・セクション背景
+         * - --color-primary: #6B6560 / 用途: 見出し・強調
+         * - --color-accent: #D4A574 / 用途: ボタン・リンク
+         * - --color-text: #2D2926 / 用途: 本文
+         * - --color-text-sub: #9C9590 / 用途: 補助テキスト・注記
+         *
+         * [フォント]
+         * - 日本語: Zen Kaku Gothic New (400, 500)
+         * - 英字: Manrope (300, 400, 500)
+         *
+         * [サイト幅]
+         * - メインエリア: 1200px
+         * - コンテンツ幅: 900px（テンプレート準拠）
+         *
+         * [ブレークポイント]
+         * - SP: ~899px
+         * - PC: 900px~（2カラム構成のため）
+         *
+         * [z-index]
+         * - --z-default: 1
+         * - --z-sticky: 10
+         * - --z-sidebar: 100
+         * - --z-modal-overlay: 1000
+         * - --z-modal-content: 1001
+         *
+         * [画像]
+         * - 写真: webp推奨
+         * - 命名: {セクションID}-{n}.webp
+         * - ファーストビュー外: loading="lazy"
+         *
+         */
+    </script>
 
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500&family=Zen+Kaku+Gothic+New:wght@400;500&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500&family=Zen+Kaku+Gothic+New:wght@400;500&display=swap"
+        rel="stylesheet">
+
     <style>
         /* =========================================
            基本設定 (配色などを変更したい場合はここ)
@@ -84,17 +87,20 @@
             --z-modal-content: 1001;
         }
 
-        html { scroll-behavior: smooth; }
+        html {
+            scroll-behavior: smooth;
+        }
 
         body {
             background-color: var(--bg-main);
             color: var(--color-text);
             font-family: 'Zen Kaku Gothic New', sans-serif;
-            margin: 0; padding: 0;
+            margin: 0;
+            padding: 0;
         }
 
         /* セクションのレイアウト透明化（hero以外） */
-        main > section:not(#hero) {
+        main>section:not(#hero) {
             display: contents;
         }
 
@@ -103,27 +109,43 @@
             display: flex;
             min-height: 100vh;
             max-width: 1200px;
-            margin: 0 auto; }
-        
-        /* 左サイドバー */
-        .sidebar {
-            width: 300px; height: 100vh;
-            position: sticky; top: 0;
-            padding: 4rem 2rem; box-sizing: border-box;
-            display: flex; flex-direction: column; justify-content: space-between;
-            z-index: var(--z-sidebar);
-        }
-        .logo { font-weight: 800; font-size: 1.5rem; letter-spacing: -0.02em; }
-        
-        /* サイドバーの説明文 */
-        .sidebar-desc { 
-            font-size: 0.85rem; 
-            line-height: 2; 
-            color: #666; 
-            white-space: pre-wrap; /* 改行をそのまま反映 */
+            margin: 0 auto;
         }
 
-        .contact-info { font-size: 0.8rem; color: #888; line-height: 1.8; }
+        /* 左サイドバー */
+        .sidebar {
+            width: 300px;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            padding: 4rem 2rem;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            z-index: var(--z-sidebar);
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        /* サイドバーの説明文 */
+        .sidebar-desc {
+            font-size: 0.85rem;
+            line-height: 2;
+            color: #666;
+            white-space: pre-wrap;
+            /* 改行をそのまま反映 */
+        }
+
+        .contact-info {
+            font-size: 0.8rem;
+            color: #888;
+            line-height: 1.8;
+        }
 
         /* 右メインコンテンツエリア */
         .main {
@@ -140,9 +162,11 @@
             padding: 5rem;
             margin-bottom: 4rem;
             min-height: 80vh;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-            display: flex; flex-direction: column;
-            position: sticky; top: 2rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 2rem;
         }
 
         /* スタッキングブロック共通 */
@@ -151,7 +175,7 @@
             padding: 5rem;
             margin-bottom: 4rem;
             min-height: 80vh;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
             display: flex;
             flex-direction: column;
             position: sticky;
@@ -164,20 +188,24 @@
             border-top: none;
             box-shadow: none;
         }
-        .stack-block.endblock{
+
+        .stack-block.endblock {
             margin-bottom: 0;
         }
 
         /* --- 各セクションの位置調整 --- */
         #hero {
-            top: 2rem; z-index: 1;
+            top: 2rem;
+            z-index: 1;
             min-height: 80vh;
             max-height: none;
             overflow: visible;
             justify-content: flex-end;
             background-image: url('image/main.jpg');
-            background-size: cover; background-position: center;
-            color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            background-size: cover;
+            background-position: center;
+            color: #fff;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
         }
 
         /* アクセスセクションのダークテーマ */
@@ -218,8 +246,17 @@
             color: #fff;
         }
 
-        .hero-title { font-size: 4rem; font-weight: 300; line-height: 1.1; margin: 0; }
-        .hero-title strong { font-weight: 800; display: block; }
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 300;
+            line-height: 1.1;
+            margin: 0;
+        }
+
+        .hero-title strong {
+            font-weight: 800;
+            display: block;
+        }
 
         .hero-copy {
             font-size: 1.25rem;
@@ -230,11 +267,25 @@
 
         /* カード内部の要素 */
         .card-header {
-            display: flex; justify-content: space-between; margin-bottom: 3rem;
-            border-bottom: 2px solid currentColor; padding-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 3rem;
+            border-bottom: 2px solid currentColor;
+            padding-bottom: 1rem;
         }
-        .card-label { font-weight: 800; text-transform: uppercase; font-size: 0.9rem; margin: 0; }
-        .card-body p { font-size: 1.1rem; line-height: 2; opacity: 0.9; max-width: 500px; }
+
+        .card-label {
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .card-body p {
+            font-size: 1.1rem;
+            line-height: 2;
+            opacity: 0.9;
+        }
 
         /* ===== メニューセクション ===== */
         .menu-grid {
@@ -438,6 +489,7 @@
 
         /* ===== コンテナクエリ：メインカラム幅500px以下で1カラム化 ===== */
         @container main-content (max-width: 500px) {
+
             /* メニューグリッド */
             .menu-grid {
                 grid-template-columns: 1fr;
@@ -457,6 +509,7 @@
 
         /* ===== コンテナクエリ：アクセスセクション700px以下で1カラム化 ===== */
         @container main-content (max-width: 700px) {
+
             /* アクセス */
             .access-container {
                 flex-direction: column;
@@ -469,21 +522,42 @@
 
         /* スマートフォン向けレスポンシブ設定 */
         @media (max-width: 900px) {
-            .wrapper { flex-direction: column; width: 100%; overflow-x: hidden; }
-            .sidebar {
-                width: 100%; height: auto; position: relative;
-                padding: 2rem; padding-bottom: 0;
+            .wrapper {
+                flex-direction: column;
+                width: 100%;
+                overflow-x: hidden;
             }
-            .sidebar-desc { margin-top: 2rem; margin-bottom: 2rem; }
-            .main { padding: 1rem; width: 100%; box-sizing: border-box; }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 2rem;
+                padding-bottom: 0;
+            }
+
+            .sidebar-desc {
+                margin-top: 2rem;
+                margin-bottom: 2rem;
+            }
+
+            .main {
+                padding: 1rem;
+                width: 100%;
+                box-sizing: border-box;
+            }
 
             /* hero のみスタッキング解除 */
             .sticky-card {
                 padding: 2rem;
-                top: auto !important; position: relative !important;
-                max-height: none; overflow-y: visible;
-                margin-top: 0 !important; margin-bottom: 1rem !important;
-                width: 100%; box-sizing: border-box;
+                top: auto !important;
+                position: relative !important;
+                max-height: none;
+                overflow-y: visible;
+                margin-top: 0 !important;
+                margin-bottom: 1rem !important;
+                width: 100%;
+                box-sizing: border-box;
             }
 
             /* stack-block: スタッキング維持、余白調整 */
@@ -491,15 +565,23 @@
                 padding: 2rem;
                 min-height: auto;
                 margin-bottom: 1rem;
-                width: 100%; box-sizing: border-box;
+                width: 100%;
+                box-sizing: border-box;
                 /* top, position, z-index はJSで設定されるため上書きしない */
             }
 
-            .hero-title { font-size: 2.5rem; word-break: break-all; }
-            #hero { min-height: 50vh; }
+            .hero-title {
+                font-size: 2.5rem;
+                word-break: break-all;
+            }
+
+            #hero {
+                min-height: 50vh;
+            }
         }
     </style>
 </head>
+
 <body>
 
     <div class="wrapper">
@@ -600,7 +682,8 @@
                                     <dd id="access-hours"></dd>
                                 </dl>
                                 <p class="access-note">※最新の営業情報はGoogleビジネスプロフィールをご確認ください</p>
-                                <a id="access-map-link" class="access-btn" href="#" target="_blank" rel="noopener noreferrer">
+                                <a id="access-map-link" class="access-btn" href="#" target="_blank"
+                                    rel="noopener noreferrer">
                                     Googleマップで見る
                                 </a>
                             </div>
@@ -610,13 +693,13 @@
                             </div>
                         </div>
                     </div>
-                <p class="copyright">&copy; 2025 HAYAKAWA餃子</p>
+                    <p class="copyright">&copy; 2025 HAYAKAWA餃子</p>
                 </div>
             </section>
         </main>
     </div>
 
-    
+
 
     <script>
         // ===============================================
@@ -637,10 +720,10 @@
 
             // メニュー
             menuItems: [
-                { name: "焼き餃子", price: "600円〜", image: "image/menu-1" },
-                { name: "水餃子", price: "600円〜", image: "image/menu-2" },
-                { name: "ランチセット", price: "900円", image: "image/menu-3" },
-                { name: "お持ち帰り", price: "600円〜", image: "image/menu-4" }
+                { name: "一口餃子", price: "550円/10個", note: "ニラにんにく、シソ、ショウガの３種類があります", image: "image/menu1-gyoza" },
+                { name: "水餃子", price: "280円/5個", note: "もちっとした食感", image: "image/menu2-sui" },
+                { name: "餃子定食", price: "1,280円", note: "餃子は組み合わせ可能です", image: "image/menu3-set" },
+                { name: "ドライカレー", price: "600円", note: "隠れた人気メニュー", image: "image/menu4-curry" }
             ],
 
             // 店内雰囲気
@@ -836,4 +919,5 @@
         });
     </script>
 </body>
+
 </html>
