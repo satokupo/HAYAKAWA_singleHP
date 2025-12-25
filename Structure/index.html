@@ -252,18 +252,6 @@
             color: #fff;
         }
 
-        .hero-title {
-            font-size: 4rem;
-            font-weight: 300;
-            line-height: 1.1;
-            margin: 0;
-        }
-
-        .hero-title strong {
-            font-weight: 800;
-            display: block;
-        }
-
         .hero-copy {
             font-size: 1.25rem;
             font-weight: 400;
@@ -462,7 +450,8 @@
         }
 
         .access-btn {
-            display: inline-block;
+            display: block;
+            width: fit-content;
             background: var(--color-accent);
             color: #fff;
             padding: 0.75rem 1.5rem;
@@ -502,7 +491,9 @@
 
         /* ===== サイドバー GBPボタン ===== */
         .sidebar-btn {
-            display: inline-block;
+            display: block;
+            width: 100%;
+            text-align: center;
             background: var(--color-accent);
             color: #fff;
             padding: 0.6rem 1.2rem;
@@ -511,6 +502,7 @@
             font-size: 0.85rem;
             font-weight: 500;
             margin-top: 1rem;
+            box-sizing: border-box;
         }
 
         @media (hover: hover) {
@@ -568,9 +560,9 @@
                 padding-bottom: 0;
             }
 
-            .sidebar-desc {
-                margin-top: 2rem;
-                margin-bottom: 2rem;
+            .sidebar-desc,
+            .contact-info {
+                display: none;
             }
 
             .main {
@@ -602,11 +594,6 @@
                 /* top, position, z-index はJSで設定されるため上書きしない */
             }
 
-            .hero-title {
-                font-size: 2.5rem;
-                word-break: break-all;
-            }
-
             #hero {
                 min-height: 50vh;
             }
@@ -619,7 +606,7 @@
     <div class="wrapper">
         <aside class="sidebar">
             <div>
-                <div id="brand-logo" class="logo"></div>
+                <h1 id="brand-logo" class="logo"></h1>
                 <div id="sidebar-desc" class="sidebar-desc"></div>
             </div>
             <div class="contact-info">
@@ -636,7 +623,6 @@
         <main class="main">
             <section id="hero" class="sticky-card">
                 <div class="hero-content">
-                    <h1 id="hero-title" class="hero-title"></h1>
                     <p id="hero-copy" class="hero-copy"></p>
                 </div>
             </section>
@@ -868,7 +854,6 @@
                     heroSection.style.backgroundImage = `url('${path}')`;
                 });
             }
-            document.getElementById('hero-title').textContent = config.heroTitle;
             document.getElementById('hero-copy').textContent = config.heroCopy;
 
             // ----- メニュー -----
