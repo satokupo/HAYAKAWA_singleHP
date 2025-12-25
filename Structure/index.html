@@ -291,6 +291,7 @@
             font-size: 1.1rem;
             line-height: 2;
             opacity: 0.9;
+            white-space: pre-wrap;
         }
 
         /* ===== メニューセクション ===== */
@@ -342,6 +343,7 @@
             font-size: 0.9rem;
             color: var(--color-text-sub);
             margin-top: 2rem;
+            white-space: pre-wrap;
         }
 
         /* ===== 店内雰囲気セクション ===== */
@@ -379,6 +381,7 @@
             line-height: 1.8;
             color: var(--color-text);
             margin-top: 0.75rem;
+            white-space: pre-wrap;
         }
 
         /* ===== オーナー紹介セクション ===== */
@@ -420,6 +423,7 @@
             font-size: 1rem;
             line-height: 2;
             color: var(--color-text);
+            white-space: pre-wrap;
         }
 
         /* ===== アクセスセクション ===== */
@@ -448,6 +452,7 @@
             margin: 0 0 1.5rem 0;
             font-size: 1rem;
             line-height: 1.8;
+            white-space: pre-wrap;
         }
 
         .access-note {
@@ -465,7 +470,7 @@
             text-decoration: none;
             font-size: 0.9rem;
             font-weight: 500;
-            margin-top: 1rem;
+            margin: 1rem auto 0;
         }
 
         @media (hover: hover) {
@@ -619,6 +624,9 @@
             </div>
             <div class="contact-info">
                 <div id="sidebar-hours"></div>
+                <a id="sidebar-reservation-link" class="sidebar-btn" href="#" target="_blank" rel="noopener noreferrer">
+                    オンライン予約
+                </a>
                 <a id="sidebar-gbp-link" class="sidebar-btn" href="#" target="_blank" rel="noopener noreferrer">
                     Googleで見る
                 </a>
@@ -702,6 +710,9 @@
                                     <dt>住所</dt>
                                     <dd id="access-address"></dd>
 
+                                    <dt>電話</dt>
+                                    <dd id="access-phone"></dd>
+
                                     <dt>駐車場</dt>
                                     <dd id="access-parking"></dd>
 
@@ -743,7 +754,7 @@
             heroImage: "image/main",  // 拡張子なし
 
             // 営業情報（サイドバー用）
-            businessHours: "営業日：月・水・金・土\n11:00〜15:00（売り切れ次第終了）",
+            businessHours: "〇ᖘ ᕮ Ɲ\n㊊ ㊌ ㊎ ㊏\n𝟭𝟭:𝟬𝟬-𝟭𝟲:𝟬𝟬（L.o.𝟭𝟱:𝟰𝟱）\nたまに夜も営餃...",
 
             // メニュー
             menuItems: [
@@ -778,13 +789,16 @@
             ownerProfile: "東京の餃子専門店で修行を積んだあと、地元・飯田でこのお店を開きました。\n女性やお子さんが気軽に入れるお店を作りたい、そんな想いでやっています。\nカウンター越しにお話しできるのを楽しみにしています。",
 
             // アクセス
-            address: "〒395-0000\n長野県飯田市○○町0-0-0",
-            parking: "専用駐車場はありません。\n近隣の市営駐車場をご利用ください（徒歩3分）",
-            regularHours: "営業日：月・水・金・土\n11:00〜15:00（売り切れ次第終了）\n定休日：火・木・日",
-            mapUrl: "https://maps.google.com/?q=HAYAKAWA餃子",
+            address: "〒395-0021\n長野県飯田市仲ノ町353-10",
+            phone: "050-8885-3753",
+            parking: "専用駐車場はありません。\n近隣の市営駐車場をご利用ください",
+            parkingMapUrl: "https://maps.app.goo.gl/31xSkaEPqNCVPEib9",
+            regularHours: "㊊ ㊌ ㊎ ㊏\n𝟭𝟭:𝟬𝟬-𝟭𝟲:𝟬𝟬（L.o.𝟭𝟱:𝟰𝟱）\nたまに夜も営餃...\n定休日：火・木・日",
+            mapUrl: "https://maps.app.goo.gl/S46yCXimeGSxcKcV9",
 
             // 外部リンク
-            gbpUrl: "https://g.page/xxxxx",
+            gbpUrl: "https://maps.app.goo.gl/S46yCXimeGSxcKcV9",
+            reservationUrl: "https://app.squareup.com/appointments/book/7fdtqzj51090mo/LY0JN74T6NBHG/start",
             instagramUrl: "https://instagram.com/xxxxx"
         };
 
@@ -844,6 +858,7 @@
             document.getElementById('brand-logo').textContent = config.name;
             document.getElementById('sidebar-desc').textContent = config.tagline;
             document.getElementById('sidebar-hours').textContent = config.businessHours;
+            document.getElementById('sidebar-reservation-link').href = config.reservationUrl;
             document.getElementById('sidebar-gbp-link').href = config.gbpUrl;
 
             // ----- ヒーロー -----
@@ -914,7 +929,12 @@
 
             // ----- アクセス -----
             document.getElementById('access-address').textContent = config.address;
-            document.getElementById('access-parking').textContent = config.parking;
+            document.getElementById('access-phone').textContent = config.phone;
+
+            // 駐車場情報に「（地図）」リンクを追加
+            const parkingElement = document.getElementById('access-parking');
+            parkingElement.innerHTML = `${config.parking}<a href="${config.parkingMapUrl}" target="_blank" rel="noopener noreferrer" style="margin-left: 0.5em; color: var(--color-accent); text-decoration: underline;">（地図）</a>`;
+
             document.getElementById('access-hours').textContent = config.regularHours;
             document.getElementById('access-map-link').href = config.mapUrl;
 
