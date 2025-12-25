@@ -138,6 +138,12 @@
             letter-spacing: -0.02em;
         }
 
+        .logo img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
         /* サイドバーの説明文 */
         .sidebar-desc {
             font-size: 0.85rem;
@@ -560,7 +566,7 @@
                 width: 100%;
                 height: auto;
                 position: relative;
-                padding: 2rem;
+                padding: 1rem;
                 padding-bottom: 0;
             }
 
@@ -610,7 +616,9 @@
     <div class="wrapper">
         <aside class="sidebar">
             <div>
-                <h1 id="brand-logo" class="logo"></h1>
+                <h1 class="logo">
+                    <img id="brand-logo" src="image/logo.webp" alt="HAYAKAWA餃子">
+                </h1>
                 <div id="sidebar-desc" class="sidebar-desc"></div>
             </div>
             <div class="contact-info">
@@ -845,7 +853,7 @@
             }
 
             // ----- サイドバー -----
-            document.getElementById('brand-logo').textContent = config.name;
+            // 画像ロゴを使用するためテキスト設定は不要
             document.getElementById('sidebar-desc').textContent = config.tagline;
 
             // 営業情報の最初の行を太字に
