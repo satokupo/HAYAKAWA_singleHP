@@ -581,17 +581,17 @@
                 box-sizing: border-box;
             }
 
-            /* hero のみスタッキング解除 */
+            /* スタッキングを有効化 */
             .sticky-card {
                 padding: 2rem;
-                top: auto !important;
-                position: relative !important;
                 max-height: none;
                 overflow-y: visible;
                 margin-top: 0 !important;
                 margin-bottom: 1rem !important;
                 width: 100%;
                 box-sizing: border-box;
+                position: sticky;
+                top: 0;
             }
 
             /* stack-block: スタッキング維持、余白調整 */
@@ -601,11 +601,12 @@
                 margin-bottom: 1rem;
                 width: 100%;
                 box-sizing: border-box;
-                /* top, position, z-index はJSで設定されるため上書きしない */
+                position: sticky;
+                /* top, z-index はJSで設定されるため上書きしない */
             }
 
             #hero {
-                min-height: 50vh;
+                min-height: calc(100dvh - 70px);
             }
         }
     </style>
