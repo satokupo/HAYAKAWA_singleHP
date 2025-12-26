@@ -133,9 +133,10 @@
         }
 
         .logo {
-            font-weight: 800;
-            font-size: 1.5rem;
+            font-size: 0;
             letter-spacing: -0.02em;
+            margin-block-start:0;
+            margin-block-end:0;
         }
 
         .logo img {
@@ -566,7 +567,7 @@
                 width: 100%;
                 height: auto;
                 position: relative;
-                padding: 1rem;
+                padding: 0;
                 padding-bottom: 0;
             }
 
@@ -574,9 +575,16 @@
             .contact-info {
                 display: none;
             }
+            
+            .logo {
+                margin: 0;
+            }
+        .logo img {
+            border-radius: 0;
+        }
 
             .main {
-                padding: 1rem;
+                padding: 0;
                 width: 100%;
                 box-sizing: border-box;
             }
@@ -587,7 +595,7 @@
                 max-height: none;
                 overflow-y: visible;
                 margin-top: 0 !important;
-                margin-bottom: 1rem !important;
+                margin-bottom: 0 !important;
                 width: 100%;
                 box-sizing: border-box;
                 position: sticky;
@@ -598,10 +606,12 @@
             .stack-block {
                 padding: 2rem;
                 min-height: auto;
-                margin-bottom: 1rem;
+                margin-bottom: 0;
                 width: 100%;
                 box-sizing: border-box;
                 position: sticky;
+                box-shadow: none;
+                border-top: none;
                 /* top, z-index はJSで設定されるため上書きしない */
             }
 
