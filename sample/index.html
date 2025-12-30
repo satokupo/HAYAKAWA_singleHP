@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow">
+    
+    <title>{{PAGE_TITLE}}</title>
+    <meta name="description" content="{{PAGE_DESCRIPTION}}">
+    
+    <!-- OGP / Twitter Card -->
+    <meta property="og:title" content="{{PAGE_TITLE}}">
+    <meta property="og:description" content="{{PAGE_DESCRIPTION}}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{PAGE_URL}}">
+    <meta property="og:image" content="{{OGP_IMAGE_URL}}">
+    <meta property="og:site_name" content="{{SITE_NAME}}">
+    <meta property="og:locale" content="ja_JP">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{PAGE_TITLE}}">
+    <meta name="twitter:description" content="{{PAGE_DESCRIPTION}}">
+    <meta name="twitter:image" content="{{OGP_IMAGE_URL}}">
+
+    <!-- プロジェクトメモ（Astro移行時に削除） -->
+    <script>
+    /*
+     * PROJECT RULES - {{PROJECT_NAME}}
+     *
+     * [トンマナ]
+     * - キーワード: {{TONE_KEYWORDS}}
+     * - 避けるもの: {{AVOID_KEYWORDS}}
+     *
+     * [カラー] CSS変数で定義（:root参照）
+     * [フォント] {{FONT_JP}} / {{FONT_EN}}
+     */
+    </script>
+
+    <!-- Favicon -->
+    <link rel="icon" href="image/favicon/favicon.ico" sizes="any">
+    <link rel="icon" href="image/favicon/icon-192.png" type="image/png" sizes="192x192">
+    <link rel="apple-touch-icon" href="image/favicon/apple-touch-icon.png">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root {
+            --color-primary: #333333;
+            --color-accent: #3b82f6;
+            --color-text: #333333;
+            --color-text-sub: #666666;
+            --bg-main: #ffffff;
+            --bg-section: #f5f5f5;
+        }
+
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Noto Sans JP', sans-serif; }
+        img { vertical-align: bottom; }
+    </style>
+</head>
+<body class="bg-[var(--bg-main)] text-[var(--color-text)] overflow-x-hidden">
+
+    <!-- HEADER -->
+    <header class="px-4 py-4">
+        <div class="text-lg font-bold text-[var(--color-primary)]">
+            {{LOGO}}
+        </div>
+    </header>
+
+    <main>
+        <!-- HERO -->
+        <section id="hero" class="px-4 py-12">
+            <h1 class="text-2xl font-bold leading-tight mb-4 text-[var(--color-primary)]">
+                {{HERO_COPY}}
+            </h1>
+            <p class="text-base mb-6 text-[var(--color-text-sub)]">
+                {{HERO_SUBCOPY}}
+            </p>
+            <div class="rounded-lg overflow-hidden mb-6">
+                <img src="image/hero.webp" alt="{{ALT}}" width="600" height="400" class="w-full object-cover">
+            </div>
+            <a href="#contact" class="block w-full py-3 px-6 rounded-lg text-center font-medium text-white bg-[var(--color-accent)] min-h-[44px]">
+                {{CTA_TEXT}}
+            </a>
+        </section>
+
+        <!-- ABOUT -->
+        <section id="about" class="px-4 py-12 bg-[var(--bg-section)]">
+            <h2 class="text-xl font-bold mb-6 text-[var(--color-primary)]">
+                {{SECTION_TITLE}}
+            </h2>
+            <p class="text-base leading-relaxed">
+                {{ABOUT_TEXT}}
+            </p>
+        </section>
+
+        <!-- MENU -->
+        <section id="menu" class="px-4 py-12">
+            <h2 class="text-xl font-bold mb-6 text-[var(--color-primary)]">
+                {{SECTION_TITLE}}
+            </h2>
+            <div class="space-y-6">
+                <!-- item -->
+                <div class="flex gap-4">
+                    <img src="image/menu-1.webp" alt="{{ITEM_NAME}}" width="100" height="100" loading="lazy" class="w-24 h-24 object-cover rounded-lg flex-shrink-0">
+                    <div>
+                        <h3 class="font-bold mb-1">{{ITEM_NAME}}</h3>
+                        <p class="text-sm mb-1 text-[var(--color-accent)]">{{PRICE}}</p>
+                        <p class="text-sm text-[var(--color-text-sub)]">{{ITEM_DESC}}</p>
+                    </div>
+                </div>
+                <!-- /item -->
+            </div>
+        </section>
+
+        <!-- GALLERY -->
+        <section id="gallery" class="px-4 py-12 bg-[var(--bg-section)]">
+            <h2 class="text-xl font-bold mb-6 text-[var(--color-primary)]">
+                {{SECTION_TITLE}}
+            </h2>
+            <div class="grid grid-cols-2 gap-2">
+                <img src="image/gallery-1.webp" alt="" width="300" height="300" loading="lazy" class="w-full aspect-square object-cover rounded-lg">
+                <img src="image/gallery-2.webp" alt="" width="300" height="300" loading="lazy" class="w-full aspect-square object-cover rounded-lg">
+            </div>
+        </section>
+
+        <!-- OWNER -->
+        <section id="owner" class="px-4 py-12">
+            <h2 class="text-xl font-bold mb-6 text-[var(--color-primary)]">
+                {{SECTION_TITLE}}
+            </h2>
+            <div class="flex flex-col items-center text-center">
+                <img src="image/owner.webp" alt="{{OWNER_NAME}}" width="150" height="150" loading="lazy" class="w-32 h-32 object-cover rounded-full mb-4">
+                <h3 class="font-bold mb-2">{{OWNER_NAME}}</h3>
+                <p class="text-sm leading-relaxed text-[var(--color-text-sub)]">
+                    {{OWNER_PROFILE}}
+                </p>
+            </div>
+        </section>
+
+        <!-- ACCESS -->
+        <section id="access" class="px-4 py-12 bg-[var(--bg-section)]">
+            <h2 class="text-xl font-bold mb-6 text-[var(--color-primary)]">
+                アクセス
+            </h2>
+            <dl class="space-y-4 text-sm">
+                <div>
+                    <dt class="font-bold mb-1">住所</dt>
+                    <dd class="text-[var(--color-text-sub)]">{{ADDRESS}}</dd>
+                </div>
+                <div>
+                    <dt class="font-bold mb-1">電話</dt>
+                    <dd><a href="tel:{{PHONE}}" class="text-[var(--color-accent)]">{{PHONE}}</a></dd>
+                </div>
+                <div>
+                    <dt class="font-bold mb-1">営業時間</dt>
+                    <dd class="text-[var(--color-text-sub)]">{{HOURS}}</dd>
+                </div>
+            </dl>
+            <a href="{{MAP_URL}}" target="_blank" rel="noopener noreferrer" class="block w-full py-3 px-6 mt-6 rounded-lg text-center font-medium border border-[var(--color-accent)] text-[var(--color-accent)] min-h-[44px]">
+                Googleマップで見る
+            </a>
+        </section>
+
+        <!-- NEWS (SNS) -->
+        <section id="news" class="px-4 py-12">
+            <h2 class="text-xl font-bold mb-6 text-[var(--color-primary)]">
+                お知らせ
+            </h2>
+            <div class="text-center">
+                <p class="text-sm mb-4 text-[var(--color-text-sub)]">
+                    最新情報はInstagramをご覧ください
+                </p>
+                <a href="{{INSTAGRAM_URL}}" target="_blank" rel="noopener noreferrer" class="inline-block py-3 px-6 rounded-lg font-medium border border-[var(--color-accent)] text-[var(--color-accent)] min-h-[44px]">
+                    Instagramを見る
+                </a>
+            </div>
+        </section>
+
+        <!-- CONTACT -->
+        <section id="contact" class="px-4 py-12 bg-[var(--bg-section)]">
+            <h2 class="text-xl font-bold mb-6 text-center text-[var(--color-primary)]">
+                {{CTA_HEADING}}
+            </h2>
+            <div class="space-y-4">
+                <a href="tel:{{PHONE}}" class="block w-full py-3 px-6 rounded-lg text-center font-medium text-white bg-[var(--color-accent)] min-h-[44px]">
+                    電話で問い合わせ
+                </a>
+                <a href="{{LINE_URL}}" target="_blank" rel="noopener noreferrer" class="block w-full py-3 px-6 rounded-lg text-center font-medium border border-[var(--color-accent)] text-[var(--color-accent)] min-h-[44px]">
+                    LINEで問い合わせ
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="px-4 py-8 text-center text-sm text-[var(--color-text-sub)]">
+        <p>&copy; <span id="year"></span> {{SITE_NAME}}</p>
+    </footer>
+
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>
