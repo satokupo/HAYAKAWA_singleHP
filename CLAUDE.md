@@ -34,6 +34,20 @@
 - カスタムCSSはBEM記法で命名し、セクションごとに名前空間を分ける
 - CSS変数（色・フォント等）は `:root` で管理（具体値はHTML内に記載）
 
+### Tailwind CSS設定
+- CDN経由で使用
+- **preflightは無効化する**（ブラウザデフォルトを維持）
+- 設定方法:
+  ```html
+  <script>
+    tailwind.config = {
+      corePlugins: {
+        preflight: false
+      }
+    }
+  </script>
+  ```
+
 ### 画像の取り扱い
 - 形式はWebP推奨（透過が必要な場合はPNG）
 - ファイル名は小文字英数字、ハイフン区切り
