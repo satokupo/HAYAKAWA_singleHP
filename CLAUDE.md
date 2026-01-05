@@ -112,3 +112,9 @@ python -m http.server 3000 --directory ./sample
 - 1行のパス: バッククォートで囲む
 - 複数行: コードブロックで囲む
 - ユーザーが提示した表記をそのまま維持（正規化しない）
+
+---
+
+## 注意事項
+
+- **高さ制御**: `min-height` + `max-height` は子要素に押し広げられる → `height: min(100svh, 900px)` を使う

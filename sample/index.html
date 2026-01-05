@@ -56,10 +56,17 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Zen+Kurenaido&display=swap" rel="stylesheet">
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            corePlugins: {
+                preflight: false,
+            }
+        }
+    </script>
 
     <style>
         :root {
@@ -78,9 +85,53 @@
             background-color: var(--bg-main);
             color: var(--color-text);
             overflow-x: hidden;
+            max-width: 390px;
+            margin: 0 auto;
         }
 
         img { vertical-align: bottom; }
+
+        /* ヒーローセクション */
+        .hero {
+            position: relative;
+            height: min(100svh, 900px);
+            background-image: url('images/hero-main.webp');
+            background-size: cover;
+            background-position: right top;
+            background-repeat: no-repeat;
+            background-color: var(--bg-section);
+        }
+
+        .hero__content {
+            position: relative;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem;
+        }
+
+        .hero__title {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            color: var(--color-primary);
+        }
+
+        .hero__subtitle {
+            font-size: 0.875rem;
+            color: var(--color-text-sub);
+            margin-top: 0.25rem;
+        }
+
+        .hero__catch {
+            font-family: 'Zen Kurenaido', cursive;
+            font-size: 1.25rem;
+            writing-mode: vertical-rl;
+            color: var(--color-primary);
+            position: absolute;
+            left: 1.5rem;
+            bottom: 3rem;
+        }
     </style>
 </head>
 <body>
@@ -91,9 +142,14 @@
     </header>
 
     <main>
-        <!-- SECTION 01 -->
-        <section id="section-01">
-            <!-- TODO: セクション実装 -->
+        <!-- SECTION 01: ヒーローセクション -->
+        <section id="section-01" class="hero">
+            <!-- テキストコンテンツ（背景画像はCSSで設定） -->
+            <div class="hero__content">
+                <h1 class="hero__title">HAYAKAWA</h1>
+                <p class="hero__subtitle">一口餃子専門店</p>
+                <p class="hero__catch">カフェみたいな、餃子屋。</p>
+            </div>
         </section>
 
         <!-- SECTION 02 -->
