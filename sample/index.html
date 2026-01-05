@@ -28,7 +28,6 @@
          *
          * [カラー] ※実装値は :root のCSS変数を参照
          * - primary: ブランドカラー、見出し・ロゴに使用
-         * - secondary: サブカラー
          * - accent: アクセントカラー
          * - text: 本文
          * - text-sub: 補足テキスト、説明文
@@ -73,142 +72,38 @@
         }
 
         html { scroll-behavior: smooth; }
-        body { font-family: 'Noto Sans JP', sans-serif; }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--color-text);
+            overflow-x: hidden;
+        }
+
         img { vertical-align: bottom; }
     </style>
 </head>
-<body class="bg-[var(--bg-main)] text-[var(--color-text)] overflow-x-hidden">
+<body>
 
     <!-- HEADER -->
-    <header class="px-4 py-4">
-        <div class="text-lg font-bold text-[var(--color-primary)]">
-            {{LOGO}}
-        </div>
+    <header id="header">
+        <!-- TODO: ヘッダー実装 -->
     </header>
 
     <main>
-        <!-- HERO -->
-        <section id="hero" class="px-4 py-12">
-            <h1 class="text-2xl font-bold leading-tight mb-4 text-[var(--color-primary)]">
-                {{HERO_COPY}}
-            </h1>
-            <p class="text-base mb-6 text-[var(--color-text-sub)]">
-                {{HERO_SUBCOPY}}
-            </p>
-            <div class="rounded-lg overflow-hidden mb-6">
-                <img src="image/hero.webp" alt="{{ALT}}" width="600" height="400" class="w-full object-cover">
-            </div>
-            <a href="#contact" class="block w-full py-3 px-6 rounded-lg text-center font-medium text-white bg-[var(--color-accent)] min-h-[44px]">
-                {{CTA_TEXT}}
-            </a>
+        <!-- SECTION 01 -->
+        <section id="section-01">
+            <!-- TODO: セクション実装 -->
         </section>
 
-        <!-- ABOUT -->
-        <section id="about" class="px-4 py-12 bg-[var(--bg-section)]">
-            <h2 class="text-xl font-bold mb-6 text-[var(--color-primary)]">
-                {{SECTION_TITLE}}
-            </h2>
-            <p class="text-base leading-relaxed">
-                {{ABOUT_TEXT}}
-            </p>
+        <!-- SECTION 02 -->
+        <section id="section-02">
+            <!-- TODO: セクション実装 -->
         </section>
 
-        <!-- MENU -->
-        <section id="menu" class="px-4 py-12">
-            <h2 class="text-xl font-bold mb-6 text-[var(--color-primary)]">
-                {{SECTION_TITLE}}
-            </h2>
-            <div class="space-y-6">
-                <!-- item -->
-                <div class="flex gap-4">
-                    <img src="image/menu-1.webp" alt="{{ITEM_NAME}}" width="100" height="100" loading="lazy" class="w-24 h-24 object-cover rounded-lg flex-shrink-0">
-                    <div>
-                        <h3 class="font-bold mb-1">{{ITEM_NAME}}</h3>
-                        <p class="text-sm mb-1 text-[var(--color-accent)]">{{PRICE}}</p>
-                        <p class="text-sm text-[var(--color-text-sub)]">{{ITEM_DESC}}</p>
-                    </div>
-                </div>
-                <!-- /item -->
-            </div>
-        </section>
-
-        <!-- GALLERY -->
-        <section id="gallery" class="px-4 py-12 bg-[var(--bg-section)]">
-            <h2 class="text-xl font-bold mb-6 text-[var(--color-primary)]">
-                {{SECTION_TITLE}}
-            </h2>
-            <div class="grid grid-cols-2 gap-2">
-                <img src="image/gallery-1.webp" alt="" width="300" height="300" loading="lazy" class="w-full aspect-square object-cover rounded-lg">
-                <img src="image/gallery-2.webp" alt="" width="300" height="300" loading="lazy" class="w-full aspect-square object-cover rounded-lg">
-            </div>
-        </section>
-
-        <!-- OWNER -->
-        <section id="owner" class="px-4 py-12">
-            <h2 class="text-xl font-bold mb-6 text-[var(--color-primary)]">
-                {{SECTION_TITLE}}
-            </h2>
-            <div class="flex flex-col items-center text-center">
-                <img src="image/owner.webp" alt="{{OWNER_NAME}}" width="150" height="150" loading="lazy" class="w-32 h-32 object-cover rounded-full mb-4">
-                <h3 class="font-bold mb-2">{{OWNER_NAME}}</h3>
-                <p class="text-sm leading-relaxed text-[var(--color-text-sub)]">
-                    {{OWNER_PROFILE}}
-                </p>
-            </div>
-        </section>
-
-        <!-- ACCESS -->
-        <section id="access" class="px-4 py-12 bg-[var(--bg-section)]">
-            <h2 class="text-xl font-bold mb-6 text-[var(--color-primary)]">
-                アクセス
-            </h2>
-            <dl class="space-y-4 text-sm">
-                <div>
-                    <dt class="font-bold mb-1">住所</dt>
-                    <dd class="text-[var(--color-text-sub)]">{{ADDRESS}}</dd>
-                </div>
-                <div>
-                    <dt class="font-bold mb-1">電話</dt>
-                    <dd><a href="tel:{{PHONE}}" class="text-[var(--color-accent)]">{{PHONE}}</a></dd>
-                </div>
-                <div>
-                    <dt class="font-bold mb-1">営業時間</dt>
-                    <dd class="text-[var(--color-text-sub)]">{{HOURS}}</dd>
-                </div>
-            </dl>
-            <a href="{{MAP_URL}}" target="_blank" rel="noopener noreferrer" class="block w-full py-3 px-6 mt-6 rounded-lg text-center font-medium border border-[var(--color-accent)] text-[var(--color-accent)] min-h-[44px]">
-                Googleマップで見る
-            </a>
-        </section>
-
-        <!-- NEWS (SNS) -->
-        <section id="news" class="px-4 py-12">
-            <h2 class="text-xl font-bold mb-6 text-[var(--color-primary)]">
-                お知らせ
-            </h2>
-            <div class="text-center">
-                <p class="text-sm mb-4 text-[var(--color-text-sub)]">
-                    最新情報はInstagramをご覧ください
-                </p>
-                <a href="{{INSTAGRAM_URL}}" target="_blank" rel="noopener noreferrer" class="inline-block py-3 px-6 rounded-lg font-medium border border-[var(--color-accent)] text-[var(--color-accent)] min-h-[44px]">
-                    Instagramを見る
-                </a>
-            </div>
-        </section>
-
-        <!-- CONTACT -->
-        <section id="contact" class="px-4 py-12 bg-[var(--bg-section)]">
-            <h2 class="text-xl font-bold mb-6 text-center text-[var(--color-primary)]">
-                {{CTA_HEADING}}
-            </h2>
-            <div class="space-y-4">
-                <a href="tel:{{PHONE}}" class="block w-full py-3 px-6 rounded-lg text-center font-medium text-white bg-[var(--color-accent)] min-h-[44px]">
-                    電話で問い合わせ
-                </a>
-                <a href="{{LINE_URL}}" target="_blank" rel="noopener noreferrer" class="block w-full py-3 px-6 rounded-lg text-center font-medium border border-[var(--color-accent)] text-[var(--color-accent)] min-h-[44px]">
-                    LINEで問い合わせ
-                </a>
-            </div>
+        <!-- SECTION 03 -->
+        <section id="section-03">
+            <!-- TODO: セクション実装 -->
         </section>
     </main>
 
