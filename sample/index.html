@@ -132,6 +132,53 @@
             left: 1.5rem;
             bottom: 3rem;
         }
+
+        /* スクロールアニメーション */
+        @keyframes slideInLeft {
+            0% {
+                opacity: 0;
+                transform: translate(-80px, 120px) rotate(-5deg);
+            }
+            60% {
+                opacity: 0.8;
+                transform: translate(-20px, 30px) rotate(-2deg);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(0, 0) rotate(0deg);
+            }
+        }
+
+        @keyframes slideInRight {
+            0% {
+                opacity: 0;
+                transform: translate(80px, 120px) rotate(5deg);
+            }
+            60% {
+                opacity: 0.8;
+                transform: translate(20px, 30px) rotate(2deg);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(0, 0) rotate(0deg);
+            }
+        }
+
+        .animate-left {
+            opacity: 0;
+        }
+
+        .animate-right {
+            opacity: 0;
+        }
+
+        .animate-left.visible {
+            animation: slideInLeft 0.4s ease-out forwards;
+        }
+
+        .animate-right.visible {
+            animation: slideInRight 0.4s ease-out forwards;
+        }
     </style>
 </head>
 <body>
@@ -152,9 +199,28 @@
             </div>
         </section>
 
-        <!-- SECTION 02 -->
-        <section id="section-02">
-            <!-- TODO: セクション実装 -->
+        <!-- SECTION 02: インテリア -->
+        <section id="section-02" class="py-12 px-4 mt-8">
+            <!-- 1枚目: 左寄せ、逆傾き -->
+            <div class="mr-12 mb-8 animate-left">
+                <img src="images/interior-1.webp" alt="店内の様子"
+                     class="max-w-full max-h-56 rounded-2xl -rotate-2"
+                     width="600" height="400" loading="lazy">
+            </div>
+
+            <!-- 2枚目: 右寄せ -->
+            <div class="ml-12 mb-8 animate-right">
+                <img src="images/interior-2.webp" alt="インテリア"
+                     class="max-w-full max-h-56 rounded-2xl"
+                     width="600" height="400" loading="lazy">
+            </div>
+
+            <!-- 3枚目: 左寄せ、傾き -->
+            <div class="mr-12 mb-8 animate-left">
+                <img src="images/interior-3.webp" alt="テーブルセッティング"
+                     class="max-w-full max-h-56 rounded-2xl rotate-2"
+                     width="600" height="400" loading="lazy">
+            </div>
         </section>
 
         <!-- SECTION 03 -->
@@ -170,6 +236,21 @@
 
     <script>
         document.getElementById('year').textContent = new Date().getFullYear();
+
+        // スクロールアニメーション
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            rootMargin: '-30% 0px -30% 0px'
+        });
+
+        document.querySelectorAll('.animate-left, .animate-right').forEach(el => {
+            observer.observe(el);
+        });
     </script>
 </body>
 </html>
