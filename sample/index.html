@@ -179,6 +179,66 @@
         .animate-right.visible {
             animation: slideInRight 0.4s ease-out forwards;
         }
+
+        /* 今月の餃子セクション */
+        .limited {
+            position: relative;
+            height: min(100svh, 900px);
+            background-image: url('images/limited-bg.webp');
+            background-size: cover;
+            background-position: center;
+            padding: 0 1rem;
+        }
+
+        .limited__content {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .limited__title {
+            font-size: 1.25rem;
+            color: #fff;
+            margin-bottom: 1.5rem;
+        }
+
+        .limited__image-wrapper {
+            position: relative;
+            width: 260px;
+            height: 260px;
+        }
+
+        .limited__image {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .limited__decoration {
+            position: absolute;
+            top: -12px;
+            left: -12px;
+            width: calc(100% + 24px);
+            height: calc(100% + 24px);
+        }
+
+        .limited__name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 1.5rem;
+            color: #fff;
+        }
+
+        .limited__description {
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.85);
+            margin-top: 0.5rem;
+            line-height: 1.6;
+        }
     </style>
 </head>
 <body>
@@ -223,9 +283,32 @@
             </div>
         </section>
 
-        <!-- SECTION 03 -->
-        <section id="section-03">
-            <!-- TODO: セクション実装 -->
+        <!-- SECTION 03: 今月の餃子 -->
+        <section id="section-03" class="limited">
+            <div class="limited__content">
+                <h2 class="limited__title">今月の餃子</h2>
+
+                <div class="limited__image-wrapper">
+                    <!-- 装飾ライン（SVG） -->
+                    <svg class="limited__decoration" viewBox="0 0 220 220">
+                        <circle cx="110" cy="110" r="105"
+                                fill="none"
+                                stroke="white"
+                                stroke-width="2"
+                                stroke-dasharray="8 6"/>
+                    </svg>
+                    <img src="images/limited-gyoza.webp"
+                         alt="今月の餃子"
+                         class="limited__image"
+                         width="300" height="300" loading="lazy">
+                </div>
+
+                <p class="limited__name">栗と鶏肉の甘辛餃子</p>
+                <p class="limited__description">
+                    ほっくり甘い栗と、ジューシーな鶏肉を<br>
+                    甘辛く仕上げました。
+                </p>
+            </div>
         </section>
     </main>
 
