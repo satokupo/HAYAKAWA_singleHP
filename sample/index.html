@@ -308,7 +308,12 @@
             position: relative;
             display: flex;
             gap: 16px;
-            padding: 0 calc(50% - 40px);
+            padding-left: calc(50% - 40px);
+        }
+
+        /* 右端スペーサー（JSで追加） */
+        .menu__carousel-spacer {
+            flex-shrink: 0;
         }
 
         .menu__slide {
@@ -461,9 +466,9 @@
          * 商品を追加する場合は配列に新しいオブジェクトを追加するだけでOK
          */
         const menuItems = [
-            { name: '一口餃子', price: '¥400〜', description: '薄皮でパリッと、一口サイズ', image: 'images/menu-1.webp' },
-            { name: 'チャーハン', price: '¥600〜', description: '香ばしく炒めた自家製チャーハン', image: 'images/menu-2.webp' },
-            { name: 'ラーメン', price: '¥700〜', description: 'あっさり醤油の中華そば', image: 'images/menu-3.webp' }
+            { name: '商品１', price: '¥400〜', description: '薄皮でパリッと、一口サイズ', image: 'images/menu-1.webp' },
+            { name: '商品２', price: '¥600〜', description: '香ばしく炒めた自家製チャーハン', image: 'images/menu-2.webp' },
+            { name: '商品３', price: '¥700〜', description: 'あっさり醤油の中華そば', image: 'images/menu-3.webp' }
         ];
     </script>
 
@@ -483,11 +488,12 @@
             const INITIAL_SETS = 3;  // 初期セット数
             const MAX_SETS = 10;     // 最大セット数
             const ITEM_WIDTH = 80;
-            const LOAD_THRESHOLD = ITEM_WIDTH * 2;  // 読み込み開始の閾値
+            const LOAD_THRESHOLD = ITEM_WIDTH * 4;  // 読み込み開始の閾値（320px）
 
             let currentSets = 0;
             let currentIndex = 0;
             let isScrolling = false;
+            let isLoading = false;  // 追加読み込み中フラグ
             let slides = [];
 
             // スライド1つを生成
@@ -518,13 +524,19 @@
                 return slide;
             }
 
-            // セットを追加
+            // 右端スペーサーを作成
+            const spacer = document.createElement('div');
+            spacer.className = 'menu__carousel-spacer';
+            spacer.style.width = (carousel.clientWidth / 2 - ITEM_WIDTH / 2) + 'px';
+            track.appendChild(spacer);
+
+            // セットを追加（スペーサーの前に挿入）
             function appendSets(count) {
                 for (let s = 0; s < count && currentSets < MAX_SETS; s++) {
                     menuItems.forEach((item, i) => {
                         const slideIndex = currentSets * menuItems.length + i;
                         const slide = createSlide(item, i, slideIndex);
-                        track.appendChild(slide);
+                        track.insertBefore(slide, spacer);
                     });
                     currentSets++;
                 }
@@ -582,14 +594,15 @@
 
             // 右端に近づいたら追加読み込み
             function checkAndLoadMore() {
-                if (isScrolling || currentSets >= MAX_SETS) return;
+                if (isLoading || currentSets >= MAX_SETS) return;
 
                 const maxScroll = carousel.scrollWidth - carousel.clientWidth;
 
                 if (carousel.scrollLeft > maxScroll - LOAD_THRESHOLD) {
+                    isLoading = true;
                     appendSets(2);
-                    // アクティブ状態を再適用
                     updateActiveState(currentIndex);
+                    setTimeout(() => { isLoading = false; }, 100);
                 }
             }
 
@@ -625,6 +638,11 @@
                         updateMainDisplay(realIndex);
                     }
                 }, 100);
+            }, { passive: true });
+
+            // スクロール終了時にも追加読み込みをチェック
+            carousel.addEventListener('scrollend', () => {
+                checkAndLoadMore();
             }, { passive: true });
 
             // 初期化：セット2の最初のアイテムを中央に
