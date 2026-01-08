@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="index, follow">
     
-    <title>{{PAGE_TITLE}}</title>
+    <title>HAYAKAWA|一口餃子専門店</title>
     <meta name="description" content="{{PAGE_DESCRIPTION}}">
     
     <!-- OGP / Twitter Card -->
@@ -43,7 +43,11 @@
          * [ターゲット]
          * - ペルソナ: {{PERSONA_SUMMARY}}
          * - 課題: {{TARGET_PAIN_POINTS}}
-         * 
+         *
+         * [メニューカルーセル]
+         * - バニラJS実装（無限ループ対応）
+         * - スライドを複数セット複製し、端に近づいたら瞬時に中央へリセット
+         *
          * ※ AI向けメモ：記載内容は必要に応じて調整
          */
     </script>
@@ -57,7 +61,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Zen+Kurenaido&display=swap" rel="stylesheet">
-    
+
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -239,6 +243,93 @@
             margin-top: 0.5rem;
             line-height: 1.6;
         }
+
+        /* メニューセクション */
+        .menu {
+            padding: 3rem 1rem;
+            text-align: center;
+        }
+
+        .menu__title {
+            font-size: 1.25rem;
+            letter-spacing: 0.2em;
+            color: var(--color-primary);
+            margin-bottom: 2rem;
+        }
+
+        .menu__main {
+            margin-bottom: 2rem;
+        }
+
+        .menu__main-image {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 1rem;
+            display: block;
+        }
+
+        .menu__name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .menu__price {
+            font-size: 1rem;
+            color: var(--color-text-sub);
+            margin-bottom: 0.5rem;
+        }
+
+        .menu__description {
+            font-size: 0.875rem;
+            color: var(--color-text-sub);
+            line-height: 1.6;
+        }
+
+        /* メニューカルーセル（バニラJS） */
+        .menu__carousel {
+            padding: 1rem 0;
+            overflow-x: auto;
+            overflow-y: hidden;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .menu__carousel::-webkit-scrollbar {
+            display: none;
+        }
+
+        .menu__carousel-track {
+            position: relative;
+            display: flex;
+            gap: 16px;
+            padding: 0 calc(50% - 40px);
+        }
+
+        .menu__slide {
+            flex-shrink: 0;
+            width: 80px;
+            height: 80px;
+        }
+
+        .menu__thumb {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+            transition: transform 0.2s, opacity 0.2s;
+            opacity: 0.6;
+        }
+
+        .menu__slide.is-active .menu__thumb {
+            transform: scale(1.1);
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -310,11 +401,31 @@
                 </p>
             </div>
         </section>
+
+        <!-- SECTION 04: メニュー -->
+        <section id="section-04" class="menu">
+            <h2 class="menu__title">MENU</h2>
+
+            <!-- メイン表示エリア -->
+            <div class="menu__main">
+                <img id="menu-main-image" class="menu__main-image" src="" alt="" width="200" height="200" loading="lazy">
+                <p id="menu-name" class="menu__name"></p>
+                <p id="menu-price" class="menu__price"></p>
+                <p id="menu-description" class="menu__description"></p>
+            </div>
+
+            <!-- サムネイルカルーセル（無限ループ） -->
+            <div class="menu__carousel">
+                <div class="menu__carousel-track">
+                    <!-- JSで生成 -->
+                </div>
+            </div>
+        </section>
     </main>
 
     <!-- FOOTER -->
     <footer class="px-4 py-8 text-center text-sm text-[var(--color-text-sub)]">
-        <p>&copy; <span id="year"></span> {{SITE_NAME}}</p>
+        <p>&copy; <span id="year"></span> HAYAKAWA</p>
     </footer>
 
     <script>
@@ -334,6 +445,156 @@
         document.querySelectorAll('.animate-left, .animate-right').forEach(el => {
             observer.observe(el);
         });
+
+        /**
+         * メニューカルーセル
+         *
+         * 商品データ配列
+         * 記載方法:
+         * - name: 商品名（必須）
+         * - price: 価格表示（必須）
+         * - description: 説明文（必須、改行が必要な場合は<br>タグを使用）
+         *   例: '一行目の説明文<br>二行目の説明文'
+         * - image: 画像パス（必須）
+         *
+         * 商品を追加する場合は配列に新しいオブジェクトを追加するだけでOK
+         */
+        const menuItems = [
+            { name: '一口餃子', price: '¥400〜', description: '薄皮でパリッと、一口サイズ', image: 'images/menu-1.webp' },
+            { name: 'チャーハン', price: '¥600〜', description: '香ばしく炒めた自家製チャーハン', image: 'images/menu-2.webp' },
+            { name: 'ラーメン', price: '¥700〜', description: 'あっさり醤油の中華そば', image: 'images/menu-3.webp' }
+        ];
+    </script>
+
+    <!-- メニューカルーセル（バニラJS） -->
+    <script>
+        (function initMenuCarousel() {
+            const carousel = document.querySelector('.menu__carousel');
+            const track = document.querySelector('.menu__carousel-track');
+            const mainImage = document.getElementById('menu-main-image');
+            const nameEl = document.getElementById('menu-name');
+            const priceEl = document.getElementById('menu-price');
+            const descEl = document.getElementById('menu-description');
+
+            if (!track || menuItems.length === 0) return;
+
+            // 設定
+            const SETS = 2;  // 2セット生成
+            const ITEM_WIDTH = 80;
+
+            let currentIndex = 0;
+            let isScrolling = false;  // プログラムによるスクロール中フラグ
+
+            // スライド生成（2セット = 6アイテム）
+            for (let set = 0; set < SETS; set++) {
+                menuItems.forEach((item, i) => {
+                    const slide = document.createElement('div');
+                    slide.className = 'menu__slide';
+                    slide.dataset.realIndex = i;
+                    slide.dataset.slideIndex = set * menuItems.length + i;
+
+                    const img = document.createElement('img');
+                    img.src = item.image;
+                    img.alt = item.name;
+                    img.className = 'menu__thumb';
+                    img.loading = 'lazy';
+
+                    slide.appendChild(img);
+                    track.appendChild(slide);
+                });
+            }
+
+            const slides = track.querySelectorAll('.menu__slide');
+
+            // メイン表示を更新
+            function updateMainDisplay(index) {
+                const item = menuItems[index];
+                mainImage.src = item.image;
+                mainImage.alt = item.name;
+                nameEl.textContent = item.name;
+                priceEl.textContent = item.price;
+                descEl.innerHTML = item.description;
+            }
+
+            // アクティブ状態を更新
+            function updateActiveState(realIndex) {
+                slides.forEach(slide => {
+                    const isActive = parseInt(slide.dataset.realIndex) === realIndex;
+                    slide.classList.toggle('is-active', isActive);
+                });
+            }
+
+            // 特定のスライドへスクロール
+            function scrollToSlide(slideIndex) {
+                const targetSlide = slides[slideIndex];
+                if (!targetSlide) return;
+
+                isScrolling = true;
+
+                const slideCenter = targetSlide.offsetLeft + ITEM_WIDTH / 2;
+                const scrollTarget = slideCenter - carousel.clientWidth / 2;
+
+                carousel.scrollTo({
+                    left: scrollTarget,
+                    behavior: 'smooth'
+                });
+
+                // スクロール完了後にフラグをリセット
+                setTimeout(() => {
+                    isScrolling = false;
+                }, 400);
+            }
+
+            // クリックイベント
+            slides.forEach((slide, index) => {
+                slide.addEventListener('click', () => {
+                    const realIndex = parseInt(slide.dataset.realIndex);
+                    currentIndex = realIndex;
+                    updateActiveState(realIndex);
+                    updateMainDisplay(realIndex);
+                    scrollToSlide(index);
+                });
+            });
+
+            // スクロール時にアクティブ更新（ドラッグ操作時のみ）
+            let scrollTimeout = null;
+            carousel.addEventListener('scroll', () => {
+                // プログラムによるスクロール中は無視
+                if (isScrolling) return;
+
+                if (scrollTimeout) clearTimeout(scrollTimeout);
+                scrollTimeout = setTimeout(() => {
+                    // スクロール位置から中央のスライドを特定
+                    const scrollCenter = carousel.scrollLeft + carousel.clientWidth / 2;
+                    let closestIndex = 0;
+                    let closestDistance = Infinity;
+
+                    slides.forEach((slide, i) => {
+                        const slideCenter = slide.offsetLeft + ITEM_WIDTH / 2;
+                        const distance = Math.abs(scrollCenter - slideCenter);
+                        if (distance < closestDistance) {
+                            closestDistance = distance;
+                            closestIndex = i;
+                        }
+                    });
+
+                    const realIndex = parseInt(slides[closestIndex].dataset.realIndex);
+                    if (realIndex !== currentIndex) {
+                        currentIndex = realIndex;
+                        updateActiveState(realIndex);
+                        updateMainDisplay(realIndex);
+                    }
+                }, 100);
+            }, { passive: true });
+
+            // 初期化：最初のスライドを中央に
+            updateActiveState(0);
+            updateMainDisplay(0);
+            // 初期スクロール位置を設定
+            setTimeout(() => {
+                scrollToSlide(0);
+            }, 50);
+        })();
     </script>
 </body>
 </html>

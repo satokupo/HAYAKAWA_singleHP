@@ -29,13 +29,18 @@ except ImportError:
 
 
 def get_font(size: int = 24) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
-    """利用可能なフォントを取得"""
+    """利用可能なフォントを取得（日本語対応フォント優先）"""
     font_paths = [
+        # Windows日本語フォント
+        "C:/Windows/Fonts/meiryo.ttc",
+        "C:/Windows/Fonts/YuGothM.ttc",
+        "C:/Windows/Fonts/msgothic.ttc",
+        # 英字フォント（フォールバック）
+        "C:/Windows/Fonts/arial.ttf",
         "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
         "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf",
         "/usr/share/fonts/truetype/freefont/FreeSans.ttf",
         "/System/Library/Fonts/Helvetica.ttc",
-        "C:/Windows/Fonts/arial.ttf",
     ]
     
     for font_path in font_paths:
@@ -53,7 +58,8 @@ def generate_placeholder_image(
     output_path: Path,
     bg_color: str = "#CCCCCC",
     text_color: str = "#666666",
-    show_filename: bool = True
+    show_filename: bool = True,
+    custom_text: str = None
 ) -> bool:
     """
     プレースホルダー画像を生成
@@ -65,7 +71,8 @@ def generate_placeholder_image(
         bg_color: 背景色（hex）
         text_color: テキスト色（hex）
         show_filename: ファイル名を表示するか
-    
+        custom_text: カスタムテキスト（指定時はファイル名の代わりに表示）
+
     Returns:
         成功したかどうか
     """
@@ -100,15 +107,15 @@ def generate_placeholder_image(
     
     draw.text((x, y), size_text, fill=text_color, font=font)
     
-    # ファイル名表示
-    if show_filename:
-        filename = output_path.name
+    # ファイル名またはカスタムテキスト表示
+    if show_filename or custom_text:
+        display_text = custom_text if custom_text else output_path.name
         small_font = get_font(font_size // 2)
-        bbox = draw.textbbox((0, 0), filename, font=small_font)
+        bbox = draw.textbbox((0, 0), display_text, font=small_font)
         fn_width = bbox[2] - bbox[0]
         fn_x = (width - fn_width) // 2
         fn_y = y + text_height + 10
-        draw.text((fn_x, fn_y), filename, fill=text_color, font=small_font)
+        draw.text((fn_x, fn_y), display_text, fill=text_color, font=small_font)
     
     # 枠線（オプション）
     border_color = "#AAAAAA"
@@ -158,16 +165,17 @@ def generate_placeholder(
     height: int,
     output_path: Path,
     bg_color: str = "#CCCCCC",
-    text_color: str = "#666666"
+    text_color: str = "#666666",
+    custom_text: str = None
 ) -> bool:
     """形式に応じてプレースホルダーを生成"""
-    
+
     suffix = output_path.suffix.lower()
-    
+
     if suffix == ".svg":
         return generate_svg_placeholder(width, height, output_path, bg_color, text_color)
     else:
-        return generate_placeholder_image(width, height, output_path, bg_color, text_color)
+        return generate_placeholder_image(width, height, output_path, bg_color, text_color, custom_text=custom_text)
 
 
 def parse_size(size_str: str) -> tuple[int, int]:
@@ -269,6 +277,7 @@ JSONファイル形式:
     parser.add_argument("--name", "-n", type=str, help="出力ファイル名")
     parser.add_argument("--batch", "-b", type=str, help="バッチ生成（例: hero:600x400,menu:300x300）")
     parser.add_argument("--ext", "-e", type=str, default=".webp", help="デフォルト拡張子")
+    parser.add_argument("--text", "-t", type=str, help="カスタムテキスト（画像に表示）")
     
     args = parser.parse_args()
     
@@ -295,11 +304,11 @@ JSONファイル形式:
         except ValueError as e:
             print(f"エラー: {e}")
             return 1
-        
+
         name = args.name or f"placeholder-{width}x{height}{args.ext}"
         output_path = args.output / name
-        
-        if generate_placeholder(width, height, output_path):
+
+        if generate_placeholder(width, height, output_path, custom_text=args.text):
             print(f"✓ 生成: {output_path}")
             total += 1
         else:
