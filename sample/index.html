@@ -289,7 +289,7 @@
             line-height: 1.6;
         }
 
-        /* メニューカルーセル（バニラJS） */
+        /* メニューカルーセル（バニラJS・遅延読み込み対応） */
         .menu__carousel {
             padding: 1rem 0;
             overflow-x: auto;
@@ -297,6 +297,7 @@
             -webkit-overflow-scrolling: touch;
             scrollbar-width: none;
             -ms-overflow-style: none;
+            overscroll-behavior-x: contain;  /* ページスクロール防止・バウンス効果 */
         }
 
         .menu__carousel::-webkit-scrollbar {
@@ -466,7 +467,7 @@
         ];
     </script>
 
-    <!-- メニューカルーセル（バニラJS） -->
+    <!-- メニューカルーセル（バニラJS・遅延読み込み対応） -->
     <script>
         (function initMenuCarousel() {
             const carousel = document.querySelector('.menu__carousel');
@@ -479,32 +480,60 @@
             if (!track || menuItems.length === 0) return;
 
             // 設定
-            const SETS = 2;  // 2セット生成
+            const INITIAL_SETS = 3;  // 初期セット数
+            const MAX_SETS = 10;     // 最大セット数
             const ITEM_WIDTH = 80;
+            const LOAD_THRESHOLD = ITEM_WIDTH * 2;  // 読み込み開始の閾値
 
+            let currentSets = 0;
             let currentIndex = 0;
-            let isScrolling = false;  // プログラムによるスクロール中フラグ
+            let isScrolling = false;
+            let slides = [];
 
-            // スライド生成（2セット = 6アイテム）
-            for (let set = 0; set < SETS; set++) {
-                menuItems.forEach((item, i) => {
-                    const slide = document.createElement('div');
-                    slide.className = 'menu__slide';
-                    slide.dataset.realIndex = i;
-                    slide.dataset.slideIndex = set * menuItems.length + i;
+            // スライド1つを生成
+            function createSlide(item, realIndex, slideIndex) {
+                const slide = document.createElement('div');
+                slide.className = 'menu__slide';
+                slide.dataset.realIndex = realIndex;
+                slide.dataset.slideIndex = slideIndex;
 
-                    const img = document.createElement('img');
-                    img.src = item.image;
-                    img.alt = item.name;
-                    img.className = 'menu__thumb';
-                    img.loading = 'lazy';
+                const img = document.createElement('img');
+                img.src = item.image;
+                img.alt = item.name;
+                img.className = 'menu__thumb';
+                img.loading = 'lazy';
 
-                    slide.appendChild(img);
-                    track.appendChild(slide);
+                slide.appendChild(img);
+
+                // クリックイベントを設定
+                slide.addEventListener('click', () => {
+                    const ri = parseInt(slide.dataset.realIndex);
+                    const si = parseInt(slide.dataset.slideIndex);
+                    currentIndex = ri;
+                    updateActiveState(ri);
+                    updateMainDisplay(ri);
+                    scrollToSlideByElement(slide);
                 });
+
+                return slide;
             }
 
-            const slides = track.querySelectorAll('.menu__slide');
+            // セットを追加
+            function appendSets(count) {
+                for (let s = 0; s < count && currentSets < MAX_SETS; s++) {
+                    menuItems.forEach((item, i) => {
+                        const slideIndex = currentSets * menuItems.length + i;
+                        const slide = createSlide(item, i, slideIndex);
+                        track.appendChild(slide);
+                    });
+                    currentSets++;
+                }
+                // slides配列を更新
+                slides = Array.from(track.querySelectorAll('.menu__slide'));
+            }
+
+            // 初期セットを生成
+            appendSets(INITIAL_SETS);
 
             // メイン表示を更新
             function updateMainDisplay(index) {
@@ -524,9 +553,8 @@
                 });
             }
 
-            // 特定のスライドへスクロール
-            function scrollToSlide(slideIndex) {
-                const targetSlide = slides[slideIndex];
+            // 要素を中央にスクロール
+            function scrollToSlideByElement(targetSlide, smooth = true) {
                 if (!targetSlide) return;
 
                 isScrolling = true;
@@ -536,30 +564,42 @@
 
                 carousel.scrollTo({
                     left: scrollTarget,
-                    behavior: 'smooth'
+                    behavior: smooth ? 'smooth' : 'instant'
                 });
 
-                // スクロール完了後にフラグをリセット
                 setTimeout(() => {
                     isScrolling = false;
-                }, 400);
+                }, smooth ? 400 : 50);
             }
 
-            // クリックイベント
-            slides.forEach((slide, index) => {
-                slide.addEventListener('click', () => {
-                    const realIndex = parseInt(slide.dataset.realIndex);
-                    currentIndex = realIndex;
-                    updateActiveState(realIndex);
-                    updateMainDisplay(realIndex);
-                    scrollToSlide(index);
-                });
-            });
+            // インデックスでスクロール
+            function scrollToSlide(slideIndex, smooth = true) {
+                const targetSlide = slides[slideIndex];
+                if (targetSlide) {
+                    scrollToSlideByElement(targetSlide, smooth);
+                }
+            }
 
-            // スクロール時にアクティブ更新（ドラッグ操作時のみ）
+            // 右端に近づいたら追加読み込み
+            function checkAndLoadMore() {
+                if (isScrolling || currentSets >= MAX_SETS) return;
+
+                const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+
+                if (carousel.scrollLeft > maxScroll - LOAD_THRESHOLD) {
+                    appendSets(2);
+                    // アクティブ状態を再適用
+                    updateActiveState(currentIndex);
+                }
+            }
+
+            // スクロール時の処理
             let scrollTimeout = null;
             carousel.addEventListener('scroll', () => {
-                // プログラムによるスクロール中は無視
+                // 追加読み込みチェック
+                checkAndLoadMore();
+
+                // プログラムによるスクロール中は以下をスキップ
                 if (isScrolling) return;
 
                 if (scrollTimeout) clearTimeout(scrollTimeout);
@@ -587,12 +627,12 @@
                 }, 100);
             }, { passive: true });
 
-            // 初期化：最初のスライドを中央に
+            // 初期化：セット2の最初のアイテムを中央に
+            const initialSlideIndex = menuItems.length;  // セット2の開始位置
             updateActiveState(0);
             updateMainDisplay(0);
-            // 初期スクロール位置を設定
             setTimeout(() => {
-                scrollToSlide(0);
+                scrollToSlide(initialSlideIndex, false);
             }, 50);
         })();
     </script>
