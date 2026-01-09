@@ -341,15 +341,30 @@
 
         /* 店舗情報セクション */
         .shop {
-            background-color: var(--bg-dark);
-            background-image: url('images/bg-dark-noise.webp');
-            background-repeat: repeat;
+            background-color: #2A2620;
             padding: 3rem 1.5rem;
-            padding-bottom: 5rem;
+            padding-bottom: 0;
+            position: relative;
+        }
+
+        .shop::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('images/noise.webp');
+            background-repeat: repeat;
+            opacity: 0.05;
+            pointer-events: none;
+            z-index: 0;
         }
 
         .shop__content {
             text-align: center;
+            position: relative;
+            z-index: 1;
         }
 
         .shop__logo {
@@ -471,17 +486,32 @@
 
         /* フッター */
         .footer {
-            background-color: var(--bg-dark);
-            background-image: url('images/bg-dark-noise.webp');
-            background-repeat: repeat;
+            background-color: #2A2620;
             padding: 1rem 1.5rem;
             padding-bottom: calc(1rem + 70px);
             text-align: center;
+            position: relative;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('images/noise.webp');
+            background-repeat: repeat;
+            opacity: 0.05;
+            pointer-events: none;
+            z-index: 0;
         }
 
         .footer__copyright {
             font-size: 0.75rem;
             color: var(--color-text-light);
+            position: relative;
+            z-index: 1;
         }
 
         /* 固定ナビゲーション */
