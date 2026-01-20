@@ -46,6 +46,37 @@ dev/tests/logs/*
 *.mov
 *.webp
 
+# Adobe
+*.psd
+*.ai
+*.indd
+*.xd
+*.aep
+*.prproj
+
+# Affinity
+*.afphoto
+*.afdesign
+*.afpub
+
+# Sketch/Figma
+*.sketch
+*.fig
+
+# 動画/音声
+*.avi
+*.mkv
+*.mp3
+*.wav
+
+# アーカイブ
+*.rar
+*.7z
+
+# その他
+*.xcf
+*.blend
+
 
 # --------------------------------
 # obsidian
