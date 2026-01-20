@@ -66,7 +66,7 @@
 ## ローカル確認方法
 
 ### HTMLファイルの確認
-- 「index.htmlを起動」「HTMLを開いて」「ブラウザで確認」等の指示には `start-server` スキルを使用
+- 「index.htmlを起動」「HTMLを開いて」「ブラウザで確認」等の指示には `start-server`もしくは`start-chrome-devtools` スキルを使用（claude on chromeを使うかchrome dev toolsを使うかはユーザーに確認）
 - 単純なサーバー起動ではなく、ブラウザ連携まで含めて対応する
 
 ### ローカルサーバー起動（手動）
