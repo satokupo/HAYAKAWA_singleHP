@@ -46,6 +46,13 @@ dev/tests/logs/*
 *.mov
 *.webp
 
+# imagesフォルダ以下の画像は追跡対象
+!images/
+!images/**/*.webp
+!images/**/*.png
+!images/**/*.jpg
+!images/**/*.jpeg
+
 # Adobe
 *.psd
 *.ai
