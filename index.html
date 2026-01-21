@@ -121,7 +121,7 @@
             box-sizing: border-box;
             display: grid;
             grid-template-rows: 1fr 1fr;
-            gap: 1rem;
+            gap: 1.5rem;
             padding: 3rem 1.5rem 1.5rem;
         }
 
@@ -130,11 +130,15 @@
         }
 
         .hero__title {
+            display: inline-block;
             font-size: 3rem;
             font-weight: 700;
             letter-spacing: 0.1em;
             color: var(--color-primary);
-            text-shadow: 0 0 16px rgba(255,255,255,0.5);
+            background-color: rgba(255, 255, 255, 0.85);
+            padding: 0.75rem 1.5rem 0.75rem 1.5rem;
+            margin-left: -1.5rem;
+            margin-top: 1rem;
         }
 
         .hero__subtitle {
@@ -158,7 +162,6 @@
             color: var(--color-primary);
             justify-self: center;
             align-self: center;
-            text-shadow: 0 0 8px rgba(255,255,255,0.8);
         }
 
         /* タグラインセクション */
