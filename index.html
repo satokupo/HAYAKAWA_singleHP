@@ -101,11 +101,17 @@
         .hero {
             position: relative;
             height: min(100svh, 900px);
-            background-image: url('images/hero-main.webp');
+            background-image: url('images/hero-main-sp.webp');
             background-size: cover;
-            background-position: right top;
+            background-position: center center;
             background-repeat: no-repeat;
             background-color: var(--bg-section);
+        }
+
+        @media (min-width: 768px) {
+            .hero {
+                background-image: url('images/hero-main-pc.webp');
+            }
         }
 
         .hero__content {
