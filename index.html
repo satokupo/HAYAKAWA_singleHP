@@ -115,27 +115,13 @@
             }
         }
 
-        /* グラデーションオーバーレイ（上部を明るく） */
-        .hero::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 35%;
-            background: linear-gradient(to bottom, rgba(var(--color-text-rgb), 0.7), transparent);
-            pointer-events: none;
-            z-index: 1;
-        }
-
         .hero__content {
             position: relative;
             height: 100%;
             display: grid;
             grid-template-rows: 1fr 1fr;
             gap: 1rem;
-            padding: 1.5rem;
-            z-index: 2;
+            padding: 3rem 1.5rem 1.5rem;
         }
 
         .hero__header {
@@ -143,15 +129,16 @@
         }
 
         .hero__title {
-            font-size: 2.5rem;
+            font-size: 3rem;
             font-weight: 700;
             letter-spacing: 0.1em;
-            color: var(--bg-main);
+            color: var(--color-primary);
+            text-shadow: 0 0 16px rgba(255,255,255,0.5);
         }
 
         .hero__subtitle {
             font-size: 1rem;
-            color: var(--bg-main);
+            color: var(--color-text-sub);
             margin-top: 0.125rem;
         }
 
@@ -165,11 +152,25 @@
 
         .hero__catch {
             font-family: 'Zen Kurenaido', cursive;
-            font-size: 1.25rem;
+            font-size: 1.5rem;
             writing-mode: vertical-rl;
-            color: var(--bg-main);
+            color: var(--color-primary);
             justify-self: center;
             align-self: center;
+            text-shadow: 0 0 8px rgba(255,255,255,0.8);
+        }
+
+        /* タグラインセクション */
+        .tagline {
+            padding: 6rem 1.5rem;
+            margin-top: 4rem;
+            text-align: center;
+        }
+
+        .tagline__text {
+            font-size: 1.25rem;
+            color: var(--color-text-sub);
+            letter-spacing: 0.1em;
         }
 
         /* スクロールアニメーション */
@@ -717,7 +718,6 @@
             <div class="hero__content">
                 <div class="hero__header">
                     <h1 class="hero__title">HAYAKAWA</h1>
-                    <p class="hero__subtitle">一口餃子専門店</p>
                 </div>
                 <div class="hero__bottom">
                     <p class="hero__catch">カフェみたいな、餃子屋。</p>
@@ -726,6 +726,10 @@
             </div>
         </section>
 
+        <!-- SECTION: タグライン -->
+        <section class="tagline">
+            <p class="tagline__text">一口餃子専門店</p>
+        </section>
 
         <!-- SECTION 02: インテリア -->
         <section id="section-02" class="py-12 px-4 mt-8">
