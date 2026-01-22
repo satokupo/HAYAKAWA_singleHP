@@ -1,18 +1,29 @@
-## 作業環境
-vendor/
-vendor/*
-composer.lock
+# --------------------------------
+# 作業環境・エディタ設定
+# --------------------------------
 .vscode/
-.vscode/*
 .cursor/
-.cursor/*
-.claude/
 .workbench/
-.workbench/*
 .DS_Store
+
+# --------------------------------
+# Claude Code
+# --------------------------------
+.claude/*
+!.claude/skills/
+!.claude/skills/**
+
+# --------------------------------
+# 依存関係・キャッシュ
+# --------------------------------
+vendor/
+composer.lock
 node_modules/
-node_modules/*
 .venv/
+
+# --------------------------------
+# 一時ファイル・その他
+# --------------------------------
 _doc/temp/
 *.zip
 README.txt
