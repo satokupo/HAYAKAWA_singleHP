@@ -375,13 +375,36 @@
             margin-bottom: 2rem;
         }
 
+        .menu__main-image-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 1rem;
+        }
+
         .menu__main-image {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 200px;
             height: 200px;
             border-radius: 50%;
             object-fit: cover;
-            margin: 0 auto 1rem;
-            display: block;
+        }
+
+        .menu__main-image--back {
+            z-index: 1;
+        }
+
+        .menu__main-image--front {
+            z-index: 2;
+        }
+
+        @keyframes crossover-fade {
+            0%   { opacity: 1; }
+            25%  { opacity: 1; }
+            75%  { opacity: 0; }
+            100% { opacity: 0; }
         }
 
         .menu__name {
@@ -434,6 +457,7 @@
             flex-shrink: 0;
             width: 80px;
             height: 80px;
+            transition: transform 0.2s ease-out;
         }
 
         .menu__thumb {
@@ -877,7 +901,10 @@
 
             <!-- メイン表示エリア -->
             <div class="menu__main">
-                <img id="menu-main-image" class="menu__main-image" src="" alt="" width="200" height="200" loading="lazy">
+                <div class="menu__main-image-container">
+                    <img id="menu-main-image-back" class="menu__main-image menu__main-image--back" src="" alt="" width="200" height="200" loading="lazy">
+                    <img id="menu-main-image-front" class="menu__main-image menu__main-image--front" src="" alt="" width="200" height="200" loading="lazy">
+                </div>
                 <p id="menu-name" class="menu__name"></p>
                 <p id="menu-price" class="menu__price"></p>
                 <p id="menu-description" class="menu__description"></p>
@@ -1036,7 +1063,8 @@
         (function initMenuCarousel() {
             const carousel = document.querySelector('.menu__carousel');
             const track = document.querySelector('.menu__carousel-track');
-            const mainImage = document.getElementById('menu-main-image');
+            const frontImage = document.getElementById('menu-main-image-front');
+            const backImage = document.getElementById('menu-main-image-back');
             const nameEl = document.getElementById('menu-name');
             const priceEl = document.getElementById('menu-price');
             const descEl = document.getElementById('menu-description');
@@ -1073,10 +1101,18 @@
                 // クリックイベントを設定
                 slide.addEventListener('click', () => {
                     const ri = parseInt(slide.dataset.realIndex);
-                    const si = parseInt(slide.dataset.slideIndex);
+
+                    // 同じメニューなら何もしない
+                    if (ri === currentIndex) return;
+
+                    // クリックしたスライドの位置から方向を判定
+                    const scrollCenter = carousel.scrollLeft + carousel.clientWidth / 2;
+                    const slideCenter = slide.offsetLeft + ITEM_WIDTH / 2;
+                    const direction = slideCenter > scrollCenter ? 1 : -1;
+
                     currentIndex = ri;
                     updateActiveState(ri);
-                    updateMainDisplay(ri);
+                    updateMainDisplay(ri, direction);
                     scrollToSlideByElement(slide);
                 });
 
@@ -1106,14 +1142,73 @@
             // 初期セットを生成
             appendSets(INITIAL_SETS);
 
-            // メイン表示を更新
-            function updateMainDisplay(index) {
+            // メイン表示を更新（クロスオーバー回転アニメーション）
+            let isMainImageAnimating = false;
+            function updateMainDisplay(index, direction = 0) {
                 const item = menuItems[index];
-                mainImage.src = item.image;
-                mainImage.alt = item.name;
+
+                // 初回表示またはアニメーション不要の場合は即時更新
+                if (direction === 0 || isMainImageAnimating) {
+                    frontImage.src = item.image;
+                    frontImage.alt = item.name;
+                    backImage.src = item.image;
+                    backImage.alt = item.name;
+                    nameEl.textContent = item.name;
+                    priceEl.textContent = item.price;
+                    descEl.innerHTML = item.description;
+                    return;
+                }
+
+                isMainImageAnimating = true;
+                const rotateAngle = direction > 0 ? 360 : -360;
+
+                // 下の画像（back）に次の画像をセット
+                backImage.src = item.image;
+                backImage.alt = item.name;
+
+                // 両方同時に回転開始
+                frontImage.style.transition = 'transform 0.5s ease-out';
+                backImage.style.transition = 'transform 0.5s ease-out';
+                frontImage.style.transform = `rotate(${rotateAngle}deg)`;
+                backImage.style.transform = `rotate(${rotateAngle}deg)`;
+
+                // 上の画像（front）のクロスオーバー（90〜270度でフェードアウト）
+                frontImage.style.animation = 'crossover-fade 0.5s ease-out forwards';
+
+                // テキスト更新
                 nameEl.textContent = item.name;
                 priceEl.textContent = item.price;
                 descEl.innerHTML = item.description;
+
+                setTimeout(() => {
+                    // リセット
+                    frontImage.style.transition = 'none';
+                    backImage.style.transition = 'none';
+                    frontImage.style.transform = 'rotate(0deg)';
+                    backImage.style.transform = 'rotate(0deg)';
+                    frontImage.style.animation = '';
+                    frontImage.style.opacity = '1';
+                    frontImage.src = item.image;
+                    frontImage.alt = item.name;
+                    frontImage.offsetHeight; // 強制リフロー
+                    frontImage.style.transition = '';
+                    backImage.style.transition = '';
+                    isMainImageAnimating = false;
+                }, 500);
+            }
+
+            // サムネイルのスケールを更新（中央から離れるほど小さく）
+            function updateSlideScales() {
+                const carouselCenter = carousel.scrollLeft + carousel.clientWidth / 2;
+
+                slides.forEach(slide => {
+                    const slideCenter = slide.offsetLeft + ITEM_WIDTH / 2;
+                    const distance = Math.abs(carouselCenter - slideCenter);
+
+                    // 距離に応じてスケールを計算（中央=1.0、1つ離れる毎に0.1減少、最小0.8）
+                    const scale = Math.max(0.8, 1 - (distance / ITEM_WIDTH) * 0.1);
+                    slide.style.transform = `scale(${scale})`;
+                });
             }
 
             // アクティブ状態を更新
@@ -1124,23 +1219,47 @@
                 });
             }
 
-            // 要素を中央にスクロール
+            // 要素を中央にスクロール（自前アニメーション）
             function scrollToSlideByElement(targetSlide, smooth = true) {
                 if (!targetSlide) return;
-
-                isScrolling = true;
 
                 const slideCenter = targetSlide.offsetLeft + ITEM_WIDTH / 2;
                 const scrollTarget = slideCenter - carousel.clientWidth / 2;
 
-                carousel.scrollTo({
-                    left: scrollTarget,
-                    behavior: smooth ? 'smooth' : 'instant'
-                });
+                if (!smooth) {
+                    carousel.scrollLeft = scrollTarget;
+                    return;
+                }
 
-                setTimeout(() => {
-                    isScrolling = false;
-                }, smooth ? 400 : 50);
+                // 自前のスムーズスクロール（0.5秒）
+                animateScrollTo(scrollTarget, 500);
+            }
+
+            // requestAnimationFrameベースのスクロールアニメーション
+            function animateScrollTo(targetLeft, duration = 500) {
+                const startLeft = carousel.scrollLeft;
+                const distance = targetLeft - startLeft;
+                const startTime = performance.now();
+
+                isScrolling = true;
+
+                function step(currentTime) {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+
+                    // ease-out: 1 - (1 - progress)^3
+                    const easeOut = 1 - Math.pow(1 - progress, 3);
+
+                    carousel.scrollLeft = startLeft + distance * easeOut;
+
+                    if (progress < 1) {
+                        requestAnimationFrame(step);
+                    } else {
+                        isScrolling = false;
+                    }
+                }
+
+                requestAnimationFrame(step);
             }
 
             // インデックスでスクロール
@@ -1167,12 +1286,23 @@
 
             // スクロール時の処理
             let scrollTimeout = null;
+            let lastScrollLeft = carousel.scrollLeft;
+            let lastManualScrollLeft = carousel.scrollLeft;
             carousel.addEventListener('scroll', () => {
                 // 追加読み込みチェック
                 checkAndLoadMore();
 
+                // サムネイルスケール更新（リアルタイム）
+                updateSlideScales();
+
+                // 手動スクロールの方向を常に追跡
+                const currentScrollLeft = carousel.scrollLeft;
+
                 // プログラムによるスクロール中は以下をスキップ
-                if (isScrolling) return;
+                if (isScrolling) {
+                    lastScrollLeft = currentScrollLeft;
+                    return;
+                }
 
                 if (scrollTimeout) clearTimeout(scrollTimeout);
                 scrollTimeout = setTimeout(() => {
@@ -1192,11 +1322,16 @@
 
                     const realIndex = parseInt(slides[closestIndex].dataset.realIndex);
                     if (realIndex !== currentIndex) {
+                        // スクロール方向を検出
+                        const scrollDirection = carousel.scrollLeft > lastManualScrollLeft ? 1 : -1;
                         currentIndex = realIndex;
                         updateActiveState(realIndex);
-                        updateMainDisplay(realIndex);
+                        updateMainDisplay(realIndex, scrollDirection);
                     }
+                    lastManualScrollLeft = carousel.scrollLeft;
                 }, 100);
+
+                lastScrollLeft = currentScrollLeft;
             }, { passive: true });
 
             // スクロール終了時にも追加読み込みをチェック
@@ -1210,6 +1345,8 @@
             updateMainDisplay(0);
             setTimeout(() => {
                 scrollToSlide(initialSlideIndex, false);
+                // 初期スケール更新
+                setTimeout(updateSlideScales, 100);
             }, 50);
 
             // ========================================
@@ -1218,54 +1355,48 @@
             const AUTO_SLIDE_INTERVAL = 3000; // 3秒
             let autoSlideTimer = null;
             let isAutoSlideEnabled = true;
+            let slideDirection = 1; // 1: 右方向（カウントアップ）, -1: 左方向（カウントダウン）
 
-            // 自動スライド実行
+            // 自動スライド実行（物理スライド位置ベース）
             function autoSlide() {
                 if (!isAutoSlideEnabled) return;
 
-                // 次のrealIndexを計算（ループ）
-                const nextIndex = (currentIndex + 1) % menuItems.length;
-                currentIndex = nextIndex;
-
-                // 画面中央付近のスライドから、次のrealIndexを持つスライドを探す
+                // 現在の中央スライドを特定
                 const scrollCenter = carousel.scrollLeft + carousel.clientWidth / 2;
-                let targetSlide = null;
-                let minDistance = Infinity;
+                let currentSlideIdx = 0;
+                let closestDistance = Infinity;
 
-                slides.forEach(slide => {
-                    if (parseInt(slide.dataset.realIndex) === nextIndex) {
-                        const slideCenter = slide.offsetLeft + ITEM_WIDTH / 2;
-                        // 現在位置より右側のスライドを優先
-                        if (slideCenter > scrollCenter - ITEM_WIDTH) {
-                            const distance = slideCenter - scrollCenter;
-                            if (distance > 0 && distance < minDistance) {
-                                minDistance = distance;
-                                targetSlide = slide;
-                            }
-                        }
+                slides.forEach((slide, idx) => {
+                    const slideCenter = slide.offsetLeft + ITEM_WIDTH / 2;
+                    const distance = Math.abs(scrollCenter - slideCenter);
+                    if (distance < closestDistance) {
+                        closestDistance = distance;
+                        currentSlideIdx = idx;
                     }
                 });
 
-                // 右側に見つからない場合は最も近いものを使用
-                if (!targetSlide) {
-                    minDistance = Infinity;
-                    slides.forEach(slide => {
-                        if (parseInt(slide.dataset.realIndex) === nextIndex) {
-                            const slideCenter = slide.offsetLeft + ITEM_WIDTH / 2;
-                            const distance = Math.abs(scrollCenter - slideCenter);
-                            if (distance < minDistance) {
-                                minDistance = distance;
-                                targetSlide = slide;
-                            }
-                        }
-                    });
+                // 次のスライドインデックスを計算
+                let nextSlideIdx = currentSlideIdx + slideDirection;
+
+                // 端に到達したら方向を反転
+                if (nextSlideIdx >= slides.length - 1) {
+                    slideDirection = -1;
+                    nextSlideIdx = currentSlideIdx - 1;
+                } else if (nextSlideIdx <= 0) {
+                    slideDirection = 1;
+                    nextSlideIdx = currentSlideIdx + 1;
                 }
 
-                if (targetSlide) {
-                    updateActiveState(nextIndex);
-                    updateMainDisplay(nextIndex);
-                    scrollToSlideByElement(targetSlide);
-                }
+                // 範囲チェック
+                if (nextSlideIdx < 0 || nextSlideIdx >= slides.length) return;
+
+                const targetSlide = slides[nextSlideIdx];
+                const nextRealIndex = parseInt(targetSlide.dataset.realIndex);
+
+                currentIndex = nextRealIndex;
+                updateActiveState(nextRealIndex);
+                updateMainDisplay(nextRealIndex, slideDirection);
+                scrollToSlideByElement(targetSlide);
             }
 
             // 自動スライド開始
