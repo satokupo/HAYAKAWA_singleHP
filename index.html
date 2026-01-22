@@ -101,7 +101,7 @@
         /* ヒーローセクション */
         .hero {
             position: relative;
-            height: min(100svh, 900px);
+            height: min(100lvh, 900px);
             background-image: url('images/hero-main-sp.webp');
             background-size: cover;
             background-position: center center;
@@ -113,6 +113,17 @@
             .hero {
                 background-image: url('images/hero-main-pc.webp');
             }
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: linear-gradient(to bottom, transparent, var(--bg-main));
+            pointer-events: none;
         }
 
         .hero__content {
@@ -184,8 +195,8 @@
             justify-self: center;
             align-self: center;
             text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
-            /* Focus Fade In アニメーション: テキスト完了後(1.8s)に開始 */
-            animation: heroFocusFadeIn 0.8s ease-out 1.8s both;
+            /* Focus Fade In アニメーション: テキスト完了後(1.5s)に開始 */
+            animation: heroFocusFadeIn 0.8s ease-out 1.5s both;
         }
 
         /* ヒーローセクション アニメーション */
