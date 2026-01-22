@@ -825,8 +825,8 @@
     </header>
 
     <main>
-        <!-- SECTION 01: ヒーローセクション -->
-        <section id="section-01" class="hero">
+        <!-- SECTION: ヒーロー -->
+        <section id="hero" class="hero">
             <!-- テキストコンテンツ（背景画像はCSSで設定） -->
             <div class="hero__content">
                 <div class="hero__header">
@@ -854,8 +854,8 @@
             </div>
         </section>
 
-        <!-- SECTION 02: インテリア -->
-        <section id="section-02" class="py-12 px-4 mt-8">
+        <!-- SECTION: インテリア -->
+        <section id="interior" class="py-12 px-4 mt-8">
             <!-- 1枚目: 左寄せ、逆傾き -->
             <div class="mr-12 mb-8 animate-left">
                 <img src="images/interior-1.webp" alt="店内の様子"
@@ -878,8 +878,8 @@
             </div>
         </section>
 
-        <!-- SECTION 03: 今月の餃子 -->
-        <section id="section-03" class="limited">
+        <!-- SECTION: 今月の餃子 -->
+        <section id="limited" class="limited">
             <div class="limited__content">
                 <h2 class="limited__title">今月の餃子</h2>
 
@@ -906,8 +906,8 @@
             </div>
         </section>
 
-        <!-- SECTION 04: メニュー -->
-        <section id="section-04" class="menu">
+        <!-- SECTION: メニュー -->
+        <section id="menu" class="menu">
             <h2 class="menu__title">MENU</h2>
 
             <!-- メイン表示エリア -->
@@ -929,8 +929,8 @@
             </div>
         </section>
 
-        <!-- SECTION 05: 店舗情報 -->
-        <section id="section-05" class="shop">
+        <!-- SECTION: 店舗情報 -->
+        <section id="info" class="shop">
             <div class="shop__content">
                 <h2 class="shop__logo">HAYAKAWA</h2>
 
@@ -993,15 +993,15 @@
 
     <!-- 固定ナビゲーション -->
     <nav class="fixed-nav" aria-label="メインナビゲーション">
-        <a href="#section-04" class="fixed-nav__item">
+        <a href="#menu" class="fixed-nav__item">
             <img src="images/nav-gyoza.png" alt="" class="fixed-nav__icon" width="24" height="24">
-            <span class="fixed-nav__label">餃子</span>
+            <span class="fixed-nav__label">メニュー</span>
         </a>
         <a href="https://book.squareup.com/appointments/7fdtqzj51090mo/location/LY0JN74T6NBHG/services" target="_blank" rel="noopener noreferrer" class="fixed-nav__item">
             <img src="images/nav-reserve.png" alt="" class="fixed-nav__icon" width="24" height="24">
             <span class="fixed-nav__label">予約</span>
         </a>
-        <a href="#section-05" class="fixed-nav__item">
+        <a href="#info" class="fixed-nav__item">
             <img src="images/nav-shop.png" alt="" class="fixed-nav__icon" width="24" height="24">
             <span class="fixed-nav__label">店舗情報</span>
         </a>
@@ -1430,12 +1430,30 @@
             carousel.addEventListener('mousedown', stopAutoSlide);
             carousel.addEventListener('wheel', stopAutoSlide, { passive: true });
 
-            // ページ読み込み3秒後に自動スライド開始
-            setTimeout(() => {
-                if (isAutoSlideEnabled) {
-                    startAutoSlide();
+            // 自動スライド開始トリガー（5秒後 OR セクション表示時の早い方）
+            let autoSlideStarted = false;
+
+            function triggerAutoSlide() {
+                if (autoSlideStarted || !isAutoSlideEnabled) return;
+                autoSlideStarted = true;
+
+                clearTimeout(delayTimer);
+                carouselObserver.disconnect();
+
+                autoSlide();          // 即座に最初のスライド実行
+                startAutoSlide();     // 以降は2.8秒間隔
+            }
+
+            // 5秒タイマー
+            const delayTimer = setTimeout(triggerAutoSlide, 5000);
+
+            // IntersectionObserver（1pxでも見えたら発火）
+            const carouselObserver = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting) {
+                    triggerAutoSlide();
                 }
-            }, 3000);
+            }, { threshold: 0 });
+            carouselObserver.observe(carousel);
         })();
     </script>
 
@@ -1444,7 +1462,7 @@
     <script>
         (function initFixedNav() {
             const fixedNav = document.querySelector('.fixed-nav');
-            const hero = document.getElementById('section-01');
+            const hero = document.getElementById('hero');
 
             if (!fixedNav || !hero) return;
 
