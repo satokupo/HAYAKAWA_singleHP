@@ -1363,7 +1363,7 @@
             // ========================================
             // 自動スライド機能
             // ========================================
-            const AUTO_SLIDE_INTERVAL = 3000; // 3秒
+            const AUTO_SLIDE_INTERVAL = 2800; // 2.8秒
             let autoSlideTimer = null;
             let isAutoSlideEnabled = true;
             let slideDirection = 1; // 1: 右方向（カウントアップ）, -1: 左方向（カウントダウン）
@@ -1430,19 +1430,12 @@
             carousel.addEventListener('mousedown', stopAutoSlide);
             carousel.addEventListener('wheel', stopAutoSlide, { passive: true });
 
-            // Intersection Observerで画面内の時のみ自動スライド
-            const carouselObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting && isAutoSlideEnabled) {
-                        startAutoSlide();
-                    } else if (autoSlideTimer) {
-                        clearInterval(autoSlideTimer);
-                        autoSlideTimer = null;
-                    }
-                });
-            }, { threshold: 0.3 });
-
-            carouselObserver.observe(carousel);
+            // ページ読み込み3秒後に自動スライド開始
+            setTimeout(() => {
+                if (isAutoSlideEnabled) {
+                    startAutoSlide();
+                }
+            }, 3000);
         })();
     </script>
 
