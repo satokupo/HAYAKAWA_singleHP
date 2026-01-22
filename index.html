@@ -434,28 +434,7 @@
             flex-shrink: 0;
             width: 80px;
             height: 80px;
-            /* スライドアニメーション初期状態 */
-            opacity: 0;
-            transform: translateX(-30px);
-            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
         }
-
-        /* セクションが表示されたらアニメーション開始 */
-        .menu.is-visible .menu__slide {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        /* 時間差（stagger） */
-        .menu.is-visible .menu__slide:nth-child(1) { transition-delay: 0s; }
-        .menu.is-visible .menu__slide:nth-child(2) { transition-delay: 0.1s; }
-        .menu.is-visible .menu__slide:nth-child(3) { transition-delay: 0.1s; }
-        .menu.is-visible .menu__slide:nth-child(4) { transition-delay: 0.15s; }
-        .menu.is-visible .menu__slide:nth-child(5) { transition-delay: 0.2s; }
-        .menu.is-visible .menu__slide:nth-child(6) { transition-delay: 0.25s; }
-        .menu.is-visible .menu__slide:nth-child(7) { transition-delay: 0.3s; }
-        .menu.is-visible .menu__slide:nth-child(8) { transition-delay: 0.35s; }
-        .menu.is-visible .menu__slide:nth-child(9) { transition-delay: 0.4s; }
 
         .menu__thumb {
             width: 80px;
@@ -1232,27 +1211,99 @@
             setTimeout(() => {
                 scrollToSlide(initialSlideIndex, false);
             }, 50);
-        })();
-    </script>
 
-    <!-- メニューセクション スクロールアニメーション -->
-    <script>
-        (function initMenuScrollAnimation() {
-            const menuSection = document.querySelector('.menu');
-            if (!menuSection) return;
+            // ========================================
+            // 自動スライド機能
+            // ========================================
+            const AUTO_SLIDE_INTERVAL = 3000; // 3秒
+            let autoSlideTimer = null;
+            let isAutoSlideEnabled = true;
 
-            const menuObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('is-visible');
-                        menuObserver.unobserve(entry.target);
+            // 自動スライド実行
+            function autoSlide() {
+                if (!isAutoSlideEnabled) return;
+
+                // 次のrealIndexを計算（ループ）
+                const nextIndex = (currentIndex + 1) % menuItems.length;
+                currentIndex = nextIndex;
+
+                // 画面中央付近のスライドから、次のrealIndexを持つスライドを探す
+                const scrollCenter = carousel.scrollLeft + carousel.clientWidth / 2;
+                let targetSlide = null;
+                let minDistance = Infinity;
+
+                slides.forEach(slide => {
+                    if (parseInt(slide.dataset.realIndex) === nextIndex) {
+                        const slideCenter = slide.offsetLeft + ITEM_WIDTH / 2;
+                        // 現在位置より右側のスライドを優先
+                        if (slideCenter > scrollCenter - ITEM_WIDTH) {
+                            const distance = slideCenter - scrollCenter;
+                            if (distance > 0 && distance < minDistance) {
+                                minDistance = distance;
+                                targetSlide = slide;
+                            }
+                        }
                     }
                 });
-            }, { threshold: 0.2 });
 
-            menuObserver.observe(menuSection);
+                // 右側に見つからない場合は最も近いものを使用
+                if (!targetSlide) {
+                    minDistance = Infinity;
+                    slides.forEach(slide => {
+                        if (parseInt(slide.dataset.realIndex) === nextIndex) {
+                            const slideCenter = slide.offsetLeft + ITEM_WIDTH / 2;
+                            const distance = Math.abs(scrollCenter - slideCenter);
+                            if (distance < minDistance) {
+                                minDistance = distance;
+                                targetSlide = slide;
+                            }
+                        }
+                    });
+                }
+
+                if (targetSlide) {
+                    updateActiveState(nextIndex);
+                    updateMainDisplay(nextIndex);
+                    scrollToSlideByElement(targetSlide);
+                }
+            }
+
+            // 自動スライド開始
+            function startAutoSlide() {
+                if (autoSlideTimer || !isAutoSlideEnabled) return;
+                autoSlideTimer = setInterval(autoSlide, AUTO_SLIDE_INTERVAL);
+            }
+
+            // 自動スライド停止（永久）
+            function stopAutoSlide() {
+                isAutoSlideEnabled = false;
+                if (autoSlideTimer) {
+                    clearInterval(autoSlideTimer);
+                    autoSlideTimer = null;
+                }
+            }
+
+            // ユーザー操作検知で停止
+            carousel.addEventListener('touchstart', stopAutoSlide, { passive: true });
+            carousel.addEventListener('mousedown', stopAutoSlide);
+            carousel.addEventListener('wheel', stopAutoSlide, { passive: true });
+
+            // Intersection Observerで画面内の時のみ自動スライド
+            const carouselObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && isAutoSlideEnabled) {
+                        startAutoSlide();
+                    } else if (autoSlideTimer) {
+                        clearInterval(autoSlideTimer);
+                        autoSlideTimer = null;
+                    }
+                });
+            }, { threshold: 0.3 });
+
+            carouselObserver.observe(carousel);
         })();
     </script>
+
 
     <!-- 固定ナビ表示制御 -->
     <script>
