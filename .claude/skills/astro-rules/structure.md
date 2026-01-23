@@ -17,10 +17,11 @@ astro/
 │   │   ├── 01-Hero.astro
 │   │   ├── 02-Menu.astro
 │   │   ├── 03-ShopInfo.astro
-│   │   └── 04-Footer.astro
+│   │   └── 99-Footer.astro     ← フッターは99番
 │   ├── components/         ← 再利用パーツ（小さい）
-│   │   ├── StickyNav.astro ← 固定ナビ
-│   │   └── Button.astro    ← 汎用ボタン（必要時に追加）
+│   │   ├── StickyHeader.astro      ← 上部固定ヘッダー
+│   │   ├── StickyFooterNav.astro   ← 下部固定ナビ（スマホ用）
+│   │   └── Button.astro            ← 汎用ボタン（必要時に追加）
 │   └── styles/
 │       └── global.css      ← CSS変数、リセット
 ├── public/                 ← 静的ファイル（そのままコピー）
@@ -69,7 +70,7 @@ sections/
 ├── 01-Hero.astro       ← ナンバリング + PascalCase
 ├── 02-Menu.astro
 ├── 03-ShopInfo.astro
-└── 04-Footer.astro
+└── 99-Footer.astro     ← フッターは常に最後（99番）
 ```
 
 - **プレフィックス**: 並び順を示す（01-, 02-...）
@@ -79,7 +80,8 @@ sections/
 
 ```
 components/
-├── StickyNav.astro     ← PascalCase
+├── StickyHeader.astro      ← 上部固定ヘッダー（バーガーメニュー等）
+├── StickyFooterNav.astro   ← 下部固定ナビ（スマホ用CTAボタン等）
 ├── Button.astro
 └── Card.astro
 ```
@@ -158,19 +160,21 @@ import Base from '../layouts/Base.astro';
 import Hero from '../sections/01-Hero.astro';
 import Menu from '../sections/02-Menu.astro';
 import ShopInfo from '../sections/03-ShopInfo.astro';
-import Footer from '../sections/04-Footer.astro';
-import StickyNav from '../components/StickyNav.astro';
+import Footer from '../sections/99-Footer.astro';
+import StickyHeader from '../components/StickyHeader.astro';
+import StickyFooterNav from '../components/StickyFooterNav.astro';
 ---
 
-<Base title="早川餃子">
+<Base title="サイトタイトル">
   <!-- ↓ これが <slot /> に入る -->
-  <StickyNav />
+  <StickyHeader />
   <main>
     <Hero />
     <Menu />
     <ShopInfo />
   </main>
   <Footer />
+  <StickyFooterNav />
 </Base>
 ```
 
@@ -235,12 +239,13 @@ import StickyNav from '../components/StickyNav.astro';
 ```
 小さい ←――――――――――――――――――→ 大きい
 
-  components    sections    layouts    pages
-  (パーツ)      (区切り)    (外枠)     (ページ)
-    ↓             ↓           ↓          ↓
-  Button      01-Hero      Base      index
-  Card        02-Menu
-  StickyNav   03-ShopInfo
+  components       sections    layouts    pages
+  (パーツ)         (区切り)    (外枠)     (ページ)
+    ↓                ↓           ↓          ↓
+  StickyHeader    01-Hero      Base      index
+  StickyFooterNav 02-Menu
+  Button          03-ShopInfo
+  Card            99-Footer
 ```
 
 - **components**: 再利用可能な最小パーツ

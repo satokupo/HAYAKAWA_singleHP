@@ -14,16 +14,31 @@ CSSの品質を均一化するためのルール集。
 }
 ```
 
-### Tailwind設定
+### Tailwind設定（Astro統合）
 
-```html
-<script>
-  tailwind.config = {
-    corePlugins: {
-      preflight: false
-    }
-  }
-</script>
+AstroではCDN版ではなく `@astrojs/tailwind` 統合を使用する。
+CDN版は開発サーバー（localhost）からCORSでブロックされるため。
+
+**tailwind.config.mjs:**
+
+```js
+export default {
+  content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
+  corePlugins: {
+    preflight: false,  // ブラウザのデフォルトスタイルを維持
+  },
+};
+```
+
+**astro.config.mjs:**
+
+```js
+import { defineConfig } from 'astro/config';
+import tailwind from '@astrojs/tailwind';
+
+export default defineConfig({
+  integrations: [tailwind()],
+});
 ```
 
 preflightを無効化し、ブラウザのデフォルトスタイルを維持する。
@@ -226,7 +241,52 @@ preflightを無効化し、ブラウザのデフォルトスタイルを維持�
 
 ---
 
-## 6. ビューポート高さ（svh / lvh）
+## 6. Astroの`<style>`タグ
+
+### スコープ付きCSS（デフォルト）
+
+Astroの `<style>` タグはデフォルトでスコープ付き。
+ビルド時にセレクタにハッシュが付与され、そのコンポーネント内のみに適用される。
+
+```astro
+<style>
+  /* このスタイルはこのコンポーネント内のみ適用 */
+  .card { ... }
+</style>
+```
+
+### 問題: JSで動的生成した要素にスタイルが当たらない
+
+JSで動的に生成したDOM要素には、Astroのハッシュが付かない。
+そのため、スコープ付きCSSが適用されない。
+
+**症状例:**
+- カルーセルのスライドが正しく表示されない
+- JSで追加した要素のスタイルが効かない
+
+### 解決: is:global を使う
+
+動的生成要素を含むコンポーネントでは `is:global` を使用する。
+
+```astro
+<style is:global>
+  /* このスタイルはグローバルに適用される */
+  .carousel__slide {
+    /* ... */
+  }
+</style>
+```
+
+### 使い分け
+
+| 状況 | 使用するスタイル |
+|------|-----------------|
+| 静的なHTML要素のみ | `<style>`（スコープ付き） |
+| JSで動的生成する要素がある | `<style is:global>` |
+
+---
+
+## 7. ビューポート高さ（svh / lvh）
 
 ### svh と lvh の違い
 

@@ -1,0 +1,44 @@
+---
+// StickyFooterNav: 下部固定ナビ（スマホ用）
+// 電話ボタン、予約ボタン等のCTAを配置
+---
+
+<nav class="sticky-footer-nav">
+  <div class="sticky-footer-nav__inner flex justify-around items-center">
+    <a href="tel:000-0000-0000" class="sticky-footer-nav__item flex flex-col items-center p-2">
+      <span class="text-lg">TEL</span>
+      <span class="text-xs">電話する</span>
+    </a>
+    <a href="#contact" class="sticky-footer-nav__item flex flex-col items-center p-2">
+      <span class="text-lg">MAIL</span>
+      <span class="text-xs">お問合せ</span>
+    </a>
+  </div>
+</nav>
+
+<style>
+  .sticky-footer-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: var(--color-primary, #2563eb);
+    color: white;
+    padding: var(--space-2, 8px) 0;
+    /* iPhone等のセーフエリア対応 */
+    padding-bottom: max(var(--space-2, 8px), env(safe-area-inset-bottom));
+  }
+
+  .sticky-footer-nav__inner {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .sticky-footer-nav__item {
+    color: inherit;
+    text-decoration: none;
+    min-width: 80px;
+    min-height: 44px; /* タッチターゲット確保 */
+  }
+</style>
