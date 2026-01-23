@@ -1,6 +1,6 @@
-# CSS作成ルール 詳細リファレンス
+# CSS作成ルール
 
-SKILL.md のルールに基づく詳細な例とコードサンプル。
+CSSの品質を均一化するためのルール集。
 
 ---
 
@@ -26,7 +26,7 @@ SKILL.md のルールに基づく詳細な例とコードサンプル。
 </script>
 ```
 
-preflightを無効化することで、ブラウザのデフォルトスタイルを維持する。
+preflightを無効化し、ブラウザのデフォルトスタイルを維持する。
 
 ---
 
@@ -89,12 +89,6 @@ preflightを無効化することで、ブラウザのデフォルトスタイ�
   background: var(--color-bg);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-md);
-}
-
-.card__title {
-  font-size: var(--font-size-xl);
-  color: var(--color-text);
-  margin-bottom: var(--space-2);
 }
 ```
 
@@ -194,7 +188,7 @@ preflightを無効化することで、ブラウザのデフォルトスタイ�
 
 ---
 
-## 5. BEM命名
+## 5. BEM命名（カスタムCSS）
 
 ### 基本構造
 
@@ -213,21 +207,9 @@ preflightを無効化することで、ブラウザのデフォルトスタイ�
   /* 見出し */
 }
 
-.section-01__text {
-  /* 本文 */
-}
-
-.section-01__image {
-  /* 画像 */
-}
-
 /* 修飾子: バリエーション */
 .section-01--dark {
   /* ダークテーマ版 */
-}
-
-.section-01__button--primary {
-  /* プライマリボタン */
 }
 ```
 
@@ -238,87 +220,13 @@ preflightを無効化することで、ブラウザのデフォルトスタイ�
   <div class="section-01__inner">
     <h2 class="section-01__heading">About Us</h2>
     <p class="section-01__text">会社紹介テキスト</p>
-    <img
-      class="section-01__image"
-      src="images/about.webp"
-      alt="会社外観"
-      width="600"
-      height="400"
-      loading="lazy"
-    >
   </div>
 </section>
 ```
 
 ---
 
-## 6. Astro移行
-
-### 現在（1枚HTML）
-
-```html
-<style>
-  :root {
-    --color-primary: #2563eb;
-    /* ... */
-  }
-
-  *, *::before, *::after {
-    box-sizing: border-box;
-  }
-
-  .section-01 { /* ... */ }
-</style>
-```
-
-### Astro移行後
-
-```
-src/
-├── styles/
-│   └── global.css      ← :root変数、リセット
-├── components/
-│   ├── Section01.astro ← コンポーネント固有スタイル
-│   └── Section02.astro
-└── pages/
-    └── index.astro
-```
-
-**global.css**
-```css
-:root {
-  --color-primary: #2563eb;
-  /* ... */
-}
-
-*, *::before, *::after {
-  box-sizing: border-box;
-}
-```
-
-**Section01.astro**
-```astro
----
-// コンポーネントロジック
----
-
-<section class="section-01" id="about">
-  <div class="section-01__inner">
-    <!-- コンテンツ -->
-  </div>
-</section>
-
-<style>
-  .section-01 {
-    /* このコンポーネント固有のスタイル */
-    /* Astroが自動でスコープ化 */
-  }
-</style>
-```
-
----
-
-## 7. ビューポート高さ（svh / lvh）
+## 6. ビューポート高さ（svh / lvh）
 
 ### svh と lvh の違い
 
@@ -327,12 +235,6 @@ src/
 | `svh` | Small Viewport Height | アドレスバーが**縮小した状態**の高さ |
 | `lvh` | Large Viewport Height | アドレスバーが**表示された状態**の高さ |
 | `dvh` | Dynamic Viewport Height | アドレスバーの状態に応じて動的に変化 |
-
-### 問題: svh でファーストビューを指定した場合
-
-モバイルブラウザでスクロールするとアドレスバーが縮小する。
-`100svh` だとアドレスバー縮小後の高さ基準になるため、
-初期表示時（アドレスバー表示時）に下部に隙間ができる。
 
 ### 推奨: ファーストビューは 95lvh
 
@@ -350,31 +252,11 @@ src/
 
 ### 確認フロー
 
-ユーザーから以下のような指示があった場合:
-- 「ヒーローをフルハイトに」
-- 「画面いっぱいに表示」
-- 「100vhで」
+ユーザーから「ヒーローをフルハイトに」「画面いっぱいに表示」等の指示があった場合：
 
-**対応**:
 1. ファーストビュー → デフォルト `95lvh` を適用
 2. 適用後に報告: 「プロジェクトルールにより、ファーストビューの高さは95lvhとしました」
 3. 他のセクション → svh/lvh どちらを希望か確認
-
-### コード例
-
-```css
-/* ファーストビュー（ヒーロー） */
-.section-hero {
-  height: 95lvh;
-  min-height: 600px;
-  max-height: 900px;  /* PC での上限 */
-}
-
-/* 他のフルハイトセクション（確認後に適用） */
-.section-fullheight {
-  min-height: 100svh;  /* または 100lvh */
-}
-```
 
 ---
 
@@ -387,13 +269,6 @@ src/
 - [ ] Tailwindで書ける部分はTailwindを使っているか
 - [ ] カスタムCSSはBEM命名に従っているか
 - [ ] モバイルファーストで書かれているか
-
-### レビュー時
-
-- [ ] マジックナンバー（直接の数値）がないか
-- [ ] 重複した色指定がないか
-- [ ] レスポンシブは min-width で書かれているか
-- [ ] 不要なベンダープレフィックスがないか
 
 ### ビューポート高さ指定時
 
