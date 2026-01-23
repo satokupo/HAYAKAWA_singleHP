@@ -1,0 +1,51 @@
+---
+// Tagline Section
+---
+
+<section class="tagline">
+    <div class="tagline__dots tagline__dots--top">
+        <span class="tagline__dot tagline__dot--sm">•</span>
+        <span class="tagline__dot tagline__dot--md">•</span>
+        <span class="tagline__dot tagline__dot--lg">•</span>
+    </div>
+    <p class="tagline__text">一口餃子専門店</p>
+    <div class="tagline__dots tagline__dots--bottom">
+        <span class="tagline__dot tagline__dot--lg">•</span>
+        <span class="tagline__dot tagline__dot--md">•</span>
+        <span class="tagline__dot tagline__dot--sm">•</span>
+    </div>
+</section>
+
+<style>
+    .tagline {
+        padding: 6rem 1.5rem;
+        margin-top: 4rem;
+        text-align: center;
+    }
+
+    .tagline__text {
+        font-size: 1.25rem;
+        color: var(--color-text-sub);
+        letter-spacing: 0.1em;
+    }
+
+    .tagline__dots {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        color: var(--color-text-sub);
+    }
+
+    .tagline__dots--top {
+        margin-bottom: 3rem;
+    }
+
+    .tagline__dots--bottom {
+        margin-top: 3rem;
+    }
+
+    .tagline__dot--sm { font-size: 0.4rem; opacity: 0.6; }
+    .tagline__dot--md { font-size: 0.6rem; opacity: 0.8; }
+    .tagline__dot--lg { font-size: 0.8rem; }
+</style>

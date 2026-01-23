@@ -1,0 +1,102 @@
+---
+// Bottom Navigation (固定ナビゲーション)
+---
+
+<nav class="fixed-nav" aria-label="メインナビゲーション">
+    <a href="#menu" class="fixed-nav__item">
+        <img src="/images/nav-gyoza.png" alt="" class="fixed-nav__icon" width="24" height="24">
+        <span class="fixed-nav__label">メニュー</span>
+    </a>
+    <a href="https://book.squareup.com/appointments/7fdtqzj51090mo/location/LY0JN74T6NBHG/services" target="_blank" rel="noopener noreferrer" class="fixed-nav__item">
+        <img src="/images/nav-reserve.png" alt="" class="fixed-nav__icon" width="24" height="24">
+        <span class="fixed-nav__label">予約</span>
+    </a>
+    <a href="#info" class="fixed-nav__item">
+        <img src="/images/nav-shop.png" alt="" class="fixed-nav__icon" width="24" height="24">
+        <span class="fixed-nav__label">店舗情報</span>
+    </a>
+    <a href="https://maps.app.goo.gl/nzqpWmvyuoDS8iPu8" target="_blank" rel="noopener noreferrer" class="fixed-nav__item">
+        <img src="/images/nav-map.png" alt="" class="fixed-nav__icon" width="24" height="24">
+        <span class="fixed-nav__label">地図</span>
+    </a>
+</nav>
+
+<script>
+    (function initFixedNav() {
+        const fixedNav = document.querySelector('.fixed-nav');
+        const hero = document.getElementById('hero');
+
+        if (!fixedNav || !hero) return;
+
+        const navHeight = 70;
+
+        function updateNavVisibility() {
+            const heroRect = hero.getBoundingClientRect();
+            if (heroRect.bottom < window.innerHeight - navHeight) {
+                fixedNav.classList.add('is-visible');
+            } else {
+                fixedNav.classList.remove('is-visible');
+            }
+        }
+
+        window.addEventListener('scroll', updateNavVisibility, { passive: true });
+        updateNavVisibility();
+    })();
+</script>
+
+<style>
+    .fixed-nav {
+        position: fixed;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        max-width: 390px;
+        background-color: var(--bg-main);
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        padding: 0.5rem 0;
+        box-shadow: none;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        z-index: 100;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .fixed-nav.is-visible {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .fixed-nav__item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem;
+        color: var(--color-text);
+        text-decoration: none;
+        min-width: 60px;
+        min-height: 44px;
+        transition: color 0.2s;
+    }
+
+    .fixed-nav__item:hover,
+    .fixed-nav__item:focus {
+        color: var(--color-accent);
+    }
+
+    .fixed-nav__icon {
+        width: 24px;
+        height: 24px;
+        margin-bottom: 0.25rem;
+        object-fit: contain;
+    }
+
+    .fixed-nav__label {
+        font-size: 0.625rem;
+        font-weight: 500;
+    }
+</style>

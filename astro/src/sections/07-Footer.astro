@@ -1,0 +1,39 @@
+---
+// Footer Section
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="footer">
+    <p class="footer__copyright">&copy; {currentYear} HAYAKAWA</p>
+</footer>
+
+<style>
+    .footer {
+        background-color: #2A2620;
+        padding: 1rem 1.5rem;
+        padding-bottom: calc(1rem + 70px);
+        text-align: center;
+        position: relative;
+    }
+
+    .footer::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: url('/images/noise.webp');
+        background-repeat: repeat;
+        opacity: 0.05;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .footer__copyright {
+        font-size: 0.75rem;
+        color: var(--color-text-light);
+        position: relative;
+        z-index: 1;
+    }
+</style>
