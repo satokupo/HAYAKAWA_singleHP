@@ -1,23 +1,24 @@
 ---
 // Menu Section
+const baseUrl = import.meta.env.BASE_URL;
 const menuItems = [
     {
         name: '焼き餃子',
         price: '¥550',
         description: '極薄の皮でお肉の旨みがダイレクトに伝わる<br>一口サイズの焼き餃子（ニラニンニク・シソ・ショウガ）',
-        image: '/images/menu-1.webp'
+        image: `${baseUrl}images/menu-1.webp`
     },
     {
         name: '水餃子',
         price: '¥280',
         description: 'つるんともちもち、口の中でとろける<br>茹でたてのぷりぷり食感をぜひ',
-        image: '/images/menu-2.webp'
+        image: `${baseUrl}images/menu-2.webp`
     },
     {
         name: 'ドライカレー',
         price: '¥600',
         description: 'スパイス香る、やみつきの一皿<br>常連さんのリクエストで定番入り',
-        image: '/images/menu-3.webp'
+        image: `${baseUrl}images/menu-3.webp`
     }
 ];
 ---

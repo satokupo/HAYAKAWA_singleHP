@@ -1,9 +1,10 @@
 ---
 // Footer Section
 const currentYear = new Date().getFullYear();
+const baseUrl = import.meta.env.BASE_URL;
 ---
 
-<footer class="footer">
+<footer class="footer" style={`--noise-bg: url('${baseUrl}images/noise.webp');`}>
     <p class="footer__copyright">&copy; {currentYear} HAYAKAWA</p>
 </footer>
 
@@ -23,7 +24,7 @@ const currentYear = new Date().getFullYear();
         left: 0;
         right: 0;
         bottom: 0;
-        background-image: url('/images/noise.webp');
+        background-image: var(--noise-bg);
         background-repeat: repeat;
         opacity: 0.05;
         pointer-events: none;

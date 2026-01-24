@@ -1,8 +1,9 @@
 ---
 // Hero Section
+const baseUrl = import.meta.env.BASE_URL;
 ---
 
-<section id="hero" class="hero">
+<section id="hero" class="hero" style={`--hero-bg-sp: url('${baseUrl}images/hero-main-sp.webp'); --hero-bg-pc: url('${baseUrl}images/hero-main-pc.webp');`}>
     <div class="hero__content">
         <div class="hero__header">
             <h1 class="hero__title"><span class="hero__title-text">HAYAKAWA</span></h1>
@@ -17,7 +18,7 @@
     .hero {
         position: relative;
         height: min(95lvh, 900px);
-        background-image: url('/images/hero-main-sp.webp');
+        background-image: var(--hero-bg-sp);
         background-size: cover;
         background-position: center center;
         background-repeat: no-repeat;
@@ -26,7 +27,7 @@
 
     @media (min-width: 768px) {
         .hero {
-            background-image: url('/images/hero-main-pc.webp');
+            background-image: var(--hero-bg-pc);
         }
     }
 

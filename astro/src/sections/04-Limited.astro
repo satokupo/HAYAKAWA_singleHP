@@ -1,8 +1,9 @@
 ---
 // Limited (今月の餃子) Section
+const baseUrl = import.meta.env.BASE_URL;
 ---
 
-<section id="limited" class="limited">
+<section id="limited" class="limited" style={`--limited-bg: url('${baseUrl}images/limited-bg.webp');`}>
     <div class="limited__content">
         <h2 class="limited__title">今月の餃子</h2>
 
@@ -15,7 +16,7 @@
                         stroke-width="2"
                         stroke-dasharray="8 6"/>
             </svg>
-            <img src="/images/limited-gyoza.webp"
+            <img src={`${baseUrl}images/limited-gyoza.webp`}
                  alt="今月の餃子"
                  class="limited__image"
                  width="300" height="300" loading="lazy">
@@ -33,7 +34,7 @@
     .limited {
         position: relative;
         height: min(100svh, 900px);
-        background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/images/limited-bg.webp');
+        background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), var(--limited-bg);
         background-size: cover;
         background-position: center;
         padding: 0 1rem;
