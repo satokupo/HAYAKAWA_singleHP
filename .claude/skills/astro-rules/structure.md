@@ -274,3 +274,50 @@ import StickyFooterNav from '../components/StickyFooterNav.astro';
 
 - [ ] レイアウトをインポートしているか
 - [ ] セクションを正しい順番で並べているか
+
+---
+
+## GitHub Pages デプロイ設定
+
+### base 設定（サブパス形式の場合）
+
+リポジトリ名がURLのサブパスになる場合（`https://user.github.io/repo-name/`）、`astro.config.mjs` に `base` 設定が必要。
+
+**重要: 末尾スラッシュ必須**
+
+```javascript
+// astro.config.mjs
+export default defineConfig({
+    site: 'https://user.github.io',
+    base: '/repo-name/',  // 末尾スラッシュ必須
+});
+```
+
+### 画像パスのルール
+
+`base` 設定がある場合、画像パスは `import.meta.env.BASE_URL` を使う。
+
+**imgタグの場合:**
+```astro
+---
+const baseUrl = import.meta.env.BASE_URL;
+---
+<img src={`${baseUrl}images/photo.webp`} alt="..." />
+```
+
+**CSS背景画像の場合（CSS変数経由）:**
+```astro
+---
+const baseUrl = import.meta.env.BASE_URL;
+---
+<section style={`--bg-image: url('${baseUrl}images/bg.webp');`}>
+
+<style>
+.section { background-image: var(--bg-image); }
+</style>
+```
+
+### ローカル開発時のURL
+
+`base` 設定がある場合、ローカルでも同じパスでアクセスが必要：
+- `http://localhost:4321/repo-name/`
