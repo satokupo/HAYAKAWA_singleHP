@@ -1,4 +1,6 @@
 ---
+import AuthOverlay from '../components/AuthOverlay.astro';
+
 interface Props {
     title: string;
     description?: string;
@@ -40,6 +42,7 @@ const baseUrl = import.meta.env.BASE_URL;
     <!-- Tailwind CSS は @astrojs/tailwind で統合 -->
 </head>
 <body>
+    <AuthOverlay />
     <slot />
 </body>
 </html>
