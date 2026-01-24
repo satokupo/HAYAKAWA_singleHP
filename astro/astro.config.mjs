@@ -5,6 +5,6 @@ import tailwind from '@astrojs/tailwind';
 // https://astro.build/config
 export default defineConfig({
     site: 'https://satokupo.github.io',
-    base: '/HAYAKAWA_singleHP',
+    base: '/HAYAKAWA_singleHP/',
     integrations: [tailwind()],
 });
