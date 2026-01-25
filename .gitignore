@@ -64,12 +64,12 @@ dev/tests/logs/*
 !images/**/*.jpg
 !images/**/*.jpeg
 
-# astro/public/images以下も追跡対象
-!astro/public/images/
-!astro/public/images/**/*.webp
-!astro/public/images/**/*.png
-!astro/public/images/**/*.jpg
-!astro/public/images/**/*.jpeg
+# site/public/images以下も追跡対象
+!site/public/images/
+!site/public/images/**/*.webp
+!site/public/images/**/*.png
+!site/public/images/**/*.jpg
+!site/public/images/**/*.jpeg
 
 # Adobe
 *.psd
