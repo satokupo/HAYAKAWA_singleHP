@@ -1,0 +1,48 @@
+---
+/**
+ * 限定メニュープレビューコンポーネント
+ */
+
+import type { LimitedMenuContent } from '../lib/types';
+
+interface Props {
+  content: LimitedMenuContent | null;
+}
+
+const { content } = Astro.props;
+---
+
+<div class="bg-white rounded-lg shadow-sm p-4">
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-lg font-bold text-gray-800">限定メニュー</h2>
+    <a
+      href="/update/limited"
+      class="text-sm text-blue-600 hover:text-blue-800"
+    >
+      更新する
+    </a>
+  </div>
+
+  {content ? (
+    <div>
+      <div class="aspect-[4/3] bg-gray-100 rounded-md overflow-hidden mb-2">
+        <img
+          src={content.imageUrl}
+          alt={content.title}
+          class="w-full h-full object-contain"
+        />
+      </div>
+      <div class="text-sm">
+        <h3 class="font-bold text-gray-800">{content.title}</h3>
+        <p class="text-gray-600 mt-1">{content.description}</p>
+        <p class="text-gray-400 mt-2">
+          更新日: {new Date(content.updatedAt).toLocaleString('ja-JP')}
+        </p>
+      </div>
+    </div>
+  ) : (
+    <div class="aspect-[4/3] bg-gray-100 rounded-md flex items-center justify-center">
+      <p class="text-gray-400">まだ設定されていません</p>
+    </div>
+  )}
+</div>

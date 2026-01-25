@@ -1,0 +1,29 @@
+---
+/**
+ * ダッシュボード画面
+ * 現在のコンテンツ状況を一覧表示
+ */
+
+import AuthLayout from '../../layouts/AuthLayout.astro';
+import CalendarPreview from '../../components/CalendarPreview.astro';
+import LimitedPreview from '../../components/LimitedPreview.astro';
+import type { Env, CalendarContent, LimitedMenuContent } from '../../lib/types';
+import { getContent } from '../../lib/r2';
+
+const env = Astro.locals.runtime.env as Env;
+
+// コンテンツを取得
+const calendarContent = await getContent<CalendarContent>(env, 'calendar');
+const limitedContent = await getContent<LimitedMenuContent>(env, 'limited');
+---
+
+<AuthLayout title="ダッシュボード">
+  <div class="space-y-6">
+    <h2 class="text-xl font-bold text-gray-800">コンテンツ管理</h2>
+
+    <div class="grid gap-6 md:grid-cols-2">
+      <CalendarPreview content={calendarContent} />
+      <LimitedPreview content={limitedContent} />
+    </div>
+  </div>
+</AuthLayout>
