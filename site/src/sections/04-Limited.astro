@@ -1,6 +1,17 @@
 ---
 // Limited (今月の餃子) Section
+import { fetchContent, DEFAULT_LIMITED } from '../lib/content';
+
 const baseUrl = import.meta.env.BASE_URL;
+const adminApiUrl = import.meta.env.ADMIN_API_URL || 'http://localhost:8788';
+
+// admin API からコンテンツを取得
+const { limited } = await fetchContent(adminApiUrl);
+
+// 取得したコンテンツまたはデフォルト値を使用
+const title = limited?.title || DEFAULT_LIMITED.title;
+const description = limited?.description || DEFAULT_LIMITED.description;
+const imageUrl = limited?.imageUrl || `${baseUrl}images/limited-gyoza.webp`;
 ---
 
 <section id="limited" class="limited" style={`--limited-bg: url('${baseUrl}images/limited-bg.webp');`}>
@@ -16,17 +27,14 @@ const baseUrl = import.meta.env.BASE_URL;
                         stroke-width="2"
                         stroke-dasharray="8 6"/>
             </svg>
-            <img src={`${baseUrl}images/limited-gyoza.webp`}
+            <img src={imageUrl}
                  alt="今月の餃子"
                  class="limited__image"
                  width="300" height="300" loading="lazy">
         </div>
 
-        <p class="limited__name">栗と鶏肉の甘辛餃子</p>
-        <p class="limited__description">
-            ほっくり甘い栗と、ジューシーな鶏肉を<br>
-            甘辛く仕上げました。
-        </p>
+        <p class="limited__name">{title}</p>
+        <p class="limited__description" set:html={description.replace(/\n/g, '<br>')} />
     </div>
 </section>
 

@@ -25,11 +25,11 @@ const { content } = Astro.props;
 
   {content ? (
     <div>
-      <div class="aspect-[4/3] bg-gray-100 rounded-md overflow-hidden mb-2">
+      <div class="w-40 h-40 mx-auto bg-gray-100 rounded-full overflow-hidden mb-2">
         <img
           src={content.imageUrl}
           alt={content.title}
-          class="w-full h-full object-contain"
+          class="w-full h-full object-cover"
         />
       </div>
       <div class="text-sm">
@@ -41,8 +41,8 @@ const { content } = Astro.props;
       </div>
     </div>
   ) : (
-    <div class="aspect-[4/3] bg-gray-100 rounded-md flex items-center justify-center">
-      <p class="text-gray-400">まだ設定されていません</p>
+    <div class="w-40 h-40 mx-auto bg-gray-100 rounded-full flex items-center justify-center">
+      <p class="text-gray-400 text-center text-sm">まだ設定<br />されていません</p>
     </div>
   )}
 </div>

@@ -1,6 +1,15 @@
 ---
 // Shop (店舗情報) Section
+import { fetchContent } from '../lib/content';
+
 const baseUrl = import.meta.env.BASE_URL;
+const adminApiUrl = import.meta.env.ADMIN_API_URL || 'http://localhost:8788';
+
+// admin API からコンテンツを取得
+const { calendar } = await fetchContent(adminApiUrl);
+
+// 取得したコンテンツまたはデフォルト値を使用
+const calendarImageUrl = calendar?.imageUrl || `${baseUrl}images/calendar.webp`;
 ---
 
 <section id="info" class="shop" style={`--noise-bg: url('${baseUrl}images/noise.webp');`}>
@@ -17,7 +26,7 @@ const baseUrl = import.meta.env.BASE_URL;
         </a>
 
         <div class="shop__calendar">
-            <img src={`${baseUrl}images/calendar.webp`}
+            <img src={calendarImageUrl}
                  alt="営業カレンダー"
                  class="shop__calendar-image"
                  width="280" height="200" loading="lazy">
