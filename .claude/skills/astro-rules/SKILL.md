@@ -1,6 +1,6 @@
 ---
 name: astro-rules
-description: Astroプロジェクトの構造・CSS・コンポーネント設計のルール集。構造変更・セクション作成・ディレクトリ操作時に参照する。
+description: Astroプロジェクトの構造・CSS・コンポーネント設計のルール集。構造変更・セクション作成・ディレクトリ操作時に参照する。運用・Cloudflare設定も含む。
 user-invocable: false
 ---
 
@@ -20,6 +20,9 @@ Astroプロジェクトの品質を均一化するためのルール集。
 - レイアウトファイルの作成・編集
 - CSSの作成・レビュー・整形
 - .astroファイルの作成
+- Cloudflare設定・デプロイ
+- SSR実装
+- 運用規模の相談
 
 ---
 
@@ -50,6 +53,16 @@ CSS作成ルール：
 - レスポンシブ
 - BEM命名
 - ビューポート高さ（svh/lvh）
+
+### operations.md
+
+運用・ホスティング設定：
+- リポジトリ内ディレクトリ構成（site / admin）
+- Cloudflare構成（Pages, R2, KV）
+- Astro SSR + Cloudflare Adapter
+- 無料枠と運用規模の目安
+- 複数クライアント運用
+- キャッシュ対策
 
 ---
 
