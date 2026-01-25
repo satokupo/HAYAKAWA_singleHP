@@ -1,0 +1,37 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "hayakawa-admin",
+  "compatibility_date": "2025-01-25",
+
+  // KV Namespaces
+  // ローカル開発時は自動でローカルKVが使用される
+  // 本番デプロイ前に `wrangler kv:namespace create` で作成し、IDを設定
+  "kv_namespaces": [
+    {
+      "binding": "SESSIONS",
+      "id": "<SESSIONS_KV_ID>"
+    },
+    {
+      "binding": "RATE_LIMIT",
+      "id": "<RATE_LIMIT_KV_ID>"
+    }
+  ],
+
+  // R2 Buckets
+  // 本番デプロイ前に `wrangler r2 bucket create` で作成
+  "r2_buckets": [
+    {
+      "binding": "IMAGES",
+      "bucket_name": "hayakawa-images"
+    }
+  ],
+
+  // 環境変数
+  "vars": {
+    "ADMIN_ID": "HAYAKAWA",
+    "SESSION_TTL": "3600"
+  }
+
+  // ADMIN_PASSWORD は Cloudflare Dashboard の Secrets で設定
+  // `wrangler secret put ADMIN_PASSWORD` で設定可能
+}
