@@ -1,0 +1,177 @@
+---
+/**
+ * 更新画面のサンプル
+ *
+ * このファイルは参考用です。
+ * 実際の更新画面を作成する際はリネームして使用してください。
+ *
+ * 例:
+ *   - calendar.astro（カレンダー画像の更新）
+ *   - limited.astro（限定メニューの更新）
+ */
+
+import AuthLayout from '../../layouts/AuthLayout.astro';
+import { clientImageProcessorCode } from '../../lib/image';
+
+// ページタイトル
+const pageTitle = 'コンテンツ更新';
+
+// 画像タイプ（R2保存時のパス分類）
+const imageType = 'example';
+---
+
+<AuthLayout title={pageTitle}>
+  <div class="space-y-6">
+    <!-- プレビュー領域 -->
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-lg font-bold text-gray-800 mb-4">現在の画像</h2>
+      <div id="preview-container" class="bg-gray-100 rounded-lg p-4 min-h-40 flex items-center justify-center">
+        <p class="text-gray-500">画像がありません</p>
+      </div>
+    </div>
+
+    <!-- アップロードフォーム -->
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-lg font-bold text-gray-800 mb-4">画像をアップロード</h2>
+
+      <div class="space-y-4">
+        <!-- ファイル選択 -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            画像を選択
+          </label>
+          <input
+            type="file"
+            id="file-input"
+            accept="image/jpeg,image/png,image/webp"
+            class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+          />
+          <p class="mt-1 text-xs text-gray-500">
+            JPEG, PNG, WebP（最大10MB、長辺2000px以下にリサイズ）
+          </p>
+        </div>
+
+        <!-- プレビュー -->
+        <div id="upload-preview" class="hidden">
+          <p class="text-sm font-medium text-gray-700 mb-2">アップロード後のプレビュー</p>
+          <img id="preview-image" class="max-w-full h-auto rounded-lg" alt="プレビュー" />
+        </div>
+
+        <!-- アップロードボタン -->
+        <button
+          id="upload-btn"
+          type="button"
+          disabled
+          class="w-full py-3 px-4 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          アップロード
+        </button>
+
+        <!-- ステータス表示 -->
+        <div id="status" class="hidden text-sm text-center py-2 rounded-md"></div>
+      </div>
+    </div>
+
+    <!-- 戻るリンク -->
+    <div class="text-center">
+      <a href="/dashboard" class="text-blue-600 hover:text-blue-800 text-sm">
+        ← ダッシュボードに戻る
+      </a>
+    </div>
+  </div>
+
+  <!-- クライアントサイド画像処理 -->
+  <script is:inline set:html={clientImageProcessorCode}></script>
+
+  <script define:vars={{ imageType }}>
+    const fileInput = document.getElementById('file-input');
+    const uploadBtn = document.getElementById('upload-btn');
+    const uploadPreview = document.getElementById('upload-preview');
+    const previewImage = document.getElementById('preview-image');
+    const statusDiv = document.getElementById('status');
+
+    let processedBlob = null;
+
+    // ファイル選択時
+    fileInput.addEventListener('change', async (e) => {
+      const file = e.target.files?.[0];
+      if (!file) {
+        uploadBtn.disabled = true;
+        uploadPreview.classList.add('hidden');
+        return;
+      }
+
+      try {
+        // クライアントサイドで画像処理
+        const result = await processImageOnClient(file);
+        processedBlob = result.blob;
+
+        // プレビュー表示
+        const url = URL.createObjectURL(result.blob);
+        previewImage.src = url;
+        uploadPreview.classList.remove('hidden');
+        uploadBtn.disabled = false;
+
+        showStatus(`処理完了: ${result.width}x${result.height}px`, 'success');
+      } catch (error) {
+        showStatus(error.message, 'error');
+        uploadBtn.disabled = true;
+      }
+    });
+
+    // アップロードボタン
+    uploadBtn.addEventListener('click', async () => {
+      if (!processedBlob) return;
+
+      uploadBtn.disabled = true;
+      showStatus('アップロード中...', 'info');
+
+      try {
+        const formData = new FormData();
+        formData.append('file', processedBlob, 'image.webp');
+        formData.append('type', imageType);
+
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          showStatus('アップロード完了！', 'success');
+
+          // TODO: コンテンツ更新APIを呼び出す
+          // await updateContent(imageType, data.data.path);
+
+          // リロードして反映
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
+        } else {
+          showStatus(data.error || 'アップロードに失敗しました', 'error');
+          uploadBtn.disabled = false;
+        }
+      } catch (error) {
+        showStatus('エラーが発生しました', 'error');
+        uploadBtn.disabled = false;
+      }
+    });
+
+    function showStatus(message, type) {
+      statusDiv.textContent = message;
+      statusDiv.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800', 'bg-blue-100', 'text-blue-800');
+
+      switch (type) {
+        case 'success':
+          statusDiv.classList.add('bg-green-100', 'text-green-800');
+          break;
+        case 'error':
+          statusDiv.classList.add('bg-red-100', 'text-red-800');
+          break;
+        default:
+          statusDiv.classList.add('bg-blue-100', 'text-blue-800');
+      }
+    }
+  </script>
+</AuthLayout>

@@ -1,0 +1,4 @@
+# ローカル開発用の環境変数
+# このファイルを .dev.vars にコピーして使用
+
+ADMIN_PASSWORD=your_secure_password_here

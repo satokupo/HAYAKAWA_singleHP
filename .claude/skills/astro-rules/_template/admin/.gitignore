@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+
+# Astro generated
+.astro/
+
+# Build output
+dist/
+
+# Local dev secrets (NEVER commit)
+.dev.vars
+
+# Wrangler state
+.wrangler/
+
+# Editor
+.vscode/
+.idea/
+
+# OS
+.DS_Store

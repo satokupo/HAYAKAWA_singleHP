@@ -182,6 +182,82 @@ npx wrangler secret put ADMIN_PASSWORD
 
 ---
 
+## Site/Admin連携
+
+### 連携の仕組み
+
+```
+site (SSG) ──GET───→ admin/api/public/content (CORS対応)
+                           ↓
+                     R2からJSON取得
+                           ↓
+                     画像URLをフルパスに変換して返却
+```
+
+- **site側**: ビルド時に admin API からコンテンツを取得
+- **admin側**: `/api/public/content` が認証なしで公開データを返す
+
+### Site側の実装
+
+```typescript
+// site/src/lib/content.ts
+import { fetchContentSafe } from '../lib/content';
+
+// Astroページ内で使用
+const content = await fetchContentSafe('https://your-admin.pages.dev');
+
+if (content?.calendar) {
+  // カレンダー画像を表示
+}
+```
+
+### Admin側の実装
+
+`admin/src/pages/api/public/content.ts`:
+
+1. CORS許可ドメインを設定
+2. R2からコンテンツJSONを取得
+3. 画像URLをフルパスに変換
+4. JSONレスポンスを返す
+
+### 開発環境での連携
+
+```bash
+# ターミナル1: admin を起動
+cd admin && npm run dev  # localhost:4321
+
+# ターミナル2: site を起動（別ポート）
+cd site && npm run dev -- --port 4322
+```
+
+site から admin の API を呼び出す際、CORS設定に `localhost:4322` を追加。
+
+### ビルド時の動作
+
+site のビルド時（`npm run build`）に admin API からコンテンツを取得する場合:
+
+```javascript
+// astro.config.mjs
+export default defineConfig({
+  // ビルド時の環境変数でadminのURLを指定
+  vite: {
+    define: {
+      'import.meta.env.ADMIN_URL': JSON.stringify(
+        process.env.ADMIN_URL || 'http://localhost:4321'
+      )
+    }
+  }
+});
+```
+
+### デプロイ時の注意
+
+1. **admin を先にデプロイ** - site のビルド時に admin API が必要
+2. **CORS設定を更新** - 本番ドメインを許可リストに追加
+3. **環境変数を設定** - Cloudflare Pages のビルド設定で `ADMIN_URL` を設定
+
+---
+
 ## 関連ドキュメント
 
 - [Cloudflare Pages公式](https://developers.cloudflare.com/pages/)

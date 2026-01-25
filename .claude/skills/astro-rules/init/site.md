@@ -1,6 +1,6 @@
-# Astro 初期構築ルール
+# Site 初期構築ルール
 
-新規Astroプロジェクトの初期構築手順と設計思想。
+公開用静的サイト（site/）の初期構築手順。
 
 ---
 
@@ -10,12 +10,12 @@
 
 1. **テンプレートをコピー**
    ```bash
-   cp -r .claude/skills/astro-rules/_template/ ./astro/
+   cp -r .claude/skills/astro-rules/_template/site/ ./site/
    ```
 
 2. **依存パッケージをインストール**
    ```bash
-   cd astro && npm install
+   cd site && npm install
    ```
 
 3. **開発サーバーを起動**
@@ -99,6 +99,7 @@
 | `components/StickyHeader.astro` | 上部固定ヘッダー（バーガーメニュー等） |
 | `components/StickyFooterNav.astro` | 下部固定ナビ（スマホ用CTA） |
 | `styles/global.css` | CSS変数、リセット |
+| `lib/content.ts` | admin API 連携用 |
 
 ### public/ ディレクトリ
 
@@ -108,7 +109,23 @@
 
 ---
 
-## 5. HTMLからの移行時の注意点
+## 5. Admin連携（オプション）
+
+admin/ と連携してコンテンツを取得する場合:
+
+```typescript
+// src/lib/content.ts を使用
+import { fetchContentSafe } from '../lib/content';
+
+// ビルド時にadmin APIからコンテンツ取得
+const content = await fetchContentSafe('https://your-admin.pages.dev');
+```
+
+詳細は `operations.md` の「Site/Admin連携」を参照。
+
+---
+
+## 6. HTMLからの移行時の注意点
 
 ### Tailwind CDN は使えない
 

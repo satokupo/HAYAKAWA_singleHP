@@ -1,0 +1,40 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "your-project-admin",
+  "compatibility_date": "2025-01-01",
+  "compatibility_flags": ["nodejs_compat"],
+
+  // KV Namespaces
+  // 本番デプロイ前に以下のコマンドで作成し、IDを設定:
+  //   wrangler kv namespace create SESSIONS
+  //   wrangler kv namespace create RATE_LIMIT
+  "kv_namespaces": [
+    {
+      "binding": "SESSIONS",
+      "id": "<SESSIONS_KV_ID>"
+    },
+    {
+      "binding": "RATE_LIMIT",
+      "id": "<RATE_LIMIT_KV_ID>"
+    }
+  ],
+
+  // R2 Buckets
+  // 本番デプロイ前に以下のコマンドで作成:
+  //   wrangler r2 bucket create your-project-images
+  "r2_buckets": [
+    {
+      "binding": "IMAGES",
+      "bucket_name": "your-project-images"
+    }
+  ],
+
+  // 環境変数
+  "vars": {
+    "ADMIN_ID": "admin",
+    "SESSION_TTL": "3600"
+  }
+
+  // ADMIN_PASSWORD は Cloudflare Dashboard の Secrets で設定:
+  //   wrangler secret put ADMIN_PASSWORD
+}

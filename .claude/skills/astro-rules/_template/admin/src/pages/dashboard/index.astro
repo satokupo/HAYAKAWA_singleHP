@@ -1,0 +1,48 @@
+---
+/**
+ * ダッシュボード
+ * TODO: プロジェクトに応じて更新対象のプレビューを表示
+ */
+
+import AuthLayout from '../../layouts/AuthLayout.astro';
+---
+
+<AuthLayout title="Dashboard">
+  <div class="space-y-6">
+    <!-- ダッシュボード概要 -->
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-xl font-bold text-gray-800 mb-4">Dashboard</h2>
+      <p class="text-gray-600">
+        ログインに成功しました。
+      </p>
+    </div>
+
+    <!--
+      TODO: 更新対象のプレビューを表示
+
+      実装例:
+      - カレンダー画像のプレビュー → /update/calendar への導線
+      - 限定メニューのプレビュー → /update/limited への導線
+
+      各プレビューコンポーネントを作成して配置してください。
+      参考: src/pages/update/_example.astro.txt
+    -->
+
+    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+      <h3 class="text-lg font-semibold text-yellow-800 mb-2">
+        セットアップが必要です
+      </h3>
+      <p class="text-yellow-700 text-sm">
+        このテンプレートはログイン機能のみ実装されています。<br>
+        ダッシュボードと更新画面はプロジェクトに応じて実装してください。
+      </p>
+      <ul class="mt-4 text-sm text-yellow-700 list-disc list-inside space-y-1">
+        <li><code>src/lib/r2.ts</code> - コンテンツキーの設定</li>
+        <li><code>src/lib/types.ts</code> - コンテンツ型の定義</li>
+        <li><code>src/pages/dashboard/index.astro</code> - プレビュー表示</li>
+        <li><code>src/pages/update/</code> - 更新画面の作成</li>
+        <li><code>src/pages/api/public/content.ts</code> - 公開APIの実装</li>
+      </ul>
+    </div>
+  </div>
+</AuthLayout>
