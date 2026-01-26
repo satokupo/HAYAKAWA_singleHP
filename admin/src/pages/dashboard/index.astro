@@ -7,7 +7,8 @@
 import AuthLayout from '../../layouts/AuthLayout.astro';
 import CalendarPreview from '../../components/CalendarPreview.astro';
 import LimitedPreview from '../../components/LimitedPreview.astro';
-import type { Env, CalendarContent, LimitedMenuContent } from '../../lib/types';
+import OgpPreview from '../../components/OgpPreview.astro';
+import type { Env, CalendarContent, LimitedMenuContent, OgpContent } from '../../lib/types';
 import { getContent } from '../../lib/r2';
 
 const env = Astro.locals.runtime.env as Env;
@@ -15,6 +16,7 @@ const env = Astro.locals.runtime.env as Env;
 // コンテンツを取得
 const calendarContent = await getContent<CalendarContent>(env, 'calendar');
 const limitedContent = await getContent<LimitedMenuContent>(env, 'limited');
+const ogpContent = await getContent<OgpContent>(env, 'ogp');
 ---
 
 <AuthLayout title="ダッシュボード">
@@ -24,6 +26,12 @@ const limitedContent = await getContent<LimitedMenuContent>(env, 'limited');
     <div class="grid gap-6 md:grid-cols-2">
       <CalendarPreview content={calendarContent} />
       <LimitedPreview content={limitedContent} />
+    </div>
+
+    <h2 class="text-xl font-bold text-gray-800 mt-8 mb-4">サイト設定</h2>
+
+    <div class="grid gap-6 md:grid-cols-2">
+      <OgpPreview content={ogpContent} />
     </div>
   </div>
 </AuthLayout>

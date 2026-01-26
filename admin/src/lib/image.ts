@@ -90,6 +90,10 @@ export function validateImageFile(file: File): { valid: true } | { valid: false;
  * - JPEG/WebP → WebPに変換
  * - HEIC → WebPに変換（heic2any使用）
  */
+/** OGP画像サイズ */
+const OGP_WIDTH = 1200;
+const OGP_HEIGHT = 630;
+
 export const clientImageProcessorCode = `
 async function processImageOnClient(file, maxDimension = ${MAX_DIMENSION}) {
   // HEICの場合はheic2anyで変換
@@ -145,6 +149,80 @@ async function processImageOnClient(file, maxDimension = ${MAX_DIMENSION}) {
         },
         outputType,
         quality
+      );
+    };
+
+    img.onerror = () => reject(new Error('画像の読み込みに失敗しました'));
+    img.src = URL.createObjectURL(processFile);
+  });
+}
+`;
+
+/**
+ * OGP画像用のクライアントサイド処理コード
+ * 1200x630px に中央トリミング（cover）して WebP に変換
+ */
+export const clientOgpImageProcessorCode = `
+async function processOgpImageOnClient(file) {
+  const OGP_WIDTH = ${OGP_WIDTH};
+  const OGP_HEIGHT = ${OGP_HEIGHT};
+
+  // HEICの場合はheic2anyで変換
+  let processFile = file;
+  if (file.type === 'image/heic' || file.type === 'image/heif') {
+    if (typeof heic2any === 'undefined') {
+      throw new Error('HEIC変換ライブラリが読み込まれていません');
+    }
+    const convertedBlob = await heic2any({
+      blob: file,
+      toType: 'image/jpeg',
+      quality: 0.9,
+    });
+    processFile = Array.isArray(convertedBlob) ? convertedBlob[0] : convertedBlob;
+  }
+
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    img.onload = () => {
+      const { width: srcW, height: srcH } = img;
+
+      // cover方式で中央トリミング
+      const targetRatio = OGP_WIDTH / OGP_HEIGHT;
+      const srcRatio = srcW / srcH;
+
+      let sw, sh, sx, sy;
+      if (srcRatio > targetRatio) {
+        // 横長 → 左右をトリミング
+        sh = srcH;
+        sw = srcH * targetRatio;
+        sx = (srcW - sw) / 2;
+        sy = 0;
+      } else {
+        // 縦長 → 上下をトリミング
+        sw = srcW;
+        sh = srcW / targetRatio;
+        sx = 0;
+        sy = (srcH - sh) / 2;
+      }
+
+      canvas.width = OGP_WIDTH;
+      canvas.height = OGP_HEIGHT;
+      ctx.drawImage(img, sx, sy, sw, sh, 0, 0, OGP_WIDTH, OGP_HEIGHT);
+
+      // OGP画像は常にWebP
+      canvas.toBlob(
+        (blob) => {
+          if (blob) {
+            resolve({ blob, width: OGP_WIDTH, height: OGP_HEIGHT, isPng: false });
+          } else {
+            reject(new Error('画像の変換に失敗しました'));
+          }
+        },
+        'image/webp',
+        0.85
       );
     };
 

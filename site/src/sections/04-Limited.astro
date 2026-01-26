@@ -11,7 +11,7 @@ const { limited } = await fetchContent(adminApiUrl);
 // 取得したコンテンツまたはデフォルト値を使用
 const title = limited?.title || DEFAULT_LIMITED.title;
 const description = limited?.description || DEFAULT_LIMITED.description;
-const imageUrl = limited?.imageUrl || `${baseUrl}images/limited-gyoza.webp`;
+const imageUrl = limited?.imageUrl || `${baseUrl}placeholder.webp`;
 ---
 
 <section id="limited" class="limited" style={`--limited-bg: url('${baseUrl}images/limited-bg.webp');`}>

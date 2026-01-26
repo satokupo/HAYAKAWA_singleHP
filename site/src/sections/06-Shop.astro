@@ -9,7 +9,7 @@ const adminApiUrl = import.meta.env.ADMIN_API_URL || 'http://localhost:8788';
 const { calendar } = await fetchContent(adminApiUrl);
 
 // 取得したコンテンツまたはデフォルト値を使用
-const calendarImageUrl = calendar?.imageUrl || `${baseUrl}images/calendar.webp`;
+const calendarImageUrl = calendar?.imageUrl || `${baseUrl}placeholder.webp`;
 ---
 
 <section id="info" class="shop" style={`--noise-bg: url('${baseUrl}images/noise.webp');`}>

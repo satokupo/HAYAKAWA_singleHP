@@ -64,8 +64,8 @@ export interface AuthResponse {
  * 画像アップロードリクエスト
  */
 export interface ImageUploadRequest {
-  /** 画像の用途（calendar | limited） */
-  type: 'calendar' | 'limited';
+  /** 画像の用途（calendar | limited | ogp） */
+  type: 'calendar' | 'limited' | 'ogp';
   /** 元のファイル名 */
   filename: string;
 }
@@ -99,6 +99,20 @@ export interface LimitedMenuContent {
  * カレンダーコンテンツ
  */
 export interface CalendarContent {
+  /** 画像URL */
+  imageUrl: string;
+  /** 最終更新日時（ISO 8601） */
+  updatedAt: string;
+}
+
+/**
+ * OGPコンテンツ
+ */
+export interface OgpContent {
+  /** タイトル */
+  title: string;
+  /** 説明文 */
+  description: string;
   /** 画像URL */
   imageUrl: string;
   /** 最終更新日時（ISO 8601） */

@@ -10,6 +10,7 @@ import type {
   ApiResponse,
   CalendarContent,
   LimitedMenuContent,
+  OgpContent,
 } from '../../../lib/types';
 import { getContent } from '../../../lib/r2';
 
@@ -57,10 +58,11 @@ export const GET: APIRoute = async ({ request, locals }) => {
   const origin = request.headers.get('Origin');
 
   try {
-    // カレンダーと限定メニューの両方を取得
-    const [calendar, limited] = await Promise.all([
+    // カレンダー、限定メニュー、OGPを取得
+    const [calendar, limited, ogp] = await Promise.all([
       getContent<CalendarContent>(env, 'calendar'),
       getContent<LimitedMenuContent>(env, 'limited'),
+      getContent<OgpContent>(env, 'ogp'),
     ]);
 
     // 画像URLをフルパスに変換
@@ -81,6 +83,14 @@ export const GET: APIRoute = async ({ request, locals }) => {
             imageUrl: limited.imageUrl.startsWith('http')
               ? limited.imageUrl
               : `${baseUrl}/${limited.imageUrl.replace(/^\//, '')}`,
+          }
+        : null,
+      ogp: ogp
+        ? {
+            ...ogp,
+            imageUrl: ogp.imageUrl.startsWith('http')
+              ? ogp.imageUrl
+              : `${baseUrl}/${ogp.imageUrl.replace(/^\//, '')}`,
           }
         : null,
     };

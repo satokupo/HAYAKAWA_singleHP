@@ -6,7 +6,7 @@
  */
 
 import type { APIRoute } from 'astro';
-import type { Env, ApiResponse, CalendarContent, LimitedMenuContent } from '../../lib/types';
+import type { Env, ApiResponse, CalendarContent, LimitedMenuContent, OgpContent } from '../../lib/types';
 import { validateSession } from '../../lib/session';
 import { getContent, saveContent } from '../../lib/r2';
 
@@ -35,13 +35,13 @@ export const GET: APIRoute = async ({ request, locals }) => {
   }
 
   const url = new URL(request.url);
-  const type = url.searchParams.get('type') as 'calendar' | 'limited' | null;
+  const type = url.searchParams.get('type') as 'calendar' | 'limited' | 'ogp' | null;
 
-  if (!type || (type !== 'calendar' && type !== 'limited')) {
+  if (!type || (type !== 'calendar' && type !== 'limited' && type !== 'ogp')) {
     return new Response(
       JSON.stringify({
         success: false,
-        error: 'タイプは calendar または limited を指定してください。',
+        error: 'タイプは calendar, limited, ogp のいずれかを指定してください。',
       } satisfies ApiResponse),
       {
         status: 400,
@@ -91,17 +91,17 @@ export const PUT: APIRoute = async ({ request, locals }) => {
   try {
     const body = await request.json();
     const { type, title, description } = body as {
-      type: 'limited';
+      type: 'limited' | 'ogp';
       title: string;
       description: string;
     };
 
-    // 現在は limited のみテキスト更新をサポート
-    if (type !== 'limited') {
+    // limited または ogp のテキスト更新をサポート
+    if (type !== 'limited' && type !== 'ogp') {
       return new Response(
         JSON.stringify({
           success: false,
-          error: 'テキスト更新は限定メニューのみサポートしています。',
+          error: 'テキスト更新は限定メニューまたはOGPのみサポートしています。',
         } satisfies ApiResponse),
         {
           status: 400,
@@ -110,14 +110,41 @@ export const PUT: APIRoute = async ({ request, locals }) => {
       );
     }
 
-    // 既存のコンテンツを取得
+    const now = new Date().toISOString();
+
+    if (type === 'ogp') {
+      // OGPコンテンツを更新
+      const existing = await getContent<OgpContent>(env, 'ogp');
+
+      const content: OgpContent = {
+        title: title || existing?.title || '',
+        description: description || existing?.description || '',
+        imageUrl: existing?.imageUrl || '',
+        updatedAt: now,
+      };
+
+      await saveContent(env, 'ogp', content);
+
+      return new Response(
+        JSON.stringify({
+          success: true,
+          data: content,
+        } satisfies ApiResponse),
+        {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+    }
+
+    // 既存のコンテンツを取得（limited）
     const existing = await getContent<LimitedMenuContent>(env, 'limited');
 
     const content: LimitedMenuContent = {
       title: title || existing?.title || '',
       description: description || existing?.description || '',
       imageUrl: existing?.imageUrl || '',
-      updatedAt: new Date().toISOString(),
+      updatedAt: now,
     };
 
     await saveContent(env, 'limited', content);

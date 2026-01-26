@@ -3,26 +3,27 @@
  * Cloudflare R2 との連携
  */
 
-import type { Env, CalendarContent, LimitedMenuContent } from './types';
+import type { Env, CalendarContent, LimitedMenuContent, OgpContent } from './types';
 import { siteConfig } from './config';
 
 /** コンテンツJSONのキー */
 const CONTENT_KEY = {
   calendar: 'content/calendar.json',
   limited: 'content/limited.json',
+  ogp: 'content/ogp.json',
 } as const;
 
 /**
  * 画像をR2にアップロード
  * @param env Cloudflare環境
- * @param type 画像タイプ（calendar | limited）
+ * @param type 画像タイプ（calendar | limited | ogp）
  * @param data 画像データ
  * @param isPng PNGかどうか（PNG→.png、それ以外→.webp）
  * @returns アップロード後のパス
  */
 export async function uploadImage(
   env: Env,
-  type: 'calendar' | 'limited',
+  type: 'calendar' | 'limited' | 'ogp',
   data: ArrayBuffer,
   isPng: boolean = false
 ): Promise<string> {
@@ -50,7 +51,7 @@ export async function uploadImage(
  */
 async function cleanupOldImages(
   env: Env,
-  type: 'calendar' | 'limited'
+  type: 'calendar' | 'limited' | 'ogp'
 ): Promise<void> {
   const prefix = `images/${type}/`;
 
@@ -74,9 +75,9 @@ async function cleanupOldImages(
 /**
  * コンテンツJSONを取得
  */
-export async function getContent<T extends CalendarContent | LimitedMenuContent>(
+export async function getContent<T extends CalendarContent | LimitedMenuContent | OgpContent>(
   env: Env,
-  type: 'calendar' | 'limited'
+  type: 'calendar' | 'limited' | 'ogp'
 ): Promise<T | null> {
   const key = CONTENT_KEY[type];
   const object = await env.IMAGES.get(key);
@@ -96,9 +97,9 @@ export async function getContent<T extends CalendarContent | LimitedMenuContent>
 /**
  * コンテンツJSONを保存
  */
-export async function saveContent<T extends CalendarContent | LimitedMenuContent>(
+export async function saveContent<T extends CalendarContent | LimitedMenuContent | OgpContent>(
   env: Env,
-  type: 'calendar' | 'limited',
+  type: 'calendar' | 'limited' | 'ogp',
   content: T
 ): Promise<void> {
   const key = CONTENT_KEY[type];

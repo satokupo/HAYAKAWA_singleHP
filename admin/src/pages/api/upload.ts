@@ -5,7 +5,7 @@
  */
 
 import type { APIRoute } from 'astro';
-import type { Env, ApiResponse, ImageUploadResponse, CalendarContent, LimitedMenuContent } from '../../lib/types';
+import type { Env, ApiResponse, ImageUploadResponse, CalendarContent, LimitedMenuContent, OgpContent } from '../../lib/types';
 import { validateSession } from '../../lib/session';
 import { uploadImage, getContent, saveContent, getPublicUrl } from '../../lib/r2';
 import { validateImageFile } from '../../lib/image';
@@ -35,7 +35,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     // multipart/form-data を解析
     const formData = await request.formData();
     const file = formData.get('image') as File | null;
-    const type = formData.get('type') as 'calendar' | 'limited' | null;
+    const type = formData.get('type') as 'calendar' | 'limited' | 'ogp' | null;
     const isPngStr = formData.get('isPng') as string | null; // PNG維持フラグ
     const isPng = isPngStr === 'true';
 
@@ -53,11 +53,11 @@ export const POST: APIRoute = async ({ request, locals }) => {
       );
     }
 
-    if (type !== 'calendar' && type !== 'limited') {
+    if (type !== 'calendar' && type !== 'limited' && type !== 'ogp') {
       return new Response(
         JSON.stringify({
           success: false,
-          error: 'タイプは calendar または limited を指定してください。',
+          error: 'タイプは calendar, limited, ogp のいずれかを指定してください。',
         } satisfies ApiResponse),
         {
           status: 400,
@@ -95,8 +95,18 @@ export const POST: APIRoute = async ({ request, locals }) => {
         updatedAt: now,
       };
       await saveContent(env, 'calendar', content);
-    } else {
+    } else if (type === 'ogp') {
       // 既存のコンテンツを取得してマージ
+      const existing = await getContent<OgpContent>(env, 'ogp');
+      const content: OgpContent = {
+        title: existing?.title || '',
+        description: existing?.description || '',
+        imageUrl,
+        updatedAt: now,
+      };
+      await saveContent(env, 'ogp', content);
+    } else {
+      // 既存のコンテンツを取得してマージ（limited）
       const existing = await getContent<LimitedMenuContent>(env, 'limited');
       const content: LimitedMenuContent = {
         title: existing?.title || '',

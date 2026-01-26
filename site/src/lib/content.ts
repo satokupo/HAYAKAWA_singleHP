@@ -22,6 +22,16 @@ export interface CalendarContent {
 }
 
 /**
+ * OGPコンテンツ
+ */
+export interface OgpContent {
+  title: string;
+  description: string;
+  imageUrl: string;
+  updatedAt: string;
+}
+
+/**
  * API レスポンス
  */
 interface ApiResponse {
@@ -29,23 +39,32 @@ interface ApiResponse {
   data?: {
     calendar: CalendarContent | null;
     limited: LimitedMenuContent | null;
+    ogp: OgpContent | null;
   };
   error?: string;
 }
 
 /**
  * デフォルト値（API取得失敗時のフォールバック）
+ * 注意: 古いメニュー/カレンダーが表示されないよう、準備中の表示にする
  */
 export const DEFAULT_LIMITED: LimitedMenuContent = {
-  title: '栗と鶏肉の甘辛餃子',
-  description: 'ほっくり甘い栗と、ジューシーな鶏肉を甘辛く仕上げました。',
-  imageUrl: '', // 静的画像を使用
+  title: '',
+  description: '',
+  imageUrl: '', // セクションでplaceholder.webpにフォールバック
   updatedAt: '',
 };
 
 export const DEFAULT_CALENDAR: CalendarContent = {
-  imageUrl: '', // 静的画像を使用
+  imageUrl: '', // セクションでplaceholder.webpにフォールバック
   month: '',
+  updatedAt: '',
+};
+
+export const DEFAULT_OGP: OgpContent = {
+  title: 'HAYAKAWA - 手作り餃子専門店',
+  description: '長野県飯田市の手作り餃子専門店。厳選素材を使用した自慢の餃子をお届けします。',
+  imageUrl: '', // Base.astro でデフォルト画像にフォールバック
   updatedAt: '',
 };
 
@@ -55,6 +74,7 @@ export const DEFAULT_CALENDAR: CalendarContent = {
 export async function fetchContent(adminApiUrl: string): Promise<{
   calendar: CalendarContent | null;
   limited: LimitedMenuContent | null;
+  ogp: OgpContent | null;
 }> {
   try {
     const response = await fetch(`${adminApiUrl}/api/public/content`, {
@@ -65,19 +85,19 @@ export async function fetchContent(adminApiUrl: string): Promise<{
 
     if (!response.ok) {
       console.error(`API error: ${response.status}`);
-      return { calendar: null, limited: null };
+      return { calendar: null, limited: null, ogp: null };
     }
 
     const json = (await response.json()) as ApiResponse;
 
     if (!json.success || !json.data) {
       console.error('API returned unsuccessful response');
-      return { calendar: null, limited: null };
+      return { calendar: null, limited: null, ogp: null };
     }
 
     return json.data;
   } catch (error) {
     console.error('Failed to fetch content from admin API:', error);
-    return { calendar: null, limited: null };
+    return { calendar: null, limited: null, ogp: null };
   }
 }
