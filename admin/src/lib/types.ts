@@ -101,8 +101,6 @@ export interface LimitedMenuContent {
 export interface CalendarContent {
   /** 画像URL */
   imageUrl: string;
-  /** 対象年月（YYYY-MM形式） */
-  month: string;
   /** 最終更新日時（ISO 8601） */
   updatedAt: string;
 }

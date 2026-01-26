@@ -4,6 +4,7 @@
  */
 
 import type { Env, CalendarContent, LimitedMenuContent } from './types';
+import { siteConfig } from './config';
 
 /** コンテンツJSONのキー */
 const CONTENT_KEY = {
@@ -38,7 +39,36 @@ export async function uploadImage(
     },
   });
 
+  // 古い画像を自動削除（上限を超えた場合）
+  await cleanupOldImages(env, type);
+
   return path;
+}
+
+/**
+ * 古い画像を削除（各タイプの上限を超えた分）
+ */
+async function cleanupOldImages(
+  env: Env,
+  type: 'calendar' | 'limited'
+): Promise<void> {
+  const prefix = `images/${type}/`;
+
+  // 該当タイプの画像一覧を取得
+  const list = await env.IMAGES.list({ prefix });
+  const imageKeys = list.objects
+    .map((obj) => obj.key)
+    .filter((key) => key.match(/\.(webp|png)$/))
+    .sort(); // タイムスタンプ順（古い順）
+
+  // 上限を超えた分を削除
+  const deleteCount = imageKeys.length - siteConfig.maxImagesPerType;
+  if (deleteCount > 0) {
+    const keysToDelete = imageKeys.slice(0, deleteCount);
+    for (const key of keysToDelete) {
+      await env.IMAGES.delete(key);
+    }
+  }
 }
 
 /**

@@ -36,7 +36,6 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const formData = await request.formData();
     const file = formData.get('image') as File | null;
     const type = formData.get('type') as 'calendar' | 'limited' | null;
-    const month = formData.get('month') as string | null; // カレンダー用
     const isPngStr = formData.get('isPng') as string | null; // PNG維持フラグ
     const isPng = isPngStr === 'true';
 
@@ -59,19 +58,6 @@ export const POST: APIRoute = async ({ request, locals }) => {
         JSON.stringify({
           success: false,
           error: 'タイプは calendar または limited を指定してください。',
-        } satisfies ApiResponse),
-        {
-          status: 400,
-          headers: { 'Content-Type': 'application/json' },
-        }
-      );
-    }
-
-    if (type === 'calendar' && !month) {
-      return new Response(
-        JSON.stringify({
-          success: false,
-          error: 'カレンダーの場合は対象月を指定してください。',
         } satisfies ApiResponse),
         {
           status: 400,
@@ -106,7 +92,6 @@ export const POST: APIRoute = async ({ request, locals }) => {
     if (type === 'calendar') {
       const content: CalendarContent = {
         imageUrl,
-        month: month!,
         updatedAt: now,
       };
       await saveContent(env, 'calendar', content);

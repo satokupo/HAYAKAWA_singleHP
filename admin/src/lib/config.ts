@@ -1,6 +1,9 @@
 /**
  * サイト設定（マスター）
- * 管理画面全体で使用する設定値
+ *
+ * サイト全体に関係する設定値をここでグローバルに管理する。
+ * 店舗名、URL、上限値など、プロジェクト固有の値はすべてこのファイルで一元管理。
+ * 他のファイルからはこの設定をimportして参照する。
  */
 
 export const siteConfig = {
@@ -10,8 +13,11 @@ export const siteConfig = {
   /** フッター「サイトを見る」リンク先 */
   siteUrl: 'https://hayakawa-gyoza.com',
 
-  /** フッター「管理者へ問い合わせ」リンク先（空文字で非表示） */
+  /** フッター「お問い合わせ」リンク先（空文字の場合は # になる） */
   contactUrl: '',
+
+  /** 各タイプの画像保存上限（超えた分は古いものから自動削除） */
+  maxImagesPerType: 10,
 } as const;
 
 export type SiteConfig = typeof siteConfig;
