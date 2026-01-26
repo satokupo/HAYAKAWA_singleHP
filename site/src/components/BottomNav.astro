@@ -46,29 +46,30 @@ const baseUrl = import.meta.env.BASE_URL;
 </script>
 
 <style>
+    /* ===== 共通スタイル ===== */
     .fixed-nav {
         position: fixed;
-        bottom: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 100%;
-        max-width: 390px;
+        z-index: 100;
         background-color: var(--bg-main);
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         display: flex;
         justify-content: space-around;
         align-items: center;
         padding: 0.5rem 0;
-        box-shadow: none;
-        border-top: 1px solid rgba(0, 0, 0, 0.1);
-        z-index: 100;
-        opacity: 0;
-        visibility: hidden;
-        transition: opacity 0.3s ease, visibility 0.3s ease;
+        /* 初期状態（モバイル: 下に隠れる） */
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%) translateY(100%);
+        width: 100%;
+        max-width: 390px;
+        border-radius: 1rem 1rem 0 0;
+        border-bottom: none;
+        transition: transform 0.3s ease;
     }
 
     .fixed-nav.is-visible {
-        opacity: 1;
-        visibility: visible;
+        transform: translateX(-50%) translateY(0);
     }
 
     .fixed-nav__item {
@@ -99,5 +100,32 @@ const baseUrl = import.meta.env.BASE_URL;
     .fixed-nav__label {
         font-size: 0.625rem;
         font-weight: 500;
+    }
+
+    /* ===== PC表示（768px以上） ===== */
+    @media (min-width: 768px) {
+        .fixed-nav {
+            /* 左サイド縦中央に配置 */
+            bottom: auto;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%) translateX(-100%);
+            width: auto;
+            max-width: none;
+            flex-direction: column;
+            padding: 0.75rem 0.5rem;
+            border-radius: 0 1rem 1rem 0;
+            border-left: none;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+        }
+
+        .fixed-nav.is-visible {
+            transform: translateY(-50%) translateX(0);
+        }
+
+        .fixed-nav__item {
+            min-width: 56px;
+            padding: 0.75rem 0.5rem;
+        }
     }
 </style>
