@@ -5,9 +5,15 @@
   "compatibility_flags": ["nodejs_compat"],
   "pages_build_output_dir": "./dist",
 
-  // 環境変数
+  // 開発サーバー設定
+  // site は 8789 ポート固定（admin は 8788）
+  "dev": {
+    "port": 8789
+  },
+
+  // 環境変数（本番用）
+  // ローカル開発時は .dev.vars で上書きされる
   "vars": {
-    // ローカル開発時は admin のローカルサーバーを参照
-    "ADMIN_API_URL": "http://localhost:8788"
+    "ADMIN_API_URL": "https://settei.hayakawa-gyoza.com"
   }
 }

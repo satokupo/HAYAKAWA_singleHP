@@ -19,12 +19,15 @@
    ```
 
 3. **開発サーバーを起動**
-   ```bash
-   npm run dev
+
+   **chrome-check スキル** を使用すること。
+   ```
+   「siteを起動して」
+   「siteをDevToolsで確認」
    ```
 
 4. **ブラウザで確認**
-   - http://localhost:4321 にアクセス
+   - http://localhost:8789 にアクセス
    - エラーなくページが表示されればOK
 
 ---
@@ -131,7 +134,7 @@ const content = await fetchContentSafe('https://your-admin.pages.dev');
 
 **問題:**
 - 元のHTMLでは `<script src="https://cdn.tailwindcss.com">` を使用
-- Astro開発サーバー（localhost:4321）からCDNにアクセスするとCORSでブロック
+- Astro開発サーバーからCDNにアクセスするとCORSでブロック
 
 **解決:**
 - `@astrojs/tailwind` 統合を使用（テンプレートに設定済み）
@@ -155,7 +158,7 @@ const content = await fetchContentSafe('https://your-admin.pages.dev');
 
 - [ ] テンプレートをコピーしたか
 - [ ] `npm install` を実行したか
-- [ ] `npm run dev` でサーバーが起動するか
+- [ ] chrome-checkスキルでサーバーが起動するか
 - [ ] ブラウザでエラーなく表示されるか
 
 ### 移行時（既存HTMLから）

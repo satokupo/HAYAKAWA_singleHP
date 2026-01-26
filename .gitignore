@@ -34,6 +34,7 @@ env.php
 .env
 .env*
 !.env.example
+.dev.vars
 
 dev/tests/logs/
 dev/tests/logs/*

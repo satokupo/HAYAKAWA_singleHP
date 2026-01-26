@@ -14,6 +14,8 @@ export interface Env {
   ADMIN_ID: string;
   ADMIN_PASSWORD: string;
   SESSION_TTL: string;
+  /** フッター「サイトを見る」リンク先（オプション、デフォルトは config.ts で定義） */
+  SITE_URL?: string;
 }
 
 /**

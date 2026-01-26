@@ -29,8 +29,11 @@
 
 ```bash
 cp -r .claude/skills/astro-rules/_template/site/ ./site/
-cd site && npm install && npm run dev
+cd site && npm install
 ```
+
+サーバー起動は **chrome-check スキル** を使用すること。
+直接 `npm run dev` や `npm run preview` を実行しない。
 
 ### Site + Admin（管理画面付き）
 
@@ -46,6 +49,8 @@ cd admin && npm install
 cp .dev.vars.example .dev.vars
 # .dev.vars を編集して ADMIN_PASSWORD を設定
 ```
+
+サーバー起動は **chrome-check スキル** を使用すること。
 
 ---
 

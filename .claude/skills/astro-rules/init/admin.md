@@ -25,12 +25,15 @@
    ```
 
 4. **開発サーバーを起動**
-   ```bash
-   npm run dev
+
+   **chrome-check スキル** を使用すること。
+   ```
+   「adminを起動して」
+   「adminをDevToolsで確認」
    ```
 
 5. **ブラウザで確認**
-   - http://localhost:4321 にアクセス
+   - http://localhost:8788 にアクセス
    - ログイン画面が表示されればOK
 
 ---
@@ -176,21 +179,17 @@ wrangler secret put ADMIN_PASSWORD
 
 ### 開発サーバー
 
-```bash
-npm run dev
+**chrome-check スキル** を使用してサーバーを起動すること。
+
+```
+「adminを起動して」
+「adminをDevToolsで確認」
 ```
 
-Astro の開発サーバーが起動し、`platformProxy` 設定により
+内部では `npm run preview`（Wrangler）が実行され、
 KV・R2がローカルでエミュレートされる。
 
-### Wrangler によるプレビュー
-
-```bash
-npm run build
-npm run preview
-```
-
-本番に近い環境で動作確認。
+**注意**: `npm run dev` は使用しない。KV/R2が動作しないため。
 
 ---
 
@@ -219,7 +218,7 @@ GitHubリポジトリと連携し、push時に自動デプロイ可能。
 - [ ] テンプレートをコピーしたか
 - [ ] `npm install` を実行したか
 - [ ] `.dev.vars` を作成し、ADMIN_PASSWORD を設定したか
-- [ ] `npm run dev` でサーバーが起動するか
+- [ ] chrome-checkスキルでサーバーが起動するか
 - [ ] ログイン画面が表示されるか
 
 ### デプロイ前

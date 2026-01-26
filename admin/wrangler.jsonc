@@ -27,10 +27,12 @@
     }
   ],
 
-  // 環境変数
+  // 環境変数（本番用）
+  // ローカル開発時は .dev.vars で上書きされる
   "vars": {
     "ADMIN_ID": "HAYAKAWA",
-    "SESSION_TTL": "3600"
+    "SESSION_TTL": "3600",
+    "SITE_URL": "https://hayakawa-gyoza.com"
   }
 
   // ADMIN_PASSWORD は Cloudflare Dashboard の Secrets で設定

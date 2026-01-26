@@ -157,28 +157,50 @@ SSRでmetadata.jsonを読み込み、動的にバージョンパラメータを�
 
 ## 環境変数
 
-### wrangler.toml での設定
+### 環境変数ファイルの使い分け
 
-```toml
-[vars]
-ADMIN_USER = "hayakawa"
+| ファイル | 用途 | 本番に含まれる |
+|----------|------|---------------|
+| `wrangler.jsonc` の vars | **本番用** | ✅ Yes |
+| `.dev.vars` | **ローカル開発用** | ❌ No |
 
-[[r2_buckets]]
-binding = "IMAGES"
-bucket_name = "hayakawa-images"
+**重要**: `wrangler.jsonc` の `vars` は本番にもデプロイされる。ローカル専用の値は `.dev.vars` に書く。
 
-[[kv_namespaces]]
-binding = "SESSIONS"
-id = "xxxxx"
+### wrangler.jsonc での設定（本番用）
+
+```jsonc
+{
+  "vars": {
+    "ADMIN_API_URL": "https://<ADMIN_DOMAIN>"
+  },
+  "r2_buckets": [
+    { "binding": "IMAGES", "bucket_name": "hayakawa-images" }
+  ],
+  "kv_namespaces": [
+    { "binding": "SESSIONS", "id": "<KV_ID>" }
+  ]
+}
 ```
 
-### 秘密情報
+### .dev.vars での設定（ローカル用）
+
+```
+# ローカル開発用環境変数
+ADMIN_API_URL=http://localhost:8788
+ADMIN_PASSWORD=開発用パスワード
+```
+
+このファイルは `.gitignore` に含め、リポジトリにコミットしない。
+
+### 秘密情報（本番用）
 
 パスワードなどは `wrangler secret put` で設定：
 
 ```bash
 npx wrangler secret put ADMIN_PASSWORD
 ```
+
+Secrets は Cloudflare ダッシュボードでも設定可能。
 
 ---
 
@@ -223,14 +245,31 @@ if (content?.calendar) {
 ### 開発環境での連携
 
 ```bash
-# ターミナル1: admin を起動
-cd admin && npm run dev  # localhost:4321
+# ターミナル1: admin を起動（Wrangler）
+cd admin && npm run preview  # localhost:8788
 
-# ターミナル2: site を起動（別ポート）
-cd site && npm run dev -- --port 4322
+# ターミナル2: site を起動（Wrangler）
+cd site && npm run preview   # localhost:8789
 ```
 
-site から admin の API を呼び出す際、CORS設定に `localhost:4322` を追加。
+**重要**: `npm run dev` ではなく `npm run preview`（Wrangler）を使用すること。
+KV/R2がローカルでエミュレートされ、本番と同じ環境でテストできる。
+
+site から admin の API を呼び出す際、CORS設定に `localhost:8789` を追加。
+
+### CORS許可ドメインの設定
+
+`admin/src/pages/api/public/content.ts` で許可ドメインを設定：
+
+```typescript
+const allowedOrigins = [
+  'http://localhost:8789',       // ローカル開発（site）
+  'https://example.com',         // 本番ドメイン
+  'https://www.example.com',     // 本番ドメイン（wwwあり）
+];
+```
+
+**注意**: 新しいクライアントを追加する際は、本番ドメインをこのリストに追加すること。
 
 ### ビルド時の動作
 

@@ -6,7 +6,7 @@
 
 import type { Env } from '../lib/types';
 import { validateSession } from '../lib/session';
-import { siteConfig } from '../lib/config';
+import { getSiteConfig } from '../lib/config';
 
 interface Props {
   title: string;
@@ -27,7 +27,7 @@ if (!session) {
   return Astro.redirect('/');
 }
 
-const { storeName, siteUrl, contactUrl } = siteConfig;
+const { storeName, siteUrl, contactUrl } = getSiteConfig(env);
 ---
 
 <!DOCTYPE html>
