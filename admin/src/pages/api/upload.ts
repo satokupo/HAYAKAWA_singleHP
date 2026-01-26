@@ -37,6 +37,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const file = formData.get('image') as File | null;
     const type = formData.get('type') as 'calendar' | 'limited' | null;
     const month = formData.get('month') as string | null; // カレンダー用
+    const isPngStr = formData.get('isPng') as string | null; // PNG維持フラグ
+    const isPng = isPngStr === 'true';
 
     // バリデーション
     if (!file || !type) {
@@ -95,7 +97,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
     // R2にアップロード
     const imageData = await file.arrayBuffer();
-    const imagePath = await uploadImage(env, type, imageData, file.name);
+    const imagePath = await uploadImage(env, type, imageData, isPng);
     const imageUrl = getPublicUrl(imagePath);
 
     // コンテンツJSONを更新

@@ -13,33 +13,38 @@ const { content } = Astro.props;
 ---
 
 <div class="bg-white rounded-lg shadow-sm p-4">
-  <div class="flex justify-between items-center mb-4">
-    <h2 class="text-lg font-bold text-gray-800">営業カレンダー</h2>
-    <a
-      href="/update/calendar"
-      class="text-sm text-blue-600 hover:text-blue-800"
-    >
-      更新する
-    </a>
-  </div>
+  <h2 class="text-lg font-bold text-gray-800 mb-4">営業カレンダー</h2>
 
   {content ? (
     <div>
-      <div class="aspect-[4/3] bg-gray-100 rounded-md overflow-hidden mb-2">
+      <div class="aspect-[4/3] bg-gray-100 rounded-md overflow-hidden mb-3">
         <img
           src={content.imageUrl}
           alt={`${content.month} のカレンダー`}
           class="w-full h-full object-contain"
         />
       </div>
-      <div class="text-sm text-gray-600">
-        <p>対象月: {content.month}</p>
-        <p>更新日: {new Date(content.updatedAt).toLocaleString('ja-JP')}</p>
-      </div>
+      <p class="text-sm text-gray-500 mb-3">
+        更新日: {new Date(content.updatedAt).toLocaleString('ja-JP')}
+      </p>
+      <a
+        href="/update/calendar"
+        class="block w-full py-2 px-4 bg-blue-600 text-white text-center font-medium rounded-md hover:bg-blue-700"
+      >
+        変更する
+      </a>
     </div>
   ) : (
-    <div class="aspect-[4/3] bg-gray-100 rounded-md flex items-center justify-center">
-      <p class="text-gray-400">まだ設定されていません</p>
+    <div>
+      <div class="aspect-[4/3] bg-gray-100 rounded-md flex items-center justify-center mb-3">
+        <p class="text-gray-400">まだ設定されていません</p>
+      </div>
+      <a
+        href="/update/calendar"
+        class="block w-full py-2 px-4 bg-blue-600 text-white text-center font-medium rounded-md hover:bg-blue-700"
+      >
+        変更する
+      </a>
     </div>
   )}
 </div>

@@ -1,9 +1,10 @@
 /**
  * 画像処理
- * JPEG/PNG/HEIC → WebP 変換、リサイズ
+ * JPEG/WebP → WebP変換、PNG → PNG維持、HEIC → WebP変換
+ * リサイズは長辺2000px
  *
  * 注意: Cloudflare Workers環境では画像処理に制限がある
- * 本番環境では Cloudflare Images や外部サービスの利用を検討
+ * クライアントサイドでの前処理を推奨
  */
 
 /** 最大長辺サイズ（px） */
@@ -19,7 +20,7 @@ const SUPPORTED_TYPES = [
 ];
 
 /**
- * 画像を処理（リサイズ + WebP変換）
+ * 画像を処理（リサイズ + 形式変換）
  *
  * Workers環境での画像処理は制限があるため、
  * クライアントサイドでの前処理を推奨
@@ -29,7 +30,7 @@ const SUPPORTED_TYPES = [
  */
 export async function processImage(
   file: File
-): Promise<{ data: ArrayBuffer; width: number; height: number }> {
+): Promise<{ data: ArrayBuffer; width: number; height: number; isPng: boolean }> {
   // MIMEタイプチェック
   if (!SUPPORTED_TYPES.includes(file.type)) {
     throw new Error(
@@ -45,14 +46,15 @@ export async function processImage(
 
   // Workers環境ではネイティブの画像処理が制限されているため、
   // 画像データをそのまま返し、実際の変換はクライアント側で行う
-  // または Cloudflare Images を利用する
 
   const data = await file.arrayBuffer();
+  const isPng = file.type === 'image/png';
 
   return {
     data,
     width: 0, // クライアント側で取得
     height: 0,
+    isPng,
   };
 }
 
@@ -81,11 +83,31 @@ export function validateImageFile(file: File): { valid: true } | { valid: false;
 }
 
 /**
- * クライアントサイドで画像をリサイズしてWebPに変換するためのヘルパー
+ * クライアントサイドで画像をリサイズ・変換するためのヘルパー
  * ブラウザで実行されるJavaScriptコード
+ *
+ * - PNG → PNGのまま維持
+ * - JPEG/WebP → WebPに変換
+ * - HEIC → WebPに変換（heic2any使用）
  */
 export const clientImageProcessorCode = `
 async function processImageOnClient(file, maxDimension = ${MAX_DIMENSION}) {
+  // HEICの場合はheic2anyで変換
+  let processFile = file;
+  if (file.type === 'image/heic' || file.type === 'image/heif') {
+    if (typeof heic2any === 'undefined') {
+      throw new Error('HEIC変換ライブラリが読み込まれていません');
+    }
+    const convertedBlob = await heic2any({
+      blob: file,
+      toType: 'image/jpeg',
+      quality: 0.9,
+    });
+    processFile = Array.isArray(convertedBlob) ? convertedBlob[0] : convertedBlob;
+  }
+
+  const isPng = file.type === 'image/png';
+
   return new Promise((resolve, reject) => {
     const img = new Image();
     const canvas = document.createElement('canvas');
@@ -109,29 +131,25 @@ async function processImageOnClient(file, maxDimension = ${MAX_DIMENSION}) {
       canvas.height = height;
       ctx.drawImage(img, 0, 0, width, height);
 
-      // WebPに変換
+      // PNG → PNG、それ以外 → WebP
+      const outputType = isPng ? 'image/png' : 'image/webp';
+      const quality = isPng ? undefined : 0.85;
+
       canvas.toBlob(
         (blob) => {
           if (blob) {
-            resolve({ blob, width, height });
+            resolve({ blob, width, height, isPng });
           } else {
             reject(new Error('画像の変換に失敗しました'));
           }
         },
-        'image/webp',
-        0.85 // 品質
+        outputType,
+        quality
       );
     };
 
     img.onerror = () => reject(new Error('画像の読み込みに失敗しました'));
-
-    // HEIC対応: ブラウザがHEICをサポートしていない場合はエラー
-    if (file.type === 'image/heic' || file.type === 'image/heif') {
-      reject(new Error('HEICファイルは事前にJPEGに変換してください'));
-      return;
-    }
-
-    img.src = URL.createObjectURL(file);
+    img.src = URL.createObjectURL(processFile);
   });
 }
 `;

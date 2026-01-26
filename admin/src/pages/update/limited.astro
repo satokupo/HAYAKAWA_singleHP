@@ -23,38 +23,15 @@ const content = await getContent<LimitedMenuContent>(env, 'limited');
     <div class="bg-white rounded-lg shadow-sm p-6">
       <h2 class="text-xl font-bold text-gray-800 mb-4">限定メニューを更新</h2>
 
-      <!-- 現在の内容 -->
-      {content && (
-        <div class="mb-6">
-          <p class="text-sm text-gray-600 mb-2">現在の内容:</p>
-          {content.imageUrl && (
-            <div class="aspect-[4/3] bg-gray-100 rounded-md overflow-hidden mb-2">
-              <img
-                src={content.imageUrl}
-                alt={content.title}
-                class="w-full h-full object-contain"
-              />
-            </div>
-          )}
-          <p class="text-sm text-gray-800 font-bold">{content.title}</p>
-          <p class="text-sm text-gray-600">{content.description}</p>
-        </div>
-      )}
-
       <!-- エラーメッセージ -->
       <div
         id="error-message"
         class="hidden mb-4 p-3 bg-red-100 text-red-700 text-sm rounded-md"
       ></div>
 
-      <!-- 成功メッセージ -->
-      <div
-        id="success-message"
-        class="hidden mb-4 p-3 bg-green-100 text-green-700 text-sm rounded-md"
-      ></div>
-
-      <!-- テキスト更新フォーム -->
-      <form id="text-form" class="space-y-4 mb-6">
+      <!-- 統合フォーム -->
+      <form id="update-form" class="space-y-4">
+        <!-- タイトル -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">
             タイトル
@@ -70,6 +47,7 @@ const content = await getContent<LimitedMenuContent>(env, 'limited');
           />
         </div>
 
+        <!-- 説明文 -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">
             説明文
@@ -83,34 +61,40 @@ const content = await getContent<LimitedMenuContent>(env, 'limited');
           >{content?.description || ''}</textarea>
         </div>
 
-        <button
-          type="submit"
-          id="text-submit-btn"
-          class="w-full py-2 px-4 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          テキストを保存
-        </button>
-      </form>
-
-      <hr class="my-6" />
-
-      <!-- 画像アップロードフォーム -->
-      <h3 class="text-lg font-bold text-gray-800 mb-4">画像を変更</h3>
-
-      <form id="image-form" class="space-y-4">
+        <!-- 画像（任意） -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">
-            メニュー画像
+            メニュー画像（変更する場合のみ）
           </label>
-          <input
-            type="file"
-            id="image"
-            name="image"
-            accept="image/jpeg,image/png,image/webp"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+          <!-- ドラッグ&ドロップエリア -->
+          <div
+            id="drop-zone"
+            class="border-2 border-dashed border-gray-300 rounded-md p-6 text-center cursor-pointer hover:border-blue-400 transition-colors"
+          >
+            <input
+              type="file"
+              id="image"
+              name="image"
+              accept="image/jpeg,image/png,image/webp,image/heic,image/heif"
+              class="hidden"
+            />
+            <div id="drop-zone-text">
+              <p class="text-gray-600 mb-1">ここにファイルをドロップ</p>
+              <p class="text-gray-400 text-sm">または クリックして選択</p>
+            </div>
+            <div id="file-selected" class="hidden">
+              <p class="text-gray-800 font-medium" id="file-name"></p>
+              <button
+                type="button"
+                id="clear-file"
+                class="text-red-500 text-sm mt-1 hover:text-red-700"
+              >
+                取り消す
+              </button>
+            </div>
+          </div>
           <p class="text-xs text-gray-500 mt-1">
-            JPEG, PNG, WebP（10MB以下）。長辺2000pxにリサイズされます。
+            JPEG・HEICはWebPに変換、PNGはそのまま。長辺2000pxにリサイズ。
           </p>
         </div>
 
@@ -124,70 +108,135 @@ const content = await getContent<LimitedMenuContent>(env, 'limited');
 
         <button
           type="submit"
-          id="image-submit-btn"
+          id="submit-btn"
           class="w-full py-2 px-4 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          画像をアップロード
+          保存
         </button>
       </form>
     </div>
   </div>
 
+  <!-- heic2any ライブラリ -->
+  <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
   <script set:html={clientImageProcessorCode}></script>
   <script>
-    const textForm = document.getElementById('text-form') as HTMLFormElement;
-    const imageForm = document.getElementById('image-form') as HTMLFormElement;
+    const form = document.getElementById('update-form') as HTMLFormElement;
     const imageInput = document.getElementById('image') as HTMLInputElement;
+    const dropZone = document.getElementById('drop-zone') as HTMLDivElement;
+    const dropZoneText = document.getElementById('drop-zone-text') as HTMLDivElement;
+    const fileSelected = document.getElementById('file-selected') as HTMLDivElement;
+    const fileNameEl = document.getElementById('file-name') as HTMLParagraphElement;
+    const clearFileBtn = document.getElementById('clear-file') as HTMLButtonElement;
     const previewContainer = document.getElementById('preview-container') as HTMLDivElement;
     const previewImage = document.getElementById('preview-image') as HTMLImageElement;
     const errorDiv = document.getElementById('error-message') as HTMLDivElement;
-    const successDiv = document.getElementById('success-message') as HTMLDivElement;
-    const textSubmitBtn = document.getElementById('text-submit-btn') as HTMLButtonElement;
-    const imageSubmitBtn = document.getElementById('image-submit-btn') as HTMLButtonElement;
+    const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement;
 
-    function showError(message: string) {
-      errorDiv.textContent = message;
-      errorDiv.classList.remove('hidden');
-      successDiv.classList.add('hidden');
-    }
+    let currentFile: File | null = null;
+    let processedResult: { blob: Blob; isPng: boolean } | null = null;
 
-    function showSuccess(message: string) {
-      successDiv.textContent = message;
-      successDiv.classList.remove('hidden');
-      errorDiv.classList.add('hidden');
-    }
+    // ドロップゾーンクリック
+    dropZone.addEventListener('click', () => {
+      imageInput.click();
+    });
 
-    // 画像プレビュー
-    imageInput.addEventListener('change', async () => {
-      const file = imageInput.files?.[0];
-      if (!file) {
-        previewContainer.classList.add('hidden');
-        return;
-      }
+    // ドラッグイベント
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('border-blue-400', 'bg-blue-50');
+    });
 
-      try {
-        // @ts-ignore
-        const { blob } = await processImageOnClient(file);
-        previewImage.src = URL.createObjectURL(blob);
-        previewContainer.classList.remove('hidden');
-      } catch (error: any) {
-        showError(error.message);
+    dropZone.addEventListener('dragleave', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('border-blue-400', 'bg-blue-50');
+    });
+
+    dropZone.addEventListener('drop', async (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('border-blue-400', 'bg-blue-50');
+
+      const files = e.dataTransfer?.files;
+      if (files && files.length > 0) {
+        await handleFile(files[0]);
       }
     });
 
-    // テキスト保存
-    textForm.addEventListener('submit', async (e) => {
+    // ファイル選択
+    imageInput.addEventListener('change', async () => {
+      const file = imageInput.files?.[0];
+      if (file) {
+        await handleFile(file);
+      }
+    });
+
+    // ファイル取り消し
+    clearFileBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      currentFile = null;
+      processedResult = null;
+      imageInput.value = '';
+      dropZoneText.classList.remove('hidden');
+      fileSelected.classList.add('hidden');
+      previewContainer.classList.add('hidden');
+    });
+
+    async function handleFile(file: File) {
+      currentFile = file;
+      errorDiv.classList.add('hidden');
+
+      // ファイル名表示
+      fileNameEl.textContent = file.name;
+      dropZoneText.classList.add('hidden');
+      fileSelected.classList.remove('hidden');
+
+      try {
+        // @ts-ignore
+        const result = await processImageOnClient(file);
+        processedResult = result;
+        previewImage.src = URL.createObjectURL(result.blob);
+        previewContainer.classList.remove('hidden');
+      } catch (error: any) {
+        errorDiv.textContent = error.message;
+        errorDiv.classList.remove('hidden');
+        previewContainer.classList.add('hidden');
+        processedResult = null;
+      }
+    }
+
+    // フォーム送信
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       errorDiv.classList.add('hidden');
-      successDiv.classList.add('hidden');
-      textSubmitBtn.disabled = true;
-      textSubmitBtn.textContent = '保存中...';
+      submitBtn.disabled = true;
+      submitBtn.textContent = '保存中...';
 
       const title = (document.getElementById('title') as HTMLInputElement).value;
       const description = (document.getElementById('description') as HTMLTextAreaElement).value;
 
       try {
+        // 画像がある場合は先にアップロード
+        if (processedResult) {
+          const extension = processedResult.isPng ? 'png' : 'webp';
+          const formData = new FormData();
+          formData.append('image', processedResult.blob, `limited.${extension}`);
+          formData.append('type', 'limited');
+          formData.append('isPng', String(processedResult.isPng));
+
+          const uploadResponse = await fetch('/api/upload', {
+            method: 'POST',
+            body: formData,
+          });
+
+          const uploadData = await uploadResponse.json();
+
+          if (!uploadData.success) {
+            throw new Error(uploadData.error || '画像のアップロードに失敗しました。');
+          }
+        }
+
+        // テキストを保存
         const response = await fetch('/api/content', {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
@@ -197,65 +246,18 @@ const content = await getContent<LimitedMenuContent>(env, 'limited');
         const data = await response.json();
 
         if (data.success) {
-          showSuccess('テキストを保存しました。');
+          // 成功→ダッシュボードに遷移
+          window.location.href = '/dashboard';
         } else {
-          showError(data.error || '保存に失敗しました。');
+          errorDiv.textContent = data.error || '保存に失敗しました。';
+          errorDiv.classList.remove('hidden');
         }
       } catch (error: any) {
-        showError(error.message || 'エラーが発生しました。');
+        errorDiv.textContent = error.message || 'エラーが発生しました。';
+        errorDiv.classList.remove('hidden');
       } finally {
-        textSubmitBtn.disabled = false;
-        textSubmitBtn.textContent = 'テキストを保存';
-      }
-    });
-
-    // 画像アップロード
-    imageForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const file = imageInput.files?.[0];
-      if (!file) {
-        showError('画像を選択してください。');
-        return;
-      }
-
-      errorDiv.classList.add('hidden');
-      successDiv.classList.add('hidden');
-      imageSubmitBtn.disabled = true;
-      imageSubmitBtn.textContent = 'アップロード中...';
-
-      try {
-        // 画像を処理（リサイズ + WebP変換）
-        // @ts-ignore
-        const { blob } = await processImageOnClient(file);
-
-        // FormData を作成
-        const formData = new FormData();
-        formData.append('image', blob, 'limited.webp');
-        formData.append('type', 'limited');
-
-        // アップロード
-        const response = await fetch('/api/upload', {
-          method: 'POST',
-          body: formData,
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-          showSuccess('画像をアップロードしました。');
-          // 少し待ってからリロード
-          setTimeout(() => {
-            window.location.reload();
-          }, 1500);
-        } else {
-          showError(data.error || 'アップロードに失敗しました。');
-        }
-      } catch (error: any) {
-        showError(error.message || 'エラーが発生しました。');
-      } finally {
-        imageSubmitBtn.disabled = false;
-        imageSubmitBtn.textContent = '画像をアップロード';
+        submitBtn.disabled = false;
+        submitBtn.textContent = '保存';
       }
     });
   </script>

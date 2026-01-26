@@ -15,23 +15,25 @@ const CONTENT_KEY = {
  * 画像をR2にアップロード
  * @param env Cloudflare環境
  * @param type 画像タイプ（calendar | limited）
- * @param data 画像データ（WebP変換済み）
- * @param filename オリジナルファイル名（拡張子用）
+ * @param data 画像データ
+ * @param isPng PNGかどうか（PNG→.png、それ以外→.webp）
  * @returns アップロード後のパス
  */
 export async function uploadImage(
   env: Env,
   type: 'calendar' | 'limited',
   data: ArrayBuffer,
-  _filename: string
+  isPng: boolean = false
 ): Promise<string> {
   // ユニークなファイル名を生成（タイムスタンプベース）
   const timestamp = Date.now();
-  const path = `images/${type}/${timestamp}.webp`;
+  const extension = isPng ? 'png' : 'webp';
+  const contentType = isPng ? 'image/png' : 'image/webp';
+  const path = `images/${type}/${timestamp}.${extension}`;
 
   await env.IMAGES.put(path, data, {
     httpMetadata: {
-      contentType: 'image/webp',
+      contentType,
       cacheControl: 'public, max-age=31536000', // 1年キャッシュ
     },
   });
