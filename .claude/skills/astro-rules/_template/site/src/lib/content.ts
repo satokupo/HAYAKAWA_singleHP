@@ -29,6 +29,23 @@ export interface PublicContent {
 }
 
 /**
+ * デフォルト値（API取得失敗時のフォールバック）
+ * 注意: 古いコンテンツが表示されないよう、空文字にする
+ */
+export const DEFAULT_CALENDAR: CalendarContent = {
+  imageUrl: '', // セクションでplaceholder.webpにフォールバック
+  month: '',
+  updatedAt: '',
+};
+
+export const DEFAULT_LIMITED: LimitedMenuContent = {
+  title: '',
+  description: '',
+  imageUrl: '', // セクションでplaceholder.webpにフォールバック
+  updatedAt: '',
+};
+
+/**
  * Admin API からコンテンツを取得
  *
  * @param adminBaseUrl - Admin サイトのベースURL（末尾スラッシュなし）

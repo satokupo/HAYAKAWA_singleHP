@@ -258,6 +258,60 @@ export default defineConfig({
 
 ---
 
+## 動的コンテンツのデフォルト値
+
+### 基本原則
+
+Admin APIからSSRで取得するコンテンツ（カレンダー、限定メニュー等）には、**サンプルコンテンツをデフォルト値に入れてはいけない**。
+
+### 理由
+
+1. API失敗時に古い/間違ったコンテンツが表示される
+2. ユーザーが「更新したのに変わらない」と混乱する
+3. テスト環境と本番環境で挙動が異なる原因になる
+
+### 推奨パターン
+
+```typescript
+// site/src/lib/content.ts
+
+export const DEFAULT_LIMITED: LimitedMenuContent = {
+  title: '',           // 空文字
+  description: '',     // 空文字
+  imageUrl: '',        // 空文字（セクションでplaceholder.webpにフォールバック）
+  updatedAt: '',
+};
+
+export const DEFAULT_CALENDAR: CalendarContent = {
+  imageUrl: '',        // 空文字（セクションでplaceholder.webpにフォールバック）
+  month: '',
+  updatedAt: '',
+};
+```
+
+### セクション側の実装
+
+```astro
+---
+// 04-Limited.astro
+import { fetchContent, DEFAULT_LIMITED } from '../lib/content';
+
+const baseUrl = import.meta.env.BASE_URL;
+const { limited } = await fetchContent(adminApiUrl);
+
+// imageUrlが空の場合はplaceholder.webpを使用
+const imageUrl = limited?.imageUrl || `${baseUrl}placeholder.webp`;
+---
+```
+
+### プレースホルダー画像
+
+- `site/public/placeholder.webp` に汎用プレースホルダー画像を1枚配置
+- 全てのセクションで共通利用
+- 「画像準備中」等の意味が伝わるシンプルなデザインを推奨
+
+---
+
 ## 関連ドキュメント
 
 - [Cloudflare Pages公式](https://developers.cloudflare.com/pages/)
