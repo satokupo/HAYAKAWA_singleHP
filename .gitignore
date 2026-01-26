@@ -65,12 +65,12 @@ dev/tests/logs/*
 !images/**/*.jpg
 !images/**/*.jpeg
 
-# site/public/images以下も追跡対象
-!site/public/images/
-!site/public/images/**/*.webp
-!site/public/images/**/*.png
-!site/public/images/**/*.jpg
-!site/public/images/**/*.jpeg
+# front/public/images以下も追跡対象
+!front/public/images/
+!front/public/images/**/*.webp
+!front/public/images/**/*.png
+!front/public/images/**/*.jpg
+!front/public/images/**/*.jpeg
 
 # Adobe
 *.psd

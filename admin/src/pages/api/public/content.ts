@@ -1,7 +1,7 @@
 /**
  * 公開コンテンツ取得 API
  *
- * GET /api/public/content - 認証不要、site からの取得用
+ * GET /api/public/content - 認証不要、front からの取得用
  */
 
 import type { APIRoute } from 'astro';
@@ -19,7 +19,7 @@ import { getContent } from '../../../lib/r2';
  */
 function corsHeaders(origin?: string | null): Record<string, string> {
   // 開発環境: localhost からのアクセスを許可
-  // 本番環境: site のドメインからのアクセスを許可
+  // 本番環境: front のドメインからのアクセスを許可
   const allowedOrigins = [
     'http://localhost:3000',
     'http://localhost:4321',

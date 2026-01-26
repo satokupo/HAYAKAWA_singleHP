@@ -320,5 +320,5 @@ const baseUrl = import.meta.env.BASE_URL;
 ### ローカル開発時のURL
 
 `base` 設定がある場合、ローカルでも同じパスでアクセスが必要：
-- site: `http://localhost:8789/repo-name/`
+- front: `http://localhost:8789/repo-name/`
 - admin: `http://localhost:8788/repo-name/`

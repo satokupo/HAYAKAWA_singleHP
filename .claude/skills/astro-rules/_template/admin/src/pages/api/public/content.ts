@@ -1,7 +1,7 @@
 /**
  * 公開コンテンツ取得 API
  *
- * GET /api/public/content - 認証不要、site からの取得用
+ * GET /api/public/content - 認証不要、front からの取得用
  *
  * TODO: プロジェクトに応じてコンテンツ型を調整
  */
@@ -20,7 +20,7 @@ function corsHeaders(origin?: string | null): Record<string, string> {
     'http://localhost:3000',
     'http://localhost:4321',
     'http://localhost:8788',
-    // 'https://your-site.pages.dev',
+    // 'https://your-front.pages.dev',
     // 'https://your-domain.com',
   ];
 

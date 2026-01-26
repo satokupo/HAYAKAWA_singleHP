@@ -8,7 +8,7 @@
 
 | ディレクトリ | 役割 | ビルド方式 |
 |-------------|------|-----------|
-| `site/` | 本体サイト（公開用HP） | Astro 静的ビルド |
+| `front/` | 本体サイト（公開用HP） | Astro 静的ビルド |
 | `admin/` | 管理画面（クライアント専用） | Astro SSR |
 
 ### 分離の理由
@@ -25,7 +25,7 @@
 
 | サービス | 用途 | 設定場所 |
 |---------|------|---------|
-| **Pages** | 静的サイトホスティング（site/） | ダッシュボード or wrangler.toml |
+| **Pages** | 静的サイトホスティング（front/） | ダッシュボード or wrangler.toml |
 | **Workers** | SSR実行（admin/） | Astro Adapter経由で自動生成 |
 | **R2** | 画像ストレージ | wrangler.toml でバインド |
 | **KV** | セッション管理 | wrangler.toml でバインド |
@@ -33,7 +33,7 @@
 ### デプロイフロー
 
 ```
-site/  → npm run build → Cloudflare Pages（静的）
+front/ → npm run build → Cloudflare Pages（静的）
 admin/ → npm run build → Cloudflare Pages + Workers（SSR）
 ```
 
@@ -102,16 +102,16 @@ Cloudflareは1アカウントで複数プロジェクトを管理できる：
 
 ```
 Cloudflareアカウント
-├── hayakawa-site（Pages - 静的）
+├── hayakawa-front（Pages - 静的）
 ├── hayakawa-admin（Pages + Workers - SSR）
-├── clientB-site
+├── clientB-front
 ├── clientB-admin
 └── ...
 ```
 
 ### 命名規則
 
-- `{client}-site`: 本体サイト
+- `{client}-front`: 本体サイト
 - `{client}-admin`: 管理画面
 
 ### リソース共有の注意点
@@ -204,25 +204,25 @@ Secrets は Cloudflare ダッシュボードでも設定可能。
 
 ---
 
-## Site/Admin連携
+## Front/Admin連携
 
 ### 連携の仕組み
 
 ```
-site (SSG) ──GET───→ admin/api/public/content (CORS対応)
+front (SSG) ──GET───→ admin/api/public/content (CORS対応)
                            ↓
                      R2からJSON取得
                            ↓
                      画像URLをフルパスに変換して返却
 ```
 
-- **site側**: ビルド時に admin API からコンテンツを取得
+- **front側**: ビルド時に admin API からコンテンツを取得
 - **admin側**: `/api/public/content` が認証なしで公開データを返す
 
-### Site側の実装
+### Front側の実装
 
 ```typescript
-// site/src/lib/content.ts
+// front/src/lib/content.ts
 import { fetchContentSafe } from '../lib/content';
 
 // Astroページ内で使用
@@ -248,14 +248,14 @@ if (content?.calendar) {
 # ターミナル1: admin を起動（Wrangler）
 cd admin && npm run preview  # localhost:8788
 
-# ターミナル2: site を起動（Wrangler）
-cd site && npm run preview   # localhost:8789
+# ターミナル2: front を起動（Wrangler）
+cd front && npm run preview   # localhost:8789
 ```
 
 **重要**: `npm run dev` ではなく `npm run preview`（Wrangler）を使用すること。
 KV/R2がローカルでエミュレートされ、本番と同じ環境でテストできる。
 
-site から admin の API を呼び出す際、CORS設定に `localhost:8789` を追加。
+front から admin の API を呼び出す際、CORS設定に `localhost:8789` を追加。
 
 ### CORS許可ドメインの設定
 
@@ -263,7 +263,7 @@ site から admin の API を呼び出す際、CORS設定に `localhost:8789` �
 
 ```typescript
 const allowedOrigins = [
-  'http://localhost:8789',       // ローカル開発（site）
+  'http://localhost:8789',       // ローカル開発（front）
   'https://example.com',         // 本番ドメイン
   'https://www.example.com',     // 本番ドメイン（wwwあり）
 ];
@@ -273,7 +273,7 @@ const allowedOrigins = [
 
 ### ビルド時の動作
 
-site のビルド時（`npm run build`）に admin API からコンテンツを取得する場合:
+front のビルド時（`npm run build`）に admin API からコンテンツを取得する場合:
 
 ```javascript
 // astro.config.mjs
@@ -291,7 +291,7 @@ export default defineConfig({
 
 ### デプロイ時の注意
 
-1. **admin を先にデプロイ** - site のビルド時に admin API が必要
+1. **admin を先にデプロイ** - front のビルド時に admin API が必要
 2. **CORS設定を更新** - 本番ドメインを許可リストに追加
 3. **環境変数を設定** - Cloudflare Pages のビルド設定で `ADMIN_URL` を設定
 
@@ -312,7 +312,7 @@ Admin APIからSSRで取得するコンテンツ（カレンダー、限定メ�
 ### 推奨パターン
 
 ```typescript
-// site/src/lib/content.ts
+// front/src/lib/content.ts
 
 export const DEFAULT_LIMITED: LimitedMenuContent = {
   title: '',           // 空文字
@@ -345,7 +345,7 @@ const imageUrl = limited?.imageUrl || `${baseUrl}placeholder.webp`;
 
 ### プレースホルダー画像
 
-- `site/public/placeholder.webp` に汎用プレースホルダー画像を1枚配置
+- `front/public/placeholder.webp` に汎用プレースホルダー画像を1枚配置
 - 全てのセクションで共通利用
 - 「画像準備中」等の意味が伝わるシンプルなデザインを推奨
 

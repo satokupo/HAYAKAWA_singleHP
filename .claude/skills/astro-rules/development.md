@@ -7,7 +7,7 @@ Astroプロジェクトの構築順序と開発サーバーのルール。
 ## 構築順序
 
 ```
-1. site作成 ←→ GitHub Pages確認（同時進行）
+1. front作成 ←→ GitHub Pages確認（同時進行）
    └─ 静的サイトとして見た目を作り込む
    └─ 動的部分はプレースホルダー表示
 
@@ -15,17 +15,17 @@ Astroプロジェクトの構築順序と開発サーバーのルール。
    └─ Wrangler必須（KV/R2使用）
    └─ 管理画面・API実装
 
-3. site書き換え
+3. front書き換え
    └─ admin APIからコンテンツ取得する処理を追加
    └─ ADMIN_API_URL環境変数の設定
 
 4. 連携確認
    └─ admin: localhost:8788
-   └─ site: localhost:8789
-   └─ siteからadminのAPIを叩いて動的コンテンツ表示
+   └─ front: localhost:8789
+   └─ frontからadminのAPIを叩いて動的コンテンツ表示
 
 5. Cloudflareデプロイ
-   └─ admin → site の順でデプロイ
+   └─ admin → front の順でデプロイ
    └─ 本番URLを環境変数に設定
 ```
 
@@ -36,7 +36,7 @@ Astroプロジェクトの構築順序と開発サーバーのルール。
 | プロジェクト | ポート | 起動コマンド |
 |-------------|--------|-------------|
 | admin | 8788（固定） | `npm run preview` |
-| site | 8789（固定） | `npm run preview` |
+| front | 8789（固定） | `npm run preview` |
 
 **重要**: このポートは固定。変更してはいけない。
 
@@ -52,7 +52,7 @@ Astroプロジェクトの構築順序と開発サーバーのルール。
   }
 }
 
-// site/package.json
+// front/package.json
 {
   "scripts": {
     "dev": "astro dev",
@@ -80,23 +80,23 @@ Astroプロジェクトの構築順序と開発サーバーのルール。
    - 環境差異によるバグを事前に発見できる
 
 3. **ポートの一貫性**
-   - admin=8788, site=8789 で常に固定
+   - admin=8788, front=8789 で常に固定
    - 混乱を防ぎ、設定ミスを減らす
 
 ### 各フェーズでの使い分け
 
-| フェーズ | site | admin |
+| フェーズ | front | admin |
 |----------|------|-------|
-| site単体開発 | Wrangler 8789 | - |
+| front単体開発 | Wrangler 8789 | - |
 | admin開発 | - | Wrangler 8788（必須） |
 | 連携確認 | Wrangler 8789 | Wrangler 8788 |
 | 本番 | Cloudflare | Cloudflare |
 
 ---
 
-## site単体開発時の動作
+## front単体開発時の動作
 
-adminが起動していない場合、siteは以下のように動作する：
+adminが起動していない場合、frontは以下のように動作する：
 
 1. admin API (`http://localhost:8788`) への接続が失敗
 2. フォールバック値（空文字）が使用される
@@ -117,16 +117,16 @@ adminが起動していない場合、siteは以下のように動作する：
 
 **重要**: `wrangler.jsonc` の `vars` は本番にもデプロイされる。ローカル専用の値は `.dev.vars` に書く。
 
-### site側の ADMIN_API_URL
+### front側の ADMIN_API_URL
 
-siteがadmin APIからコンテンツを取得するためのURL。
+frontがadmin APIからコンテンツを取得するためのURL。
 
 | 環境 | 設定ファイル | 値 |
 |------|-------------|---|
 | ローカル開発 | `.dev.vars` | `http://localhost:8788` |
 | 本番 | `wrangler.jsonc` | `https://settei.{DOMAIN}` |
 
-#### site/wrangler.jsonc（本番用）
+#### front/wrangler.jsonc（本番用）
 
 ```jsonc
 {
@@ -136,7 +136,7 @@ siteがadmin APIからコンテンツを取得するためのURL。
 }
 ```
 
-#### site/.dev.vars（ローカル用）
+#### front/.dev.vars（ローカル用）
 
 ```
 # ローカル開発用環境変数
@@ -201,7 +201,7 @@ const baseUrl = new URL(request.url).origin;
 ```
 「Astro開いて」
 「adminを起動して」
-「siteをDevToolsで確認」
+「frontをDevToolsで確認」
 ```
 
 直接 `npm run dev` や `npm run preview` を実行してはいけない。
@@ -211,5 +211,5 @@ chrome-checkスキルがポートの管理とブラウザ連携を行う。
 
 ## 関連ドキュメント
 
-- `operations.md` - Site/Admin連携の詳細
+- `operations.md` - Front/Admin連携の詳細
 - chrome-checkスキル - サーバー起動フロー

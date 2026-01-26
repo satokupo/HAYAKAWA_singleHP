@@ -1,6 +1,6 @@
-# Site 初期構築ルール
+# Front 初期構築ルール
 
-公開用静的サイト（site/）の初期構築手順。
+公開用静的サイト（front/）の初期構築手順。
 
 ---
 
@@ -10,20 +10,20 @@
 
 1. **テンプレートをコピー**
    ```bash
-   cp -r .claude/skills/astro-rules/_template/site/ ./site/
+   cp -r .claude/skills/astro-rules/_template/front/ ./front/
    ```
 
 2. **依存パッケージをインストール**
    ```bash
-   cd site && npm install
+   cd front && npm install
    ```
 
 3. **開発サーバーを起動**
 
    **chrome-check スキル** を使用すること。
    ```
-   「siteを起動して」
-   「siteをDevToolsで確認」
+   「frontを起動して」
+   「frontをDevToolsで確認」
    ```
 
 4. **ブラウザで確認**

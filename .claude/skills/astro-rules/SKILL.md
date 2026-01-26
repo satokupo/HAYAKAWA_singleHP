@@ -33,7 +33,7 @@ Astroプロジェクトの品質を均一化するためのルール集。
 
 | 用途 | ドキュメント | テンプレート |
 |------|-------------|-------------|
-| 公開用HP（SSG） | `init/site.md` | `_template/site/` |
+| 公開用HP（SSG） | `init/front.md` | `_template/front/` |
 | 管理画面（SSR） | `init/admin.md` | `_template/admin/` |
 
 - `init/index.md` - 概要とクイックスタート
@@ -46,7 +46,7 @@ Astroプロジェクトの品質を均一化するためのルール集。
 
 初期構築ルール：
 - `index.md` - 概要、クイックスタート
-- `site.md` - 公開用HP の構築手順
+- `front.md` - 公開用HP の構築手順
 - `admin.md` - 管理画面の構築手順（Cloudflare KV/R2設定含む）
 
 ### structure.md
@@ -71,19 +71,19 @@ CSS作成ルール：
 ### operations.md
 
 運用・ホスティング設定：
-- リポジトリ内ディレクトリ構成（site / admin）
+- リポジトリ内ディレクトリ構成（front / admin）
 - Cloudflare構成（Pages, R2, KV）
 - Astro SSR + Cloudflare Adapter
 - 無料枠と運用規模の目安
 - 複数クライアント運用
 - キャッシュ対策
-- **Site/Admin連携**（APIでコンテンツ取得）
+- **Front/Admin連携**（APIでコンテンツ取得）
 
 ### development.md
 
 開発フロー：
-- **構築順序**（site → admin → 連携 → デプロイ）
-- **開発サーバーポート規則**（admin: 8788, site: 8789）
+- **構築順序**（front → admin → 連携 → デプロイ）
+- **開発サーバーポート規則**（admin: 8788, front: 8789）
 - npm run dev を使わない理由
 - 環境変数の設定
 
