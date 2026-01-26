@@ -229,7 +229,7 @@ const content = await getContent<LimitedMenuContent>(env, 'limited');
             body: formData,
           });
 
-          const uploadData = await uploadResponse.json();
+          const uploadData = await uploadResponse.json() as { success: boolean; error?: string };
 
           if (!uploadData.success) {
             throw new Error(uploadData.error || '画像のアップロードに失敗しました。');
@@ -243,7 +243,7 @@ const content = await getContent<LimitedMenuContent>(env, 'limited');
           body: JSON.stringify({ type: 'limited', title, description }),
         });
 
-        const data = await response.json();
+        const data = await response.json() as { success: boolean; error?: string };
 
         if (data.success) {
           // 成功→ダッシュボードに遷移

@@ -50,17 +50,29 @@ const menuItems = [
 </script>
 
 <script>
+    interface MenuItem {
+        name: string;
+        price: string;
+        description: string;
+        image: string;
+    }
+    declare global {
+        interface Window {
+            menuItems: MenuItem[];
+        }
+    }
+
     (function initMenuCarousel() {
         const menuItems = window.menuItems;
-        const carousel = document.querySelector('.menu__carousel');
-        const track = document.querySelector('.menu__carousel-track');
-        const frontImage = document.getElementById('menu-main-image-front');
-        const backImage = document.getElementById('menu-main-image-back');
-        const nameEl = document.getElementById('menu-name');
-        const priceEl = document.getElementById('menu-price');
-        const descEl = document.getElementById('menu-description');
+        const carousel = document.querySelector('.menu__carousel') as HTMLElement | null;
+        const track = document.querySelector('.menu__carousel-track') as HTMLElement | null;
+        const frontImage = document.getElementById('menu-main-image-front') as HTMLImageElement | null;
+        const backImage = document.getElementById('menu-main-image-back') as HTMLImageElement | null;
+        const nameEl = document.getElementById('menu-name') as HTMLElement | null;
+        const priceEl = document.getElementById('menu-price') as HTMLElement | null;
+        const descEl = document.getElementById('menu-description') as HTMLElement | null;
 
-        if (!track || menuItems.length === 0) return;
+        if (!carousel || !track || !frontImage || !backImage || !nameEl || !priceEl || !descEl || menuItems.length === 0) return;
 
         // 設定
         const INITIAL_SETS = 3;
@@ -72,13 +84,13 @@ const menuItems = [
         let currentIndex = 0;
         let isScrolling = false;
         let isLoading = false;
-        let slides = [];
+        let slides: HTMLElement[] = [];
 
-        function createSlide(item, realIndex, slideIndex) {
+        function createSlide(item: MenuItem, realIndex: number, slideIndex: number): HTMLElement {
             const slide = document.createElement('div');
             slide.className = 'menu__slide';
-            slide.dataset.realIndex = realIndex;
-            slide.dataset.slideIndex = slideIndex;
+            slide.dataset.realIndex = String(realIndex);
+            slide.dataset.slideIndex = String(slideIndex);
 
             const img = document.createElement('img');
             img.src = item.image;
@@ -89,10 +101,10 @@ const menuItems = [
             slide.appendChild(img);
 
             slide.addEventListener('click', () => {
-                const ri = parseInt(slide.dataset.realIndex);
+                const ri = parseInt(slide.dataset.realIndex || '0');
                 if (ri === currentIndex) return;
 
-                const scrollCenter = carousel.scrollLeft + carousel.clientWidth / 2;
+                const scrollCenter = carousel!.scrollLeft + carousel!.clientWidth / 2;
                 const slideCenter = slide.offsetLeft + ITEM_WIDTH / 2;
                 const direction = slideCenter > scrollCenter ? 1 : -1;
 
@@ -107,75 +119,75 @@ const menuItems = [
 
         const spacer = document.createElement('div');
         spacer.className = 'menu__carousel-spacer';
-        spacer.style.width = (carousel.clientWidth / 2 - ITEM_WIDTH / 2) + 'px';
+        spacer.style.width = (carousel!.clientWidth / 2 - ITEM_WIDTH / 2) + 'px';
         track.appendChild(spacer);
 
-        function appendSets(count) {
+        function appendSets(count: number): void {
             for (let s = 0; s < count && currentSets < MAX_SETS; s++) {
-                menuItems.forEach((item, i) => {
+                menuItems.forEach((item: MenuItem, i: number) => {
                     const slideIndex = currentSets * menuItems.length + i;
                     const slide = createSlide(item, i, slideIndex);
-                    track.insertBefore(slide, spacer);
+                    track!.insertBefore(slide, spacer);
                 });
                 currentSets++;
             }
-            slides = Array.from(track.querySelectorAll('.menu__slide'));
+            slides = Array.from(track!.querySelectorAll('.menu__slide')) as HTMLElement[];
         }
 
         appendSets(INITIAL_SETS);
 
         let isMainImageAnimating = false;
-        function updateMainDisplay(index, direction = 0) {
+        function updateMainDisplay(index: number, direction: number = 0): void {
             const item = menuItems[index];
 
             if (direction === 0 || isMainImageAnimating) {
-                frontImage.src = item.image;
-                frontImage.alt = item.name;
-                backImage.src = item.image;
-                backImage.alt = item.name;
-                nameEl.textContent = item.name;
-                priceEl.textContent = item.price;
-                descEl.innerHTML = item.description;
+                frontImage!.src = item.image;
+                frontImage!.alt = item.name;
+                backImage!.src = item.image;
+                backImage!.alt = item.name;
+                nameEl!.textContent = item.name;
+                priceEl!.textContent = item.price;
+                descEl!.innerHTML = item.description;
                 return;
             }
 
             isMainImageAnimating = true;
             const rotateAngle = direction > 0 ? 360 : -360;
 
-            backImage.src = item.image;
-            backImage.alt = item.name;
+            backImage!.src = item.image;
+            backImage!.alt = item.name;
 
-            frontImage.style.transition = 'transform 0.5s ease-out';
-            backImage.style.transition = 'transform 0.5s ease-out';
-            frontImage.style.transform = `rotate(${rotateAngle}deg)`;
-            backImage.style.transform = `rotate(${rotateAngle}deg)`;
+            frontImage!.style.transition = 'transform 0.5s ease-out';
+            backImage!.style.transition = 'transform 0.5s ease-out';
+            frontImage!.style.transform = `rotate(${rotateAngle}deg)`;
+            backImage!.style.transform = `rotate(${rotateAngle}deg)`;
 
-            frontImage.style.animation = 'crossover-fade 0.5s ease-out forwards';
+            frontImage!.style.animation = 'crossover-fade 0.5s ease-out forwards';
 
-            nameEl.textContent = item.name;
-            priceEl.textContent = item.price;
-            descEl.innerHTML = item.description;
+            nameEl!.textContent = item.name;
+            priceEl!.textContent = item.price;
+            descEl!.innerHTML = item.description;
 
             setTimeout(() => {
-                frontImage.style.transition = 'none';
-                backImage.style.transition = 'none';
-                frontImage.style.transform = 'rotate(0deg)';
-                backImage.style.transform = 'rotate(0deg)';
-                frontImage.style.animation = '';
-                frontImage.style.opacity = '1';
-                frontImage.src = item.image;
-                frontImage.alt = item.name;
-                frontImage.offsetHeight;
-                frontImage.style.transition = '';
-                backImage.style.transition = '';
+                frontImage!.style.transition = 'none';
+                backImage!.style.transition = 'none';
+                frontImage!.style.transform = 'rotate(0deg)';
+                backImage!.style.transform = 'rotate(0deg)';
+                frontImage!.style.animation = '';
+                frontImage!.style.opacity = '1';
+                frontImage!.src = item.image;
+                frontImage!.alt = item.name;
+                frontImage!.offsetHeight;
+                frontImage!.style.transition = '';
+                backImage!.style.transition = '';
                 isMainImageAnimating = false;
             }, 500);
         }
 
-        function updateSlideScales() {
-            const carouselCenter = carousel.scrollLeft + carousel.clientWidth / 2;
+        function updateSlideScales(): void {
+            const carouselCenter = carousel!.scrollLeft + carousel!.clientWidth / 2;
 
-            slides.forEach(slide => {
+            slides.forEach((slide: HTMLElement) => {
                 const slideCenter = slide.offsetLeft + ITEM_WIDTH / 2;
                 const distance = Math.abs(carouselCenter - slideCenter);
                 const scale = Math.max(0.8, 1 - (distance / ITEM_WIDTH) * 0.1);
@@ -183,40 +195,40 @@ const menuItems = [
             });
         }
 
-        function updateActiveState(realIndex) {
-            slides.forEach(slide => {
-                const isActive = parseInt(slide.dataset.realIndex) === realIndex;
+        function updateActiveState(realIndex: number): void {
+            slides.forEach((slide: HTMLElement) => {
+                const isActive = parseInt(slide.dataset.realIndex || '0') === realIndex;
                 slide.classList.toggle('is-active', isActive);
             });
         }
 
-        function scrollToSlideByElement(targetSlide, smooth = true) {
+        function scrollToSlideByElement(targetSlide: HTMLElement | null, smooth: boolean = true): void {
             if (!targetSlide) return;
 
             const slideCenter = targetSlide.offsetLeft + ITEM_WIDTH / 2;
-            const scrollTarget = slideCenter - carousel.clientWidth / 2;
+            const scrollTarget = slideCenter - carousel!.clientWidth / 2;
 
             if (!smooth) {
-                carousel.scrollLeft = scrollTarget;
+                carousel!.scrollLeft = scrollTarget;
                 return;
             }
 
             animateScrollTo(scrollTarget, 500);
         }
 
-        function animateScrollTo(targetLeft, duration = 500) {
-            const startLeft = carousel.scrollLeft;
+        function animateScrollTo(targetLeft: number, duration: number = 500): void {
+            const startLeft = carousel!.scrollLeft;
             const distance = targetLeft - startLeft;
             const startTime = performance.now();
 
             isScrolling = true;
 
-            function step(currentTime) {
+            function step(currentTime: number): void {
                 const elapsed = currentTime - startTime;
                 const progress = Math.min(elapsed / duration, 1);
                 const easeOut = 1 - Math.pow(1 - progress, 3);
 
-                carousel.scrollLeft = startLeft + distance * easeOut;
+                carousel!.scrollLeft = startLeft + distance * easeOut;
 
                 if (progress < 1) {
                     requestAnimationFrame(step);
@@ -228,19 +240,19 @@ const menuItems = [
             requestAnimationFrame(step);
         }
 
-        function scrollToSlide(slideIndex, smooth = true) {
+        function scrollToSlide(slideIndex: number, smooth: boolean = true): void {
             const targetSlide = slides[slideIndex];
             if (targetSlide) {
                 scrollToSlideByElement(targetSlide, smooth);
             }
         }
 
-        function checkAndLoadMore() {
+        function checkAndLoadMore(): void {
             if (isLoading || currentSets >= MAX_SETS) return;
 
-            const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+            const maxScroll = carousel!.scrollWidth - carousel!.clientWidth;
 
-            if (carousel.scrollLeft > maxScroll - LOAD_THRESHOLD) {
+            if (carousel!.scrollLeft > maxScroll - LOAD_THRESHOLD) {
                 isLoading = true;
                 appendSets(2);
                 updateActiveState(currentIndex);
@@ -248,14 +260,14 @@ const menuItems = [
             }
         }
 
-        let scrollTimeout = null;
-        let lastScrollLeft = carousel.scrollLeft;
-        let lastManualScrollLeft = carousel.scrollLeft;
-        carousel.addEventListener('scroll', () => {
+        let scrollTimeout: ReturnType<typeof setTimeout> | null = null;
+        let lastScrollLeft = carousel!.scrollLeft;
+        let lastManualScrollLeft = carousel!.scrollLeft;
+        carousel!.addEventListener('scroll', () => {
             checkAndLoadMore();
             updateSlideScales();
 
-            const currentScrollLeft = carousel.scrollLeft;
+            const currentScrollLeft = carousel!.scrollLeft;
 
             if (isScrolling) {
                 lastScrollLeft = currentScrollLeft;
@@ -264,11 +276,11 @@ const menuItems = [
 
             if (scrollTimeout) clearTimeout(scrollTimeout);
             scrollTimeout = setTimeout(() => {
-                const scrollCenter = carousel.scrollLeft + carousel.clientWidth / 2;
+                const scrollCenter = carousel!.scrollLeft + carousel!.clientWidth / 2;
                 let closestIndex = 0;
                 let closestDistance = Infinity;
 
-                slides.forEach((slide, i) => {
+                slides.forEach((slide: HTMLElement, i: number) => {
                     const slideCenter = slide.offsetLeft + ITEM_WIDTH / 2;
                     const distance = Math.abs(scrollCenter - slideCenter);
                     if (distance < closestDistance) {
@@ -277,20 +289,20 @@ const menuItems = [
                     }
                 });
 
-                const realIndex = parseInt(slides[closestIndex].dataset.realIndex);
+                const realIndex = parseInt(slides[closestIndex].dataset.realIndex || '0');
                 if (realIndex !== currentIndex) {
-                    const scrollDirection = carousel.scrollLeft > lastManualScrollLeft ? 1 : -1;
+                    const scrollDirection = carousel!.scrollLeft > lastManualScrollLeft ? 1 : -1;
                     currentIndex = realIndex;
                     updateActiveState(realIndex);
                     updateMainDisplay(realIndex, scrollDirection);
                 }
-                lastManualScrollLeft = carousel.scrollLeft;
+                lastManualScrollLeft = carousel!.scrollLeft;
             }, 100);
 
             lastScrollLeft = currentScrollLeft;
         }, { passive: true });
 
-        carousel.addEventListener('scrollend', () => {
+        carousel!.addEventListener('scrollend', () => {
             checkAndLoadMore();
         }, { passive: true });
 
@@ -304,18 +316,18 @@ const menuItems = [
 
         // 自動スライド
         const AUTO_SLIDE_INTERVAL = 2800;
-        let autoSlideTimer = null;
+        let autoSlideTimer: ReturnType<typeof setInterval> | null = null;
         let isAutoSlideEnabled = true;
         let slideDirection = 1;
 
-        function autoSlide() {
+        function autoSlide(): void {
             if (!isAutoSlideEnabled) return;
 
-            const scrollCenter = carousel.scrollLeft + carousel.clientWidth / 2;
+            const scrollCenter = carousel!.scrollLeft + carousel!.clientWidth / 2;
             let currentSlideIdx = 0;
             let closestDistance = Infinity;
 
-            slides.forEach((slide, idx) => {
+            slides.forEach((slide: HTMLElement, idx: number) => {
                 const slideCenter = slide.offsetLeft + ITEM_WIDTH / 2;
                 const distance = Math.abs(scrollCenter - slideCenter);
                 if (distance < closestDistance) {
@@ -337,7 +349,7 @@ const menuItems = [
             if (nextSlideIdx < 0 || nextSlideIdx >= slides.length) return;
 
             const targetSlide = slides[nextSlideIdx];
-            const nextRealIndex = parseInt(targetSlide.dataset.realIndex);
+            const nextRealIndex = parseInt(targetSlide.dataset.realIndex || '0');
 
             currentIndex = nextRealIndex;
             updateActiveState(nextRealIndex);
@@ -345,12 +357,12 @@ const menuItems = [
             scrollToSlideByElement(targetSlide);
         }
 
-        function startAutoSlide() {
+        function startAutoSlide(): void {
             if (autoSlideTimer || !isAutoSlideEnabled) return;
             autoSlideTimer = setInterval(autoSlide, AUTO_SLIDE_INTERVAL);
         }
 
-        function stopAutoSlide() {
+        function stopAutoSlide(): void {
             isAutoSlideEnabled = false;
             if (autoSlideTimer) {
                 clearInterval(autoSlideTimer);
@@ -358,13 +370,13 @@ const menuItems = [
             }
         }
 
-        carousel.addEventListener('touchstart', stopAutoSlide, { passive: true });
-        carousel.addEventListener('mousedown', stopAutoSlide);
-        carousel.addEventListener('wheel', stopAutoSlide, { passive: true });
+        carousel!.addEventListener('touchstart', stopAutoSlide, { passive: true });
+        carousel!.addEventListener('mousedown', stopAutoSlide);
+        carousel!.addEventListener('wheel', stopAutoSlide, { passive: true });
 
         let autoSlideStarted = false;
 
-        function triggerAutoSlide() {
+        function triggerAutoSlide(): void {
             if (autoSlideStarted || !isAutoSlideEnabled) return;
             autoSlideStarted = true;
 
@@ -382,7 +394,7 @@ const menuItems = [
                 triggerAutoSlide();
             }
         }, { threshold: 0 });
-        carouselObserver.observe(carousel);
+        carouselObserver.observe(carousel!);
     })();
 </script>
 

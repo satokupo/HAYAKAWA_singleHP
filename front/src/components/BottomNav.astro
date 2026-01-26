@@ -24,19 +24,19 @@ const baseUrl = import.meta.env.BASE_URL;
 
 <script>
     (function initFixedNav() {
-        const fixedNav = document.querySelector('.fixed-nav');
-        const hero = document.getElementById('hero');
+        const fixedNav = document.querySelector('.fixed-nav') as HTMLElement | null;
+        const hero = document.getElementById('hero') as HTMLElement | null;
 
         if (!fixedNav || !hero) return;
 
         const navHeight = 70;
 
         function updateNavVisibility() {
-            const heroRect = hero.getBoundingClientRect();
+            const heroRect = hero!.getBoundingClientRect();
             if (heroRect.bottom < window.innerHeight - navHeight) {
-                fixedNav.classList.add('is-visible');
+                fixedNav!.classList.add('is-visible');
             } else {
-                fixedNav.classList.remove('is-visible');
+                fixedNav!.classList.remove('is-visible');
             }
         }
 

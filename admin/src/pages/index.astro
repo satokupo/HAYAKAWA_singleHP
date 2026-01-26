@@ -107,7 +107,7 @@ if (session) {
           body: JSON.stringify({ id, password }),
         });
 
-        const data = await response.json();
+        const data = await response.json() as { success: boolean };
 
         if (data.success) {
           window.location.href = '/dashboard';

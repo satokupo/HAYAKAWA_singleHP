@@ -28,7 +28,7 @@ export type SiteConfig = typeof siteConfig;
  * 環境変数を含めた設定を取得
  * Astroコンポーネントから呼び出す
  */
-export function getSiteConfig(env?: { SITE_URL?: string }): SiteConfig {
+export function getSiteConfig(env?: { SITE_URL?: string }): Omit<SiteConfig, 'siteUrl'> & { siteUrl: string } {
   return {
     ...siteConfig,
     siteUrl: env?.SITE_URL || siteConfig.siteUrl,

@@ -14,11 +14,11 @@
         const PASS = 'HAYAKAWA';
         const KEY = 'hayakawa_auth';
         const overlay = document.getElementById('auth-overlay');
-        const input = document.getElementById('auth-input');
+        const input = document.getElementById('auth-input') as HTMLInputElement | null;
         const btn = document.getElementById('auth-btn');
         const error = document.getElementById('auth-error');
 
-        if (!overlay) return;
+        if (!overlay || !input || !btn || !error) return;
 
         // 認証済みならオーバーレイを非表示
         if (sessionStorage.getItem(KEY) === 'true') {
@@ -26,18 +26,18 @@
         }
 
         function checkPassword() {
-            if (input.value === PASS) {
+            if (input!.value === PASS) {
                 sessionStorage.setItem(KEY, 'true');
-                overlay.classList.add('is-hidden');
+                overlay!.classList.add('is-hidden');
             } else {
-                error.classList.add('is-visible');
-                input.value = '';
-                input.focus();
+                error!.classList.add('is-visible');
+                input!.value = '';
+                input!.focus();
             }
         }
 
         btn.addEventListener('click', checkPassword);
-        input.addEventListener('keydown', function(e) {
+        input.addEventListener('keydown', function(e: KeyboardEvent) {
             if (e.key === 'Enter') checkPassword();
         });
     })();
