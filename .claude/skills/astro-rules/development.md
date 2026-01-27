@@ -94,6 +94,23 @@ Astroプロジェクトの構築順序と開発サーバーのルール。
 
 ---
 
+## モード別の制約
+
+| 項目 | ホットリロード (4321/4322) | Wrangler (8788/8789) |
+|------|--------------------------|---------------------|
+| HMR（即時反映） | ✅ あり | ❌ なし（再起動必要） |
+| KV/R2 | ❌ 動作しない | ✅ 動作する |
+| admin API連携 | ❌ 不可（.dev.varsが読まれない） | ✅ 可能 |
+| 用途 | UI/CSS調整 | API連携テスト |
+
+### 「連携できない」場合のチェックポイント
+
+1. ポート番号を確認 → 4321/4322ならホットリロードモード
+2. ホットリロードモードでは連携は設計上不可能
+3. Wranglerモードに切り替える（front:8788, admin:8789）
+
+---
+
 ## front単体開発時の動作
 
 adminが起動していない場合、frontは以下のように動作する：
@@ -117,13 +134,14 @@ adminが起動していない場合、frontは以下のように動作する：
 
 **重要**: `wrangler.jsonc` の `vars` は本番にもデプロイされる。ローカル専用の値は `.dev.vars` に書く。
 
-### front側の ADMIN_API_URL
+### front側の PUBLIC_ADMIN_API_URL
 
 frontがadmin APIからコンテンツを取得するためのURL。
+**クライアントサイドで使用するため `PUBLIC_` プレフィックスが必要。**
 
 | 環境 | 設定ファイル | 値 |
 |------|-------------|---|
-| ローカル開発 | `.dev.vars` | `http://localhost:8788` |
+| ローカル開発 | `.dev.vars` | `http://localhost:8789` |
 | 本番 | `wrangler.jsonc` | `https://settei.{DOMAIN}` |
 
 #### front/wrangler.jsonc（本番用）
@@ -131,7 +149,7 @@ frontがadmin APIからコンテンツを取得するためのURL。
 ```jsonc
 {
   "vars": {
-    "ADMIN_API_URL": "https://settei.example.com"
+    "PUBLIC_ADMIN_API_URL": "https://settei.example.com"
   }
 }
 ```
@@ -142,7 +160,7 @@ frontがadmin APIからコンテンツを取得するためのURL。
 # ローカル開発用環境変数
 # このファイルは .gitignore に含まれ、本番にはデプロイされない
 
-ADMIN_API_URL=http://localhost:8788
+PUBLIC_ADMIN_API_URL=http://localhost:8789
 ```
 
 ### admin側の SITE_URL
@@ -151,7 +169,7 @@ adminのフッター「サイトを見る」リンク用。
 
 | 環境 | 設定ファイル | 値 |
 |------|-------------|---|
-| ローカル開発 | `.dev.vars` | `http://localhost:8789` |
+| ローカル開発 | `.dev.vars` | `http://localhost:8788` |
 | 本番 | `wrangler.jsonc` | `https://example.com` |
 
 #### admin/wrangler.jsonc（本番用）
@@ -168,7 +186,7 @@ adminのフッター「サイトを見る」リンク用。
 
 ```
 # ローカル開発用環境変数
-SITE_URL=http://localhost:8789
+SITE_URL=http://localhost:8788
 ADMIN_PASSWORD=開発用パスワード
 ```
 

@@ -10,8 +10,4 @@
 #   front: localhost:8788
 #   admin: localhost:8789
 
-# 認証用パスワード（本番では wrangler secret put ADMIN_PASSWORD で設定）
-ADMIN_PASSWORD=your_secure_password_here
-
-# フッター「サイトを見る」リンク先（ローカルのfrontを参照）
-SITE_URL=http://localhost:8788
+PUBLIC_ADMIN_API_URL=http://localhost:8789

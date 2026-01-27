@@ -1,7 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "hayakawa-front",
-  "compatibility_date": "2024-12-01",
+  "name": "your-project-front",
+  "compatibility_date": "2025-01-01",
   "compatibility_flags": ["nodejs_compat"],
   "pages_build_output_dir": "./dist",
 
@@ -13,8 +13,7 @@
 
   // 環境変数（本番用）
   // ローカル開発時は .dev.vars で上書きされる
-  // クライアントサイドで使用するため PUBLIC_ プレフィックスが必要
   "vars": {
-    "PUBLIC_ADMIN_API_URL": "https://settei.hayakawa-gyoza.com"
+    "PUBLIC_ADMIN_API_URL": "https://your-admin-domain.com"
   }
 }

@@ -8,8 +8,8 @@
 
 | ディレクトリ | 役割 | ビルド方式 |
 |-------------|------|-----------|
-| `front/` | 本体サイト（公開用HP） | Astro 静的ビルド |
-| `admin/` | 管理画面（クライアント専用） | Astro SSR |
+| `front/` | 本体サイト（公開用HP） | Astro SSG + クライアントfetch |
+| `admin/` | 管理画面（クライアント専用） | Astro SSR（Workers上で動作） |
 
 ### 分離の理由
 
@@ -19,14 +19,45 @@
 
 ---
 
+## 設計思想
+
+### 基本方針: 静的ベース + クライアントfetch
+
+本番環境の構成:
+```
+ユーザー → front (Pages/静的HTML) → ブラウザJS → admin API (Workers)
+                                                      ↓
+                                                 R2から画像・コンテンツ取得
+```
+
+- **front**: 静的HTML（SSG）として配信
+- **動的コンテンツ**（カレンダー、限定メニュー）: クライアントサイドでadmin APIからfetch
+- **admin**: SSR（Workers上で動作、KV/R2を使用）
+
+### この設計のメリット
+
+1. **高速な初期表示**: 静的HTMLはCDNキャッシュが効く
+2. **SEO**: 静的部分は検索エンジンに最適
+3. **Cloudflare無料枠の節約**: frontのWorkersリクエストがゼロ
+4. **リアルタイム更新**: adminで変更した内容が即座にfrontに反映
+
+### Workersリクエスト比較
+
+| 方式 | front | admin | 合計/アクセス |
+|-----|-------|-------|--------------|
+| 全SSR | 1回 | 1回 | 2回 |
+| 静的+クライアントfetch | 0回 | 1回 | 1回 |
+
+---
+
 ## Cloudflare構成
 
 ### 使用サービス一覧
 
 | サービス | 用途 | 設定場所 |
 |---------|------|---------|
-| **Pages** | 静的サイトホスティング（front/） | ダッシュボード or wrangler.toml |
-| **Workers** | SSR実行（admin/） | Astro Adapter経由で自動生成 |
+| **Pages** | 静的配信（front） | ダッシュボード or wrangler.toml |
+| **Workers** | SSR（admin） | Astro Adapter経由で自動生成 |
 | **R2** | 画像ストレージ | wrangler.toml でバインド |
 | **KV** | セッション管理 | wrangler.toml でバインド |
 
@@ -209,28 +240,38 @@ Secrets は Cloudflare ダッシュボードでも設定可能。
 ### 連携の仕組み
 
 ```
-front (SSG) ──GET───→ admin/api/public/content (CORS対応)
-                           ↓
-                     R2からJSON取得
-                           ↓
-                     画像URLをフルパスに変換して返却
+ユーザー → front (静的HTML) → ブラウザでJS実行
+                                    ↓
+                              クライアントサイドでfetch
+                                    ↓
+                        admin/api/public/content (CORS対応)
+                                    ↓
+                              R2からJSON取得
+                                    ↓
+                        画像URLをフルパスに変換して返却
 ```
 
-- **front側**: ビルド時に admin API からコンテンツを取得
+- **front側**: クライアントサイド（ブラウザ）で admin API からコンテンツを取得
 - **admin側**: `/api/public/content` が認証なしで公開データを返す
+- **ポイント**: ビルド時ではなく、ユーザーがページを開いた時にfetchが実行される
 
 ### Front側の実装
 
 ```typescript
-// front/src/lib/content.ts
-import { fetchContentSafe } from '../lib/content';
+// front/src/components/DynamicContent.astro のスクリプト部分
+// クライアントサイドで実行される
 
-// Astroページ内で使用
-const content = await fetchContentSafe('https://your-admin.pages.dev');
+async function fetchContent() {
+  const response = await fetch('https://your-admin.pages.dev/api/public/content');
+  const data = await response.json();
 
-if (content?.calendar) {
-  // カレンダー画像を表示
+  if (data?.calendar) {
+    // カレンダー画像を表示
+  }
 }
+
+// ページ読み込み時に実行
+fetchContent();
 ```
 
 ### Admin側の実装
@@ -271,29 +312,10 @@ const allowedOrigins = [
 
 **注意**: 新しいクライアントを追加する際は、本番ドメインをこのリストに追加すること。
 
-### ビルド時の動作
-
-front のビルド時（`npm run build`）に admin API からコンテンツを取得する場合:
-
-```javascript
-// astro.config.mjs
-export default defineConfig({
-  // ビルド時の環境変数でadminのURLを指定
-  vite: {
-    define: {
-      'import.meta.env.ADMIN_URL': JSON.stringify(
-        process.env.ADMIN_URL || 'http://localhost:4321'
-      )
-    }
-  }
-});
-```
-
 ### デプロイ時の注意
 
-1. **admin を先にデプロイ** - front のビルド時に admin API が必要
-2. **CORS設定を更新** - 本番ドメインを許可リストに追加
-3. **環境変数を設定** - Cloudflare Pages のビルド設定で `ADMIN_URL` を設定
+1. **CORS設定を更新** - 本番ドメインを許可リストに追加
+2. **デプロイ順序は任意** - frontとadminは独立してデプロイ可能（クライアントfetchのため依存関係なし）
 
 ---
 

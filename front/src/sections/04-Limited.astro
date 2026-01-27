@@ -1,41 +1,14 @@
 ---
 // Limited (今月の餃子) Section
-import { fetchContent, DEFAULT_LIMITED } from '../lib/content';
+// SSG化に伴い、動的コンテンツはクライアントサイドでfetchする
+import LimitedIsland from '../components/LimitedIsland';
 
 const baseUrl = import.meta.env.BASE_URL;
-const adminApiUrl = import.meta.env.ADMIN_API_URL || 'http://localhost:8788';
-
-// admin API からコンテンツを取得
-const { limited } = await fetchContent(adminApiUrl);
-
-// 取得したコンテンツまたはデフォルト値を使用
-const title = limited?.title || DEFAULT_LIMITED.title;
-const description = limited?.description || DEFAULT_LIMITED.description;
-const imageUrl = limited?.imageUrl || `${baseUrl}placeholder.webp`;
+const adminApiUrl = import.meta.env.PUBLIC_ADMIN_API_URL || 'http://localhost:8789';
 ---
 
 <section id="limited" class="limited" style={`--limited-bg: url('${baseUrl}images/limited-bg.webp');`}>
-    <div class="limited__content">
-        <h2 class="limited__title">今月の餃子</h2>
-
-        <div class="limited__image-wrapper">
-            <!-- 装飾ライン（SVG） -->
-            <svg class="limited__decoration" viewBox="0 0 220 220">
-                <circle cx="110" cy="110" r="105"
-                        fill="none"
-                        stroke="white"
-                        stroke-width="2"
-                        stroke-dasharray="8 6"/>
-            </svg>
-            <img src={imageUrl}
-                 alt="今月の餃子"
-                 class="limited__image"
-                 width="300" height="300" loading="lazy">
-        </div>
-
-        <p class="limited__name">{title}</p>
-        <p class="limited__description" set:html={description.replace(/\n/g, '<br>')} />
-    </div>
+    <LimitedIsland client:load adminApiUrl={adminApiUrl} baseUrl={baseUrl} />
 </section>
 
 <style>
@@ -48,7 +21,7 @@ const imageUrl = limited?.imageUrl || `${baseUrl}placeholder.webp`;
         padding: 0 1rem;
     }
 
-    .limited__content {
+    .limited :global(.limited__content) {
         height: 100%;
         display: flex;
         flex-direction: column;
@@ -57,26 +30,31 @@ const imageUrl = limited?.imageUrl || `${baseUrl}placeholder.webp`;
         text-align: center;
     }
 
-    .limited__title {
+    .limited :global(.limited__title) {
         font-size: 1.25rem;
         color: #fff;
         margin-bottom: 1.5rem;
     }
 
-    .limited__image-wrapper {
+    .limited :global(.limited__image-wrapper) {
         position: relative;
         width: 260px;
         height: 260px;
     }
 
-    .limited__image {
+    .limited :global(.limited__image) {
         width: 100%;
         height: 100%;
         border-radius: 50%;
         object-fit: cover;
     }
 
-    .limited__decoration {
+    .limited :global(.limited__image--skeleton) {
+        background-color: rgba(255, 255, 255, 0.1);
+        animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    .limited :global(.limited__decoration) {
         position: absolute;
         top: -12px;
         left: -12px;
@@ -84,17 +62,38 @@ const imageUrl = limited?.imageUrl || `${baseUrl}placeholder.webp`;
         height: calc(100% + 24px);
     }
 
-    .limited__name {
+    .limited :global(.limited__name) {
         font-size: 1.5rem;
         font-weight: 700;
         margin-top: 1.5rem;
         color: #fff;
     }
 
-    .limited__description {
+    .limited :global(.limited__name--skeleton) {
+        width: 120px;
+        background-color: rgba(255, 255, 255, 0.1);
+        animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    .limited :global(.limited__description) {
         font-size: 0.875rem;
         color: rgba(255, 255, 255, 0.85);
         margin-top: 0.5rem;
         line-height: 1.6;
+    }
+
+    .limited :global(.limited__description--skeleton) {
+        width: 200px;
+        background-color: rgba(255, 255, 255, 0.1);
+        animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.5;
+        }
     }
 </style>

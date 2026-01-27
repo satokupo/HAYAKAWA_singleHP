@@ -1,15 +1,10 @@
 ---
 // Shop (店舗情報) Section
-import { fetchContent } from '../lib/content';
+// SSG化に伴い、カレンダーはクライアントサイドでfetchする
+import CalendarIsland from '../components/CalendarIsland';
 
 const baseUrl = import.meta.env.BASE_URL;
-const adminApiUrl = import.meta.env.ADMIN_API_URL || 'http://localhost:8788';
-
-// admin API からコンテンツを取得
-const { calendar } = await fetchContent(adminApiUrl);
-
-// 取得したコンテンツまたはデフォルト値を使用
-const calendarImageUrl = calendar?.imageUrl || `${baseUrl}placeholder.webp`;
+const adminApiUrl = import.meta.env.PUBLIC_ADMIN_API_URL || 'http://localhost:8789';
 ---
 
 <section id="info" class="shop" style={`--noise-bg: url('${baseUrl}images/noise.webp');`}>
@@ -25,12 +20,7 @@ const calendarImageUrl = calendar?.imageUrl || `${baseUrl}placeholder.webp`;
             営業時間を確認する
         </a>
 
-        <div class="shop__calendar">
-            <img src={calendarImageUrl}
-                 alt="営業カレンダー"
-                 class="shop__calendar-image"
-                 width="280" height="200" loading="lazy">
-        </div>
+        <CalendarIsland client:load adminApiUrl={adminApiUrl} baseUrl={baseUrl} />
 
         <p class="shop__days">月・水・金・土</p>
 
@@ -132,14 +122,21 @@ const calendarImageUrl = calendar?.imageUrl || `${baseUrl}placeholder.webp`;
         opacity: 0.85;
     }
 
-    .shop__calendar {
+    .shop :global(.shop__calendar) {
         margin-bottom: 1rem;
     }
 
-    .shop__calendar-image {
+    .shop :global(.shop__calendar-image) {
         max-width: 280px;
         width: 100%;
         height: auto;
+    }
+
+    .shop :global(.shop__calendar-image--skeleton) {
+        width: 280px;
+        height: 200px;
+        background-color: rgba(255, 255, 255, 0.1);
+        animation: pulse 1.5s ease-in-out infinite;
     }
 
     .shop__days {
@@ -215,5 +212,14 @@ const calendarImageUrl = calendar?.imageUrl || `${baseUrl}placeholder.webp`;
     .shop__social-link:hover,
     .shop__social-link:focus {
         opacity: 0.7;
+    }
+
+    @keyframes pulse {
+        0%, 100% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.5;
+        }
     }
 </style>

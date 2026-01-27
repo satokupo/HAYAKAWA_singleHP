@@ -1,6 +1,6 @@
 ---
 import AuthOverlay from '../components/AuthOverlay.astro';
-import { fetchContent, DEFAULT_OGP } from '../lib/content';
+import { DEFAULT_OGP } from '../lib/content';
 
 interface Props {
     title: string;
@@ -9,15 +9,12 @@ interface Props {
 
 const { title: propTitle, description: propDescription = '' } = Astro.props;
 const baseUrl = import.meta.env.BASE_URL;
-const adminApiUrl = import.meta.env.ADMIN_API_URL || 'http://localhost:8788';
 
-// Admin APIからOGP情報を取得
-const { ogp } = await fetchContent(adminApiUrl);
-
-// OGP情報（Admin設定 > Props > デフォルト の優先順位）
-const ogpTitle = ogp?.title || propTitle || DEFAULT_OGP.title;
-const ogpDescription = ogp?.description || propDescription || DEFAULT_OGP.description;
-const ogpImageUrl = ogp?.imageUrl || `${baseUrl}images/ogp.webp`;
+// SSG化により、OGP情報はビルド時にデフォルト値を使用
+// 動的なOGP更新が必要な場合は、別途対応が必要
+const ogpTitle = propTitle || DEFAULT_OGP.title;
+const ogpDescription = propDescription || DEFAULT_OGP.description;
+const ogpImageUrl = `${baseUrl}images/ogp.webp`;
 const siteUrl = 'https://hayakawa-gyoza.com';
 ---
 

@@ -4,6 +4,12 @@
   "compatibility_date": "2025-01-01",
   "compatibility_flags": ["nodejs_compat"],
 
+  // 開発サーバー設定（Wranglerモード）
+  // admin は 8789 ポート固定（front は 8788）
+  "dev": {
+    "port": 8789
+  },
+
   // KV Namespaces
   // 本番デプロイ前に以下のコマンドで作成し、IDを設定:
   //   wrangler kv namespace create SESSIONS
