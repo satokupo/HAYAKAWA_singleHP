@@ -40,6 +40,7 @@
 2. **SEO**: 静的部分は検索エンジンに最適
 3. **Cloudflare無料枠の節約**: frontのWorkersリクエストがゼロ
 4. **リアルタイム更新**: adminで変更した内容が即座にfrontに反映
+5. **API通信の効率化**: 動的コンテンツは1回のfetchでまとめて取得
 
 ### Workersリクエスト比較
 
@@ -254,6 +255,27 @@ Secrets は Cloudflare ダッシュボードでも設定可能。
 - **front側**: クライアントサイド（ブラウザ）で admin API からコンテンツを取得
 - **admin側**: `/api/public/content` が認証なしで公開データを返す
 - **ポイント**: ビルド時ではなく、ユーザーがページを開いた時にfetchが実行される
+
+### API設計: 一括取得方式
+
+動的コンテンツ（カレンダー、限定メニュー、OGP等）は**1回のAPI通信でまとめて取得**する設計。
+
+| 方式 | API呼び出し回数 | 欠点 |
+|------|----------------|------|
+| フィールドごとに個別API | N回 | 通信オーバーヘッド大、レイテンシ増加 |
+| **一括取得（採用）** | **1回** | シンプル、高速、Workersリクエスト節約 |
+
+```typescript
+// admin API: Promise.allで並列取得し、1つのJSONで返却
+const [calendar, limited, ogp] = await Promise.all([
+  getContent(env, 'calendar'),
+  getContent(env, 'limited'),
+  getContent(env, 'ogp'),
+]);
+return { calendar, limited, ogp };
+```
+
+**ポイント**: 新しい動的コンテンツを追加する場合も、個別APIを作らず既存の `/api/public/content` に追加する。
 
 ### Front側の実装
 
