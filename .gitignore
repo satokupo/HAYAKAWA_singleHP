@@ -4,6 +4,7 @@
 .vscode/
 .cursor/
 .workbench/
+.worktrees/
 .DS_Store
 
 # --------------------------------
