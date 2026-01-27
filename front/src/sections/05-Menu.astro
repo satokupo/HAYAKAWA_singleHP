@@ -81,7 +81,7 @@ const menuItems = [
         const LOAD_THRESHOLD = ITEM_WIDTH * 4;
 
         let currentSets = 0;
-        let currentIndex = 0;
+        let currentSlideIndex = 0;  // slideIndexを追跡（ユニークID）
         let isScrolling = false;
         let isLoading = false;
         let slides: HTMLElement[] = [];
@@ -101,15 +101,16 @@ const menuItems = [
             slide.appendChild(img);
 
             slide.addEventListener('click', () => {
-                const ri = parseInt(slide.dataset.realIndex || '0');
-                if (ri === currentIndex) return;
+                const si = parseInt(slide.dataset.slideIndex || '0');
+                if (si === currentSlideIndex) return;
 
                 const scrollCenter = carousel!.scrollLeft + carousel!.clientWidth / 2;
                 const slideCenter = slide.offsetLeft + ITEM_WIDTH / 2;
                 const direction = slideCenter > scrollCenter ? 1 : -1;
 
-                currentIndex = ri;
-                updateActiveState(ri);
+                const ri = parseInt(slide.dataset.realIndex || '0');
+                currentSlideIndex = si;
+                updateActiveState(si);
                 updateMainDisplay(ri, direction);
                 scrollToSlideByElement(slide);
             });
@@ -195,9 +196,9 @@ const menuItems = [
             });
         }
 
-        function updateActiveState(realIndex: number): void {
+        function updateActiveState(slideIndex: number): void {
             slides.forEach((slide: HTMLElement) => {
-                const isActive = parseInt(slide.dataset.realIndex || '0') === realIndex;
+                const isActive = parseInt(slide.dataset.slideIndex || '0') === slideIndex;
                 slide.classList.toggle('is-active', isActive);
             });
         }
@@ -255,7 +256,7 @@ const menuItems = [
             if (carousel!.scrollLeft > maxScroll - LOAD_THRESHOLD) {
                 isLoading = true;
                 appendSets(2);
-                updateActiveState(currentIndex);
+                updateActiveState(currentSlideIndex);
                 setTimeout(() => { isLoading = false; }, 100);
             }
         }
@@ -289,11 +290,11 @@ const menuItems = [
                     }
                 });
 
-                const realIndex = parseInt(slides[closestIndex].dataset.realIndex || '0');
-                if (realIndex !== currentIndex) {
+                if (closestIndex !== currentSlideIndex) {
                     const scrollDirection = carousel!.scrollLeft > lastManualScrollLeft ? 1 : -1;
-                    currentIndex = realIndex;
-                    updateActiveState(realIndex);
+                    const realIndex = parseInt(slides[closestIndex].dataset.realIndex || '0');
+                    currentSlideIndex = closestIndex;
+                    updateActiveState(closestIndex);
                     updateMainDisplay(realIndex, scrollDirection);
                 }
                 lastManualScrollLeft = carousel!.scrollLeft;
@@ -306,8 +307,9 @@ const menuItems = [
             checkAndLoadMore();
         }, { passive: true });
 
-        const initialSlideIndex = menuItems.length;
-        updateActiveState(0);
+        const initialSlideIndex = menuItems.length;  // 2セット目の最初
+        currentSlideIndex = initialSlideIndex;
+        updateActiveState(initialSlideIndex);
         updateMainDisplay(0);
         setTimeout(() => {
             scrollToSlide(initialSlideIndex, false);
@@ -351,8 +353,8 @@ const menuItems = [
             const targetSlide = slides[nextSlideIdx];
             const nextRealIndex = parseInt(targetSlide.dataset.realIndex || '0');
 
-            currentIndex = nextRealIndex;
-            updateActiveState(nextRealIndex);
+            currentSlideIndex = nextSlideIdx;
+            updateActiveState(nextSlideIdx);
             updateMainDisplay(nextRealIndex, slideDirection);
             scrollToSlideByElement(targetSlide);
         }
@@ -475,6 +477,8 @@ const menuItems = [
         scrollbar-width: none;
         -ms-overflow-style: none;
         overscroll-behavior-x: contain;
+        max-width: 480px;
+        margin: 0 auto;
     }
 
     .menu__carousel::-webkit-scrollbar {

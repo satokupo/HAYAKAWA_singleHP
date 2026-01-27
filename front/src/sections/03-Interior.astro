@@ -3,30 +3,42 @@
 const baseUrl = import.meta.env.BASE_URL;
 ---
 
-<section id="interior" class="py-12 px-4 mt-8">
+<section id="interior" class="interior py-12 px-4 mt-8">
     <!-- 1枚目: 左寄せ、逆傾き -->
-    <div class="mr-12 mb-8 animate-left">
+    <div class="mr-12 mb-24 animate-left">
         <img src={`${baseUrl}images/interior-1.webp`} alt="店内の様子"
-             class="max-w-full max-h-56 rounded-2xl -rotate-2 object-cover"
+             class="interior__image rounded-2xl -rotate-2 object-cover"
              width="600" height="400" loading="lazy">
     </div>
 
     <!-- 2枚目: 右寄せ -->
-    <div class="ml-12 mb-8 animate-right">
+    <div class="ml-12 mb-24 animate-right">
         <img src={`${baseUrl}images/interior-2.webp`} alt="インテリア"
-             class="max-w-full max-h-56 rounded-2xl object-cover"
+             class="interior__image rounded-2xl object-cover"
              width="600" height="400" loading="lazy">
     </div>
 
     <!-- 3枚目: 左寄せ、傾き -->
-    <div class="mr-12 mb-8 animate-left">
+    <div class="mr-12 mb-24 animate-left">
         <img src={`${baseUrl}images/interior-3.webp`} alt="テーブルセッティング"
-             class="max-w-full max-h-56 rounded-2xl rotate-2 object-cover"
+             class="interior__image rounded-2xl rotate-2 object-cover"
              width="600" height="400" loading="lazy">
     </div>
 </section>
 
 <style>
+    .interior {
+        max-width: 480px;
+        margin: 0 auto;
+    }
+
+    .interior__image {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        aspect-ratio: 3 / 2;
+    }
+
     @keyframes slideInLeft {
         0% {
             opacity: 0;
