@@ -18,12 +18,15 @@ import { getContent } from '../../../lib/r2';
  * CORS ヘッダーを追加
  */
 function corsHeaders(origin?: string | null): Record<string, string> {
-  // 開発環境: localhost からのアクセスを許可
-  // 本番環境: front のドメインからのアクセスを許可
+  // 全環境のオリジンを許可
   const allowedOrigins = [
+    // ローカル開発
     'http://localhost:3000',
     'http://localhost:4321',
-    'http://localhost:8789',
+    'http://localhost:8788',
+    // ステージング（Cloudflare デフォルトドメイン）
+    'https://hayakawa-front.pages.dev',
+    // 本番（カスタムドメイン）
     'https://hayakawa-gyoza.com',
     'https://www.hayakawa-gyoza.com',
   ];

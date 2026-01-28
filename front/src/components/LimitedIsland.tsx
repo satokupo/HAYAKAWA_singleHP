@@ -4,9 +4,9 @@
  */
 import { useState, useEffect } from 'preact/hooks';
 import type { LimitedMenuContent } from '../lib/content';
+import { getAdminApiUrl } from '../config/environments';
 
 interface Props {
-  adminApiUrl: string;
   baseUrl: string;
 }
 
@@ -17,7 +17,7 @@ interface ApiResponse {
   };
 }
 
-export default function LimitedIsland({ adminApiUrl, baseUrl }: Props) {
+export default function LimitedIsland({ baseUrl }: Props) {
   const [content, setContent] = useState<LimitedMenuContent | null>(null);
   const [loading, setLoading] = useState(true);
   const [, setError] = useState(false);
@@ -25,6 +25,7 @@ export default function LimitedIsland({ adminApiUrl, baseUrl }: Props) {
   useEffect(() => {
     const fetchLimited = async () => {
       try {
+        const adminApiUrl = getAdminApiUrl();
         const response = await fetch(`${adminApiUrl}/api/public/content`, {
           headers: { Accept: 'application/json' },
         });
@@ -41,7 +42,7 @@ export default function LimitedIsland({ adminApiUrl, baseUrl }: Props) {
       }
     };
     fetchLimited();
-  }, [adminApiUrl]);
+  }, []);
 
   // デフォルト値
   const title = content?.title || '';

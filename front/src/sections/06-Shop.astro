@@ -4,7 +4,6 @@
 import CalendarIsland from '../components/CalendarIsland';
 
 const baseUrl = import.meta.env.BASE_URL;
-const adminApiUrl = import.meta.env.PUBLIC_ADMIN_API_URL || 'http://localhost:8789';
 ---
 
 <section id="info" class="shop" style={`--noise-bg: url('${baseUrl}images/noise.webp');`}>
@@ -20,7 +19,7 @@ const adminApiUrl = import.meta.env.PUBLIC_ADMIN_API_URL || 'http://localhost:87
             営業時間を確認する
         </a>
 
-        <CalendarIsland client:load adminApiUrl={adminApiUrl} baseUrl={baseUrl} />
+        <CalendarIsland client:load baseUrl={baseUrl} />
 
         <p class="shop__days">月・水・金・土</p>
 

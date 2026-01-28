@@ -4,9 +4,9 @@
  */
 import { useState, useEffect } from 'preact/hooks';
 import type { CalendarContent } from '../lib/content';
+import { getAdminApiUrl } from '../config/environments';
 
 interface Props {
-  adminApiUrl: string;
   baseUrl: string;
 }
 
@@ -17,13 +17,14 @@ interface ApiResponse {
   };
 }
 
-export default function CalendarIsland({ adminApiUrl, baseUrl }: Props) {
+export default function CalendarIsland({ baseUrl }: Props) {
   const [content, setContent] = useState<CalendarContent | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchCalendar = async () => {
       try {
+        const adminApiUrl = getAdminApiUrl();
         const response = await fetch(`${adminApiUrl}/api/public/content`, {
           headers: { Accept: 'application/json' },
         });
@@ -39,7 +40,7 @@ export default function CalendarIsland({ adminApiUrl, baseUrl }: Props) {
       }
     };
     fetchCalendar();
-  }, [adminApiUrl]);
+  }, []);
 
   const imageUrl = content?.imageUrl || `${baseUrl}placeholder.webp`;
 
