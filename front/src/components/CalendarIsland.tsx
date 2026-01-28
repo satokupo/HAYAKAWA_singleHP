@@ -42,7 +42,7 @@ export default function CalendarIsland({ baseUrl }: Props) {
     fetchCalendar();
   }, []);
 
-  const imageUrl = content?.imageUrl || `${baseUrl}images/placeholder.webp`;
+  const imageUrl = content?.imageUrl || `${baseUrl}placeholder/placeholder.webp`;
 
   // ローディング中はスケルトン表示
   if (loading) {

@@ -51,12 +51,12 @@ interface ApiResponse {
 export const DEFAULT_LIMITED: LimitedMenuContent = {
   title: '',
   description: '',
-  imageUrl: '', // セクションでimages/placeholder.webpにフォールバック
+  imageUrl: '', // セクションでplaceholder/placeholder.webpにフォールバック
   updatedAt: '',
 };
 
 export const DEFAULT_CALENDAR: CalendarContent = {
-  imageUrl: '', // セクションでimages/placeholder.webpにフォールバック
+  imageUrl: '', // セクションでplaceholder/placeholder.webpにフォールバック
   month: '',
   updatedAt: '',
 };

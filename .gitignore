@@ -78,6 +78,11 @@ dev/tests/logs/*
 !front/public/images/**/*.jpg
 !front/public/images/**/*.jpeg
 
+# front/public/placeholder以下も追跡対象（プレースホルダー画像）
+!front/public/placeholder/
+!front/public/placeholder/**/*.webp
+!front/public/placeholder/**/*.png
+
 # Adobe
 *.psd
 *.ai

@@ -47,7 +47,7 @@ export default function LimitedIsland({ baseUrl }: Props) {
   // デフォルト値（データなし時のプレースホルダー）
   const title = content?.title || '準備中';
   const description = content?.description || 'Coming Soon...';
-  const imageUrl = content?.imageUrl || `${baseUrl}images/placeholder.webp`;
+  const imageUrl = content?.imageUrl || `${baseUrl}placeholder/placeholder.webp`;
 
   // ローディング中はスケルトン表示
   if (loading) {
