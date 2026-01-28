@@ -55,7 +55,8 @@ const siteUrl = 'https://hayakawa-gyoza.com';
     <!-- Tailwind CSS は @astrojs/tailwind で統合 -->
 </head>
 <body>
-    <AuthOverlay />
+    <!-- AuthOverlay は本番公開時に無効化 -->
+    <!-- <AuthOverlay /> -->
     <slot />
 </body>
 </html>
