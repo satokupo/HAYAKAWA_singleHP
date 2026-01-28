@@ -36,4 +36,4 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: front
-          command: pages deploy dist --project-name=hayakawa-front
+          command: pages deploy dist --project-name=hayakawa-front --commit-hash=${{ github.sha }} --commit-message="Deploy from GitHub Actions"
