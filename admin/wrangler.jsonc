@@ -15,11 +15,11 @@
   "kv_namespaces": [
     {
       "binding": "SESSIONS",
-      "id": "<SESSIONS_KV_ID>"
+      "id": "0de92fbdb10f48d3acaaaa445b507be1"
     },
     {
       "binding": "RATE_LIMIT",
-      "id": "<RATE_LIMIT_KV_ID>"
+      "id": "4600797a6032488b87f75ec1af7d9369"
     }
   ],
 
