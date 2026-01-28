@@ -44,9 +44,9 @@ export default function LimitedIsland({ baseUrl }: Props) {
     fetchLimited();
   }, []);
 
-  // デフォルト値
-  const title = content?.title || '';
-  const description = content?.description || '';
+  // デフォルト値（データなし時のプレースホルダー）
+  const title = content?.title || '準備中';
+  const description = content?.description || 'Coming Soon...';
   const imageUrl = content?.imageUrl || `${baseUrl}placeholder.webp`;
 
   // ローディング中はスケルトン表示
