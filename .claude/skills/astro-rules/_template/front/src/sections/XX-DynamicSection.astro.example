@@ -1,0 +1,126 @@
+---
+/**
+ * 動的セクションのサンプル
+ *
+ * Preact Island を使用して、SSG されたページ上で
+ * admin API から動的にコンテンツを取得して表示するセクションの例。
+ *
+ * 使用方法:
+ * 1. このファイルをコピーして XX-YourSection.astro としてリネーム
+ * 2. セクションID、スタイル、レイアウトをカスタマイズ
+ * 3. index.astro に import して配置
+ *
+ * 注意:
+ * - ADMIN_API_URL は環境変数で設定することを推奨
+ * - client:load は初回レンダリング時に即座にハイドレーション
+ * - client:visible は要素が画面に表示されたらハイドレーション（推奨）
+ */
+
+import DynamicIsland from '../components/DynamicIsland';
+
+// Admin API のベースURL
+// 開発環境: http://localhost:8788
+// 本番環境: https://your-admin.pages.dev（環境変数で設定）
+const ADMIN_API_URL = import.meta.env.PUBLIC_ADMIN_API_URL || 'http://localhost:8788';
+
+// サイトのベースURL（フォールバック画像用）
+const BASE_URL = Astro.site?.origin || '';
+---
+
+<section id="dynamic-section" class="dynamic-section">
+  <div class="dynamic-section__container">
+    <h2 class="dynamic-section__title">動的コンテンツ</h2>
+
+    <!--
+      DynamicIsland コンポーネント
+      - client:visible: 画面に表示されたらハイドレーション（パフォーマンス推奨）
+      - client:load: ページ読み込み時に即座にハイドレーション
+    -->
+    <DynamicIsland
+      client:visible
+      adminApiUrl={ADMIN_API_URL}
+      contentType="sample-image-text"
+      baseUrl={BASE_URL}
+    />
+  </div>
+</section>
+
+<style>
+  /* セクションのスタイル例 */
+  .dynamic-section {
+    padding: 4rem 1rem;
+    background-color: #f9fafb;
+  }
+
+  .dynamic-section__container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .dynamic-section__title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #1f2937;
+  }
+
+  /* DynamicIsland のスタイル */
+  :global(.dynamic-island) {
+    background: white;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+
+  :global(.dynamic-island--loading) {
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  :global(.dynamic-island__skeleton) {
+    width: 100%;
+    height: 200px;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: 0.25rem;
+  }
+
+  @keyframes skeleton-loading {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
+  :global(.dynamic-island__image) {
+    width: 100%;
+    height: auto;
+    border-radius: 0.25rem;
+    object-fit: contain;
+  }
+
+  :global(.dynamic-island__title) {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-top: 1rem;
+    color: #1f2937;
+  }
+
+  :global(.dynamic-island__description) {
+    margin-top: 0.5rem;
+    color: #6b7280;
+    line-height: 1.6;
+  }
+
+  :global(.dynamic-island--empty) {
+    text-align: center;
+    color: #9ca3af;
+    padding: 2rem;
+  }
+</style>

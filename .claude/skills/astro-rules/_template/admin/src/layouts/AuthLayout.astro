@@ -6,6 +6,7 @@
 
 import type { Env } from '../lib/types';
 import { validateSession } from '../lib/session';
+import { getSiteConfig } from '../lib/config';
 
 interface Props {
   title: string;
@@ -25,6 +26,8 @@ const session = await validateSession(env, cookieHeader, userAgent);
 if (!session) {
   return Astro.redirect('/');
 }
+
+const { storeName, siteUrl, contactUrl } = getSiteConfig(env);
 ---
 
 <!DOCTYPE html>
@@ -33,14 +36,14 @@ if (!session) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
-  <title>{title}</title>
+  <title>{title} | 管理画面</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="min-h-screen bg-gray-100">
+<body class="min-h-screen bg-gray-100 flex flex-col">
   <!-- ヘッダー -->
   <header class="bg-white shadow-sm">
     <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
-      <h1 class="text-lg font-bold text-gray-800">{title}</h1>
+      <h1 class="text-lg font-bold text-gray-800">{storeName}様 管理画面</h1>
       <button
         id="logout-btn"
         class="text-sm text-gray-600 hover:text-gray-800 focus:outline-none"
@@ -51,9 +54,31 @@ if (!session) {
   </header>
 
   <!-- メインコンテンツ -->
-  <main class="max-w-4xl mx-auto px-4 py-6">
+  <main class="max-w-4xl mx-auto px-4 py-6 flex-1">
     <slot />
   </main>
+
+  <!-- フッター -->
+  <footer class="bg-white border-t border-gray-200 mt-auto mb-6">
+    <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between text-sm">
+      <a
+        href={siteUrl || '#'}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-blue-600 hover:text-blue-800"
+      >
+        サイトを見る
+      </a>
+      <a
+        href={contactUrl || '#'}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-blue-600 hover:text-blue-800"
+      >
+        お問い合わせ
+      </a>
+    </div>
+  </footer>
 
   <!-- ログアウト処理 -->
   <script>

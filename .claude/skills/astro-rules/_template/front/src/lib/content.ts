@@ -10,38 +10,73 @@
  * コンテンツ型定義
  * admin/src/lib/types.ts と同期させること
  */
-export interface CalendarContent {
+
+/**
+ * 画像のみコンテンツ（sample-image）
+ */
+export interface SampleImageContent {
   imageUrl: string;
-  month: string;
   updatedAt: string;
 }
 
-export interface LimitedMenuContent {
+/**
+ * 画像+テキストコンテンツ（sample-image-text）
+ */
+export interface SampleImageTextContent {
   title: string;
   description: string;
   imageUrl: string;
   updatedAt: string;
 }
 
+/**
+ * OGPコンテンツ（ogp）
+ */
+export interface OgpContent {
+  title: string;
+  description: string;
+  imageUrl: string;
+  updatedAt: string;
+}
+
+/**
+ * 公開コンテンツ
+ */
 export interface PublicContent {
-  calendar: CalendarContent | null;
-  limited: LimitedMenuContent | null;
+  'sample-image': SampleImageContent | null;
+  'sample-image-text': SampleImageTextContent | null;
+  ogp: OgpContent | null;
+}
+
+/**
+ * API レスポンス
+ */
+interface ApiResponse {
+  success: boolean;
+  data?: PublicContent;
+  error?: string;
 }
 
 /**
  * デフォルト値（API取得失敗時のフォールバック）
  * 注意: 古いコンテンツが表示されないよう、空文字にする
  */
-export const DEFAULT_CALENDAR: CalendarContent = {
+export const DEFAULT_SAMPLE_IMAGE: SampleImageContent = {
   imageUrl: '', // セクションでplaceholder.webpにフォールバック
-  month: '',
   updatedAt: '',
 };
 
-export const DEFAULT_LIMITED: LimitedMenuContent = {
+export const DEFAULT_SAMPLE_IMAGE_TEXT: SampleImageTextContent = {
   title: '',
   description: '',
   imageUrl: '', // セクションでplaceholder.webpにフォールバック
+  updatedAt: '',
+};
+
+export const DEFAULT_OGP: OgpContent = {
+  title: 'サンプル店舗',
+  description: 'サンプル店舗の説明文です。',
+  imageUrl: '', // Base.astro でデフォルト画像にフォールバック
   updatedAt: '',
 };
 
@@ -70,13 +105,13 @@ export async function fetchContent(adminBaseUrl: string): Promise<PublicContent>
     throw new Error(`Failed to fetch content: ${response.status}`);
   }
 
-  const json = await response.json();
+  const json = await response.json() as ApiResponse;
 
-  if (!json.success) {
+  if (!json.success || !json.data) {
     throw new Error(json.error || 'Unknown error');
   }
 
-  return json.data as PublicContent;
+  return json.data;
 }
 
 /**
@@ -84,8 +119,8 @@ export async function fetchContent(adminBaseUrl: string): Promise<PublicContent>
  *
  * @example
  * const content = await fetchContentSafe('https://your-admin.pages.dev');
- * if (content?.calendar) {
- *   // カレンダーを表示
+ * if (content?.['sample-image']) {
+ *   // 画像を表示
  * }
  */
 export async function fetchContentSafe(

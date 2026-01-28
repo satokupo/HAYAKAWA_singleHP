@@ -14,6 +14,8 @@ export interface Env {
   ADMIN_ID: string;
   ADMIN_PASSWORD: string;
   SESSION_TTL: string;
+  /** フッター「サイトを見る」リンク先（オプション、デフォルトは config.ts で定義） */
+  SITE_URL?: string;
 }
 
 /**
@@ -64,8 +66,8 @@ export interface AuthResponse {
  * 画像アップロードリクエスト
  */
 export interface ImageUploadRequest {
-  /** 画像の用途（プロジェクトに応じてカスタマイズ） */
-  type: string;
+  /** 画像の用途（sample-image | sample-image-text | ogp） */
+  type: 'sample-image' | 'sample-image-text' | 'ogp';
   /** 元のファイル名 */
   filename: string;
 }
@@ -91,27 +93,46 @@ export interface ApiResponse<T = unknown> {
 }
 
 // ============================================================
-// 以下はプロジェクト固有のコンテンツ型
-// プロジェクトに応じてカスタマイズしてください
+// コンテンツ型定義
 // ============================================================
 
 /**
- * コンテンツ例: カレンダー
- * TODO: プロジェクトに応じて変更
+ * 画像のみコンテンツ（sample-image）
+ * 用途: 画像のみ差し替えるサンプル
  */
-export interface CalendarContent {
+export interface SampleImageContent {
+  /** 画像URL */
   imageUrl: string;
-  month: string;
+  /** 最終更新日時（ISO 8601） */
   updatedAt: string;
 }
 
 /**
- * コンテンツ例: 限定メニュー
- * TODO: プロジェクトに応じて変更
+ * 画像+テキストコンテンツ（sample-image-text）
+ * 用途: 画像とテキストを差し替えるサンプル
  */
-export interface LimitedMenuContent {
+export interface SampleImageTextContent {
+  /** タイトル */
   title: string;
+  /** 説明文 */
   description: string;
+  /** 画像URL */
   imageUrl: string;
+  /** 最終更新日時（ISO 8601） */
+  updatedAt: string;
+}
+
+/**
+ * OGPコンテンツ（ogp）
+ * 用途: SNSシェア時に表示される情報
+ */
+export interface OgpContent {
+  /** タイトル */
+  title: string;
+  /** 説明文 */
+  description: string;
+  /** 画像URL */
+  imageUrl: string;
+  /** 最終更新日時（ISO 8601） */
   updatedAt: string;
 }

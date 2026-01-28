@@ -358,16 +358,15 @@ Admin APIからSSRで取得するコンテンツ（カレンダー、限定メ�
 ```typescript
 // front/src/lib/content.ts
 
-export const DEFAULT_LIMITED: LimitedMenuContent = {
-  title: '',           // 空文字
-  description: '',     // 空文字
+export const DEFAULT_SAMPLE_IMAGE: SampleImageContent = {
   imageUrl: '',        // 空文字（セクションでplaceholder.webpにフォールバック）
   updatedAt: '',
 };
 
-export const DEFAULT_CALENDAR: CalendarContent = {
+export const DEFAULT_SAMPLE_IMAGE_TEXT: SampleImageTextContent = {
+  title: '',           // 空文字
+  description: '',     // 空文字
   imageUrl: '',        // 空文字（セクションでplaceholder.webpにフォールバック）
-  month: '',
   updatedAt: '',
 };
 ```
@@ -376,14 +375,15 @@ export const DEFAULT_CALENDAR: CalendarContent = {
 
 ```astro
 ---
-// 04-Limited.astro
-import { fetchContent, DEFAULT_LIMITED } from '../lib/content';
+// 例: 画像+テキストのセクション
+import { fetchContent, DEFAULT_SAMPLE_IMAGE_TEXT } from '../lib/content';
 
 const baseUrl = import.meta.env.BASE_URL;
-const { limited } = await fetchContent(adminApiUrl);
+const content = await fetchContent(adminApiUrl);
+const sampleImageText = content?.['sample-image-text'] || DEFAULT_SAMPLE_IMAGE_TEXT;
 
 // imageUrlが空の場合はplaceholder.webpを使用
-const imageUrl = limited?.imageUrl || `${baseUrl}placeholder.webp`;
+const imageUrl = sampleImageText?.imageUrl || `${baseUrl}placeholder.webp`;
 ---
 ```
 

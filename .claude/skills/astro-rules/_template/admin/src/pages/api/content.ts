@@ -1,17 +1,14 @@
 /**
- * コンテンツ取得・更新 API
+ * コンテンツ更新 API
  *
- * GET /api/content?type=xxx - コンテンツ取得（認証必要）
- * POST /api/content - コンテンツ更新（認証必要）
- *
- * TODO: プロジェクトに応じてコンテンツ型を調整
+ * GET /api/content?type=sample-image|sample-image-text|ogp - コンテンツ取得
+ * PUT /api/content - コンテンツ更新（テキストのみ）
  */
 
 import type { APIRoute } from 'astro';
-import type { Env, ApiResponse } from '../../lib/types';
+import type { Env, ApiResponse, SampleImageTextContent, OgpContent } from '../../lib/types';
 import { validateSession } from '../../lib/session';
-// TODO: r2.ts のコンテンツキーを設定後、以下を有効化
-// import { getContent, saveContent } from '../../lib/r2';
+import { getContent, saveContent } from '../../lib/r2';
 
 /**
  * コンテンツ取得
@@ -28,7 +25,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
     return new Response(
       JSON.stringify({
         success: false,
-        error: 'Unauthorized',
+        error: '認証が必要です。',
       } satisfies ApiResponse),
       {
         status: 401,
@@ -37,27 +34,40 @@ export const GET: APIRoute = async ({ request, locals }) => {
     );
   }
 
-  // TODO: 実装
-  // const url = new URL(request.url);
-  // const type = url.searchParams.get('type');
-  // const content = await getContent(env, type as ContentType);
+  const url = new URL(request.url);
+  const type = url.searchParams.get('type') as 'sample-image' | 'sample-image-text' | 'ogp' | null;
+
+  if (!type || (type !== 'sample-image' && type !== 'sample-image-text' && type !== 'ogp')) {
+    return new Response(
+      JSON.stringify({
+        success: false,
+        error: 'タイプは sample-image, sample-image-text, ogp のいずれかを指定してください。',
+      } satisfies ApiResponse),
+      {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
+  }
+
+  const content = await getContent(env, type);
 
   return new Response(
     JSON.stringify({
-      success: false,
-      error: 'Not implemented - configure r2.ts CONTENT_KEY first',
+      success: true,
+      data: content,
     } satisfies ApiResponse),
     {
-      status: 501,
+      status: 200,
       headers: { 'Content-Type': 'application/json' },
     }
   );
 };
 
 /**
- * コンテンツ更新
+ * コンテンツ更新（テキストのみ）
  */
-export const POST: APIRoute = async ({ request, locals }) => {
+export const PUT: APIRoute = async ({ request, locals }) => {
   const env = locals.runtime.env as Env;
 
   // 認証チェック
@@ -69,7 +79,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     return new Response(
       JSON.stringify({
         success: false,
-        error: 'Unauthorized',
+        error: '認証が必要です。',
       } satisfies ApiResponse),
       {
         status: 401,
@@ -78,18 +88,88 @@ export const POST: APIRoute = async ({ request, locals }) => {
     );
   }
 
-  // TODO: 実装
-  // const body = await request.json();
-  // await saveContent(env, body.type, body.content);
+  try {
+    const body = await request.json();
+    const { type, title, description } = body as {
+      type: 'sample-image-text' | 'ogp';
+      title: string;
+      description: string;
+    };
 
-  return new Response(
-    JSON.stringify({
-      success: false,
-      error: 'Not implemented - configure r2.ts CONTENT_KEY first',
-    } satisfies ApiResponse),
-    {
-      status: 501,
-      headers: { 'Content-Type': 'application/json' },
+    // sample-image-text または ogp のテキスト更新をサポート
+    if (type !== 'sample-image-text' && type !== 'ogp') {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: 'テキスト更新は sample-image-text または ogp のみサポートしています。',
+        } satisfies ApiResponse),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
     }
-  );
+
+    const now = new Date().toISOString();
+
+    if (type === 'ogp') {
+      // OGPコンテンツを更新
+      const existing = await getContent<OgpContent>(env, 'ogp');
+
+      const content: OgpContent = {
+        title: title || existing?.title || '',
+        description: description || existing?.description || '',
+        imageUrl: existing?.imageUrl || '',
+        updatedAt: now,
+      };
+
+      await saveContent(env, 'ogp', content);
+
+      return new Response(
+        JSON.stringify({
+          success: true,
+          data: content,
+        } satisfies ApiResponse),
+        {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+    }
+
+    // 既存のコンテンツを取得（sample-image-text）
+    const existing = await getContent<SampleImageTextContent>(env, 'sample-image-text');
+
+    const content: SampleImageTextContent = {
+      title: title || existing?.title || '',
+      description: description || existing?.description || '',
+      imageUrl: existing?.imageUrl || '',
+      updatedAt: now,
+    };
+
+    await saveContent(env, 'sample-image-text', content);
+
+    return new Response(
+      JSON.stringify({
+        success: true,
+        data: content,
+      } satisfies ApiResponse),
+      {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
+  } catch (error) {
+    console.error('Content update error:', error);
+    return new Response(
+      JSON.stringify({
+        success: false,
+        error: 'コンテンツ更新中にエラーが発生しました。',
+      } satisfies ApiResponse),
+      {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
+  }
 };

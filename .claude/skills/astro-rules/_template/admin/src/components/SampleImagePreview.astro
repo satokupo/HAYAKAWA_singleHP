@@ -1,0 +1,50 @@
+---
+/**
+ * 画像のみプレビューコンポーネント（sample-image）
+ */
+
+import type { SampleImageContent } from '../lib/types';
+
+interface Props {
+  content: SampleImageContent | null;
+}
+
+const { content } = Astro.props;
+---
+
+<div class="bg-white rounded-lg shadow-sm p-4">
+  <h2 class="text-lg font-bold text-gray-800 mb-4">サンプル画像</h2>
+
+  {content ? (
+    <div>
+      <div class="aspect-[4/3] bg-gray-100 rounded-md overflow-hidden mb-3">
+        <img
+          src={content.imageUrl}
+          alt="サンプル画像"
+          class="w-full h-full object-contain"
+        />
+      </div>
+      <p class="text-sm text-gray-500 mb-3">
+        更新日: {new Date(content.updatedAt).toLocaleString('ja-JP')}
+      </p>
+      <a
+        href="/update/sample-image"
+        class="block w-full py-2 px-4 bg-blue-600 text-white text-center font-medium rounded-md hover:bg-blue-700"
+      >
+        変更する
+      </a>
+    </div>
+  ) : (
+    <div>
+      <div class="aspect-[4/3] bg-gray-100 rounded-md flex items-center justify-center mb-3">
+        <p class="text-gray-400">まだ設定されていません</p>
+      </div>
+      <a
+        href="/update/sample-image"
+        class="block w-full py-2 px-4 bg-blue-600 text-white text-center font-medium rounded-md hover:bg-blue-700"
+      >
+        設定する
+      </a>
+    </div>
+  )}
+</div>

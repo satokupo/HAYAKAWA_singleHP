@@ -145,10 +145,17 @@ wrangler secret put ADMIN_PASSWORD
 
 1. **`src/lib/types.ts`** - コンテンツの型定義
    ```typescript
-   // 例: カレンダーコンテンツ
-   export interface CalendarContent {
+   // 例: 画像のみのコンテンツ
+   export interface SampleImageContent {
      imageUrl: string;
-     month: string;
+     updatedAt: string;
+   }
+
+   // 例: 画像+テキストのコンテンツ
+   export interface SampleImageTextContent {
+     title: string;
+     description: string;
+     imageUrl: string;
      updatedAt: string;
    }
    ```
@@ -156,8 +163,8 @@ wrangler secret put ADMIN_PASSWORD
 2. **`src/lib/r2.ts`** - コンテンツキーの設定
    ```typescript
    const CONTENT_KEY = {
-     calendar: 'content/calendar.json',
-     limited: 'content/limited.json',
+     'sample-image': 'content/sample-image.json',
+     'sample-image-text': 'content/sample-image-text.json',
    } as const;
    ```
 

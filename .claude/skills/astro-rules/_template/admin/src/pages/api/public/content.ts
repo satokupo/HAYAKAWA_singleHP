@@ -3,19 +3,28 @@
  *
  * GET /api/public/content - 認証不要、front からの取得用
  *
- * TODO: プロジェクトに応じてコンテンツ型を調整
+ * 3タイプを一括取得して返す:
+ * - sample-image: 画像のみ
+ * - sample-image-text: 画像+テキスト
+ * - ogp: OGPカード情報
  */
 
 import type { APIRoute } from 'astro';
-import type { Env, ApiResponse } from '../../../lib/types';
-// TODO: r2.ts のコンテンツキーを設定後、以下を有効化
-// import { getContent } from '../../../lib/r2';
+import type {
+  Env,
+  ApiResponse,
+  SampleImageContent,
+  SampleImageTextContent,
+  OgpContent,
+} from '../../../lib/types';
+import { getContent } from '../../../lib/r2';
 
 /**
  * CORS ヘッダーを追加
  */
 function corsHeaders(origin?: string | null): Record<string, string> {
-  // TODO: 本番環境のドメインを追加
+  // 開発環境: localhost からのアクセスを許可
+  // 本番環境: front のドメインからのアクセスを許可（要カスタマイズ）
   const allowedOrigins = [
     'http://localhost:3000',
     'http://localhost:4321',
@@ -50,37 +59,57 @@ export const OPTIONS: APIRoute = async ({ request }) => {
  * 公開コンテンツ取得（認証不要）
  */
 export const GET: APIRoute = async ({ request, locals }) => {
-  const _env = locals.runtime.env as Env;
+  const env = locals.runtime.env as Env;
   const origin = request.headers.get('Origin');
 
   try {
-    // TODO: 実装
-    // コンテンツを取得してレスポンス
-    //
-    // 実装例:
-    // const [calendar, limited] = await Promise.all([
-    //   getContent<CalendarContent>(env, 'calendar'),
-    //   getContent<LimitedMenuContent>(env, 'limited'),
-    // ]);
-    //
-    // // 画像URLをフルパスに変換
-    // const baseUrl = new URL(request.url).origin;
-    // const data = {
-    //   calendar: calendar ? {
-    //     ...calendar,
-    //     imageUrl: `${baseUrl}/${calendar.imageUrl.replace(/^\//, '')}`,
-    //   } : null,
-    // };
+    // 3タイプを一括取得
+    const [sampleImage, sampleImageText, ogp] = await Promise.all([
+      getContent<SampleImageContent>(env, 'sample-image'),
+      getContent<SampleImageTextContent>(env, 'sample-image-text'),
+      getContent<OgpContent>(env, 'ogp'),
+    ]);
+
+    // 画像URLをフルパスに変換
+    const baseUrl = new URL(request.url).origin;
+
+    const data = {
+      'sample-image': sampleImage
+        ? {
+            ...sampleImage,
+            imageUrl: sampleImage.imageUrl.startsWith('http')
+              ? sampleImage.imageUrl
+              : `${baseUrl}/${sampleImage.imageUrl.replace(/^\//, '')}`,
+          }
+        : null,
+      'sample-image-text': sampleImageText
+        ? {
+            ...sampleImageText,
+            imageUrl: sampleImageText.imageUrl.startsWith('http')
+              ? sampleImageText.imageUrl
+              : `${baseUrl}/${sampleImageText.imageUrl.replace(/^\//, '')}`,
+          }
+        : null,
+      ogp: ogp
+        ? {
+            ...ogp,
+            imageUrl: ogp.imageUrl.startsWith('http')
+              ? ogp.imageUrl
+              : `${baseUrl}/${ogp.imageUrl.replace(/^\//, '')}`,
+          }
+        : null,
+    };
 
     return new Response(
       JSON.stringify({
-        success: false,
-        error: 'Not implemented - configure r2.ts CONTENT_KEY first',
+        success: true,
+        data,
       } satisfies ApiResponse),
       {
-        status: 501,
+        status: 200,
         headers: {
           'Content-Type': 'application/json',
+          'Cache-Control': 'public, max-age=60', // 1分キャッシュ
           ...corsHeaders(origin),
         },
       }
@@ -90,7 +119,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
     return new Response(
       JSON.stringify({
         success: false,
-        error: 'Failed to fetch content',
+        error: 'コンテンツの取得に失敗しました。',
       } satisfies ApiResponse),
       {
         status: 500,

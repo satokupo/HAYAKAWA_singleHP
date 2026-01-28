@@ -1,70 +1,87 @@
 /**
  * R2 操作ヘルパー
  * Cloudflare R2 との連携
- *
- * TODO: プロジェクトに応じてコンテンツキーをカスタマイズ
  */
 
-import type { Env } from './types';
-
-// ============================================================
-// コンテンツキー設定
-// プロジェクトに応じてカスタマイズしてください
-// ============================================================
+import type { Env, SampleImageContent, SampleImageTextContent, OgpContent } from './types';
+import { siteConfig } from './config';
 
 /** コンテンツJSONのキー */
 const CONTENT_KEY = {
-  // 例: calendar: 'content/calendar.json',
-  // 例: limited: 'content/limited.json',
+  'sample-image': 'content/sample-image.json',
+  'sample-image-text': 'content/sample-image-text.json',
+  'ogp': 'content/ogp.json',
 } as const;
 
 type ContentType = keyof typeof CONTENT_KEY;
 
-// ============================================================
-// 汎用R2操作関数
-// ============================================================
-
 /**
  * 画像をR2にアップロード
  * @param env Cloudflare環境
- * @param type 画像タイプ
- * @param data 画像データ（WebP変換済み）
- * @param filename オリジナルファイル名（参考用）
+ * @param type 画像タイプ（sample-image | sample-image-text | ogp）
+ * @param data 画像データ
+ * @param isPng PNGかどうか（PNG→.png、それ以外→.webp）
  * @returns アップロード後のパス
  */
 export async function uploadImage(
   env: Env,
-  type: string,
+  type: ContentType,
   data: ArrayBuffer,
-  _filename: string
+  isPng: boolean = false
 ): Promise<string> {
   // ユニークなファイル名を生成（タイムスタンプベース）
   const timestamp = Date.now();
-  const path = `images/${type}/${timestamp}.webp`;
+  const extension = isPng ? 'png' : 'webp';
+  const contentType = isPng ? 'image/png' : 'image/webp';
+  const path = `images/${type}/${timestamp}.${extension}`;
 
   await env.IMAGES.put(path, data, {
     httpMetadata: {
-      contentType: 'image/webp',
+      contentType,
       cacheControl: 'public, max-age=31536000', // 1年キャッシュ
     },
   });
+
+  // 古い画像を自動削除（上限を超えた場合）
+  await cleanupOldImages(env, type);
 
   return path;
 }
 
 /**
+ * 古い画像を削除（各タイプの上限を超えた分）
+ */
+async function cleanupOldImages(
+  env: Env,
+  type: ContentType
+): Promise<void> {
+  const prefix = `images/${type}/`;
+
+  // 該当タイプの画像一覧を取得
+  const list = await env.IMAGES.list({ prefix });
+  const imageKeys = list.objects
+    .map((obj) => obj.key)
+    .filter((key) => key.match(/\.(webp|png)$/))
+    .sort(); // タイムスタンプ順（古い順）
+
+  // 上限を超えた分を削除
+  const deleteCount = imageKeys.length - siteConfig.maxImagesPerType;
+  if (deleteCount > 0) {
+    const keysToDelete = imageKeys.slice(0, deleteCount);
+    for (const key of keysToDelete) {
+      await env.IMAGES.delete(key);
+    }
+  }
+}
+
+/**
  * コンテンツJSONを取得
  */
-export async function getContent<T>(
+export async function getContent<T extends SampleImageContent | SampleImageTextContent | OgpContent>(
   env: Env,
   type: ContentType
 ): Promise<T | null> {
   const key = CONTENT_KEY[type];
-  if (!key) {
-    console.error(`Unknown content type: ${type}`);
-    return null;
-  }
-
   const object = await env.IMAGES.get(key);
 
   if (!object) {
@@ -82,16 +99,12 @@ export async function getContent<T>(
 /**
  * コンテンツJSONを保存
  */
-export async function saveContent<T>(
+export async function saveContent<T extends SampleImageContent | SampleImageTextContent | OgpContent>(
   env: Env,
   type: ContentType,
   content: T
 ): Promise<void> {
   const key = CONTENT_KEY[type];
-  if (!key) {
-    throw new Error(`Unknown content type: ${type}`);
-  }
-
   const data = JSON.stringify(content, null, 2);
 
   await env.IMAGES.put(key, data, {

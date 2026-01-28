@@ -1,0 +1,205 @@
+---
+/**
+ * sample-image 更新画面
+ * 画像のみをアップロードして更新
+ */
+
+import AuthLayout from '../../layouts/AuthLayout.astro';
+import type { Env, SampleImageContent } from '../../lib/types';
+import { getContent } from '../../lib/r2';
+import { clientImageProcessorCode } from '../../lib/image';
+
+const env = Astro.locals.runtime.env as Env;
+const content = await getContent<SampleImageContent>(env, 'sample-image');
+---
+
+<AuthLayout title="サンプル画像を更新">
+  <div class="max-w-lg mx-auto">
+    <div class="mb-4">
+      <a href="/dashboard" class="text-blue-600 hover:text-blue-800 text-sm">
+        ← ダッシュボードに戻る
+      </a>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-sm p-6">
+      <h2 class="text-xl font-bold text-gray-800 mb-4">サンプル画像を更新</h2>
+
+      <!-- エラーメッセージ -->
+      <div
+        id="error-message"
+        class="hidden mb-4 p-3 bg-red-100 text-red-700 text-sm rounded-md"
+      ></div>
+
+      <!-- アップロードフォーム -->
+      <form id="upload-form" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            画像
+          </label>
+          <!-- ドラッグ&ドロップエリア -->
+          <div
+            id="drop-zone"
+            class="border-2 border-dashed border-gray-300 rounded-md p-6 text-center cursor-pointer hover:border-blue-400 transition-colors"
+          >
+            <input
+              type="file"
+              id="image"
+              name="image"
+              accept="image/jpeg,image/png,image/webp,image/heic,image/heif"
+              required
+              class="hidden"
+            />
+            <div id="drop-zone-text">
+              <p class="text-gray-600 mb-1">ここにファイルをドロップ</p>
+              <p class="text-gray-400 text-sm">または クリックして選択</p>
+            </div>
+            <div id="file-selected" class="hidden">
+              <p class="text-gray-800 font-medium" id="file-name"></p>
+            </div>
+          </div>
+          <p class="text-xs text-gray-500 mt-1">
+            JPEG・HEICはWebPに変換、PNGはそのまま。長辺2000pxにリサイズ。
+          </p>
+        </div>
+
+        <!-- プレビュー -->
+        <div id="preview-container" class="hidden">
+          <p class="text-sm text-gray-600 mb-2">プレビュー:</p>
+          <div class="aspect-[4/3] bg-gray-100 rounded-md overflow-hidden">
+            <img id="preview-image" src="" alt="プレビュー" class="w-full h-full object-contain" />
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          id="submit-btn"
+          class="w-full py-2 px-4 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          アップロード
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- heic2any ライブラリ -->
+  <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
+  <script set:html={clientImageProcessorCode}></script>
+  <script>
+    const form = document.getElementById('upload-form') as HTMLFormElement;
+    const imageInput = document.getElementById('image') as HTMLInputElement;
+    const dropZone = document.getElementById('drop-zone') as HTMLDivElement;
+    const dropZoneText = document.getElementById('drop-zone-text') as HTMLDivElement;
+    const fileSelected = document.getElementById('file-selected') as HTMLDivElement;
+    const fileNameEl = document.getElementById('file-name') as HTMLParagraphElement;
+    const previewContainer = document.getElementById('preview-container') as HTMLDivElement;
+    const previewImage = document.getElementById('preview-image') as HTMLImageElement;
+    const errorDiv = document.getElementById('error-message') as HTMLDivElement;
+    const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement;
+
+    let currentFile: File | null = null;
+    let processedResult: { blob: Blob; isPng: boolean } | null = null;
+
+    // ドロップゾーンクリック
+    dropZone.addEventListener('click', () => {
+      imageInput.click();
+    });
+
+    // ドラッグイベント
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('border-blue-400', 'bg-blue-50');
+    });
+
+    dropZone.addEventListener('dragleave', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('border-blue-400', 'bg-blue-50');
+    });
+
+    dropZone.addEventListener('drop', async (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('border-blue-400', 'bg-blue-50');
+
+      const files = e.dataTransfer?.files;
+      if (files && files.length > 0) {
+        await handleFile(files[0]);
+      }
+    });
+
+    // ファイル選択
+    imageInput.addEventListener('change', async () => {
+      const file = imageInput.files?.[0];
+      if (file) {
+        await handleFile(file);
+      }
+    });
+
+    async function handleFile(file: File) {
+      currentFile = file;
+      errorDiv.classList.add('hidden');
+
+      // ファイル名表示
+      fileNameEl.textContent = file.name;
+      dropZoneText.classList.add('hidden');
+      fileSelected.classList.remove('hidden');
+
+      try {
+        // @ts-ignore
+        const result = await processImageOnClient(file);
+        processedResult = result;
+        previewImage.src = URL.createObjectURL(result.blob);
+        previewContainer.classList.remove('hidden');
+      } catch (error: any) {
+        errorDiv.textContent = error.message;
+        errorDiv.classList.remove('hidden');
+        previewContainer.classList.add('hidden');
+        processedResult = null;
+      }
+    }
+
+    // フォーム送信
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      if (!currentFile || !processedResult) {
+        errorDiv.textContent = '画像を選択してください。';
+        errorDiv.classList.remove('hidden');
+        return;
+      }
+
+      errorDiv.classList.add('hidden');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'アップロード中...';
+
+      try {
+        // FormData を作成
+        const extension = processedResult.isPng ? 'png' : 'webp';
+        const formData = new FormData();
+        formData.append('image', processedResult.blob, `sample-image.${extension}`);
+        formData.append('type', 'sample-image');
+        formData.append('isPng', String(processedResult.isPng));
+
+        // アップロード
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        const data = await response.json() as { success: boolean; error?: string };
+
+        if (data.success) {
+          // 成功→ダッシュボードに遷移
+          window.location.href = '/dashboard';
+        } else {
+          errorDiv.textContent = data.error || 'アップロードに失敗しました。';
+          errorDiv.classList.remove('hidden');
+        }
+      } catch (error: any) {
+        errorDiv.textContent = error.message || 'エラーが発生しました。';
+        errorDiv.classList.remove('hidden');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'アップロード';
+      }
+    });
+  </script>
+</AuthLayout>
