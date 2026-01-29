@@ -45,6 +45,10 @@ const siteUrl = 'https://hayakawa-gyoza.com';
     <link rel="icon" href={`${baseUrl}favicon/favicon.ico`} sizes="any">
     <link rel="icon" href={`${baseUrl}favicon/favicon.svg`} type="image/svg+xml">
 
+    <!-- Hero画像のプリロード（モバイル回線対策） -->
+    <link rel="preload" as="image" href={`${baseUrl}images/hero-main-sp.webp`} media="(max-width: 767px)">
+    <link rel="preload" as="image" href={`${baseUrl}images/hero-main-pc.webp`} media="(min-width: 768px)">
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
