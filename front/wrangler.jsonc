@@ -11,14 +11,17 @@
 
   // カスタムドメイン設定
   // デプロイ時に自動でDNS・SSL設定される
+  // 既存のDNSレコードを上書きする
   "routes": [
     {
       "pattern": "hayakawa-gyoza.com",
-      "custom_domain": true
+      "custom_domain": true,
+      "override_existing_dns_record": true
     },
     {
       "pattern": "www.hayakawa-gyoza.com",
-      "custom_domain": true
+      "custom_domain": true,
+      "override_existing_dns_record": true
     }
   ],
 
