@@ -44,7 +44,16 @@
     "ADMIN_ID": "HAYAKAWA",
     "SESSION_TTL": "3600",
     "SITE_URL": "https://hayakawa-gyoza.com"
-  }
+  },
+
+  // カスタムドメイン設定
+  // デプロイ時にCloudflareが自動でDNSレコードとSSL証明書を設定
+  "routes": [
+    {
+      "pattern": "settei.hayakawa-gyoza.com",
+      "custom_domain": true
+    }
+  ]
 
   // ADMIN_PASSWORD は Cloudflare Dashboard の Secrets で設定
   // `wrangler secret put ADMIN_PASSWORD` で設定可能
