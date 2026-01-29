@@ -3,7 +3,24 @@
   "name": "hayakawa-front",
   "compatibility_date": "2024-12-01",
   "compatibility_flags": ["nodejs_compat"],
-  "pages_build_output_dir": "./dist",
+
+  // 静的アセット配信（Workers Static Assets）
+  "assets": {
+    "directory": "./dist"
+  },
+
+  // カスタムドメイン設定
+  // デプロイ時に自動でDNS・SSL設定される
+  "routes": [
+    {
+      "pattern": "hayakawa-gyoza.com",
+      "custom_domain": true
+    },
+    {
+      "pattern": "www.hayakawa-gyoza.com",
+      "custom_domain": true
+    }
+  ],
 
   // 開発サーバー設定（Wranglerモード）
   // front は 8788 ポート固定（admin は 8789）
