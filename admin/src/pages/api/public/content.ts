@@ -24,7 +24,7 @@ function corsHeaders(origin?: string | null): Record<string, string> {
     'http://localhost:3000',
     'http://localhost:4321',
     'http://localhost:8788',
-    // ステージング（Cloudflare デフォルトドメイン）
+    // 本番（Cloudflare デフォルトドメイン）
     'https://hayakawa-front.pages.dev',
     // 本番（カスタムドメイン）
     'https://hayakawa-gyoza.com',
