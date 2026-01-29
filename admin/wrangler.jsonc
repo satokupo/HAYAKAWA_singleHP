@@ -2,6 +2,10 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "hayakawa-admin",
   "main": "dist/_worker.js/index.js",
+
+  // 本番公開後はデフォルトドメイン（workers.dev）を無効化
+  // これによりBulk Redirects設定が不要になる
+  "workers_dev": false,
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS"
