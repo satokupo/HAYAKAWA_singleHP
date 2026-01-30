@@ -61,10 +61,15 @@ export const DEFAULT_CALENDAR: CalendarContent = {
   updatedAt: '',
 };
 
-// OGPデフォルト値はsite.tsで一元管理
-// 後方互換のため再エクスポート（将来的には直接site.tsを参照に移行）
-import { DEFAULT_OGP } from '../config/site';
-export { DEFAULT_OGP };
+/**
+ * OGPデフォルト値（API取得失敗時のフォールバック）
+ */
+export const DEFAULT_OGP: OgpContent = {
+  title: 'HAYAKAWA｜一口餃子専門店',
+  description: '長野県飯田市の手作り餃子専門店。',
+  imageUrl: '',  // Base.astro でデフォルト画像にフォールバック
+  updatedAt: '',
+};
 
 /**
  * admin API からコンテンツを取得

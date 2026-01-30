@@ -101,12 +101,3 @@ export function generateJsonLd() {
   };
 }
 
-// ==========================================
-// OGPデフォルト値（API取得失敗時のフォールバック）
-// ==========================================
-export const DEFAULT_OGP = {
-  title: SEO.title,
-  description: SEO.description,
-  imageUrl: SEO.ogImage,
-  updatedAt: "",
-} as const;
