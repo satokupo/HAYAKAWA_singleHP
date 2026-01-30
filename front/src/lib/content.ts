@@ -61,12 +61,10 @@ export const DEFAULT_CALENDAR: CalendarContent = {
   updatedAt: '',
 };
 
-export const DEFAULT_OGP: OgpContent = {
-  title: 'HAYAKAWA - 手作り餃子専門店',
-  description: '長野県飯田市の手作り餃子専門店。厳選素材を使用した自慢の餃子をお届けします。',
-  imageUrl: '', // Base.astro でデフォルト画像にフォールバック
-  updatedAt: '',
-};
+// OGPデフォルト値はsite.tsで一元管理
+// 後方互換のため再エクスポート（将来的には直接site.tsを参照に移行）
+import { DEFAULT_OGP } from '../config/site';
+export { DEFAULT_OGP };
 
 /**
  * admin API からコンテンツを取得

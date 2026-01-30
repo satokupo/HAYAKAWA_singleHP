@@ -2,17 +2,18 @@
 // Shop (店舗情報) Section
 // SSG化に伴い、カレンダーはクライアントサイドでfetchする
 import CalendarIsland from '../components/CalendarIsland';
+import { BUSINESS } from '../config/site';
 
 const baseUrl = import.meta.env.BASE_URL;
 ---
 
 <section id="info" class="shop" style={`--noise-bg: url('${baseUrl}images/noise.webp');`}>
     <div class="shop__content">
-        <h2 class="shop__logo">HAYAKAWA</h2>
+        <h2 class="shop__logo">{BUSINESS.name}</h2>
 
-        <p class="shop__hours">11:00 - 16:00（L.o.15:45）</p>
+        <p class="shop__hours">{BUSINESS.hours.display}</p>
 
-        <a href="https://maps.app.goo.gl/nzqpWmvyuoDS8iPu8"
+        <a href={BUSINESS.links.map}
            target="_blank"
            rel="noopener noreferrer"
            class="shop__hours-btn">
@@ -21,23 +22,23 @@ const baseUrl = import.meta.env.BASE_URL;
 
         <CalendarIsland client:load baseUrl={baseUrl} />
 
-        <p class="shop__days">月・水・金・土</p>
+        <p class="shop__days">{BUSINESS.hours.days}</p>
 
         <address class="shop__address">
-            <p class="shop__address-text">長野県飯田市仲ノ町353-10</p>
+            <p class="shop__address-text">{BUSINESS.address.full}</p>
             <p class="shop__phone">
-                <a href="tel:050-8885-3753">050-8885-3753</a>
+                <a href={`tel:${BUSINESS.telephone}`}>{BUSINESS.telephone}</a>
             </p>
         </address>
 
         <div class="shop__actions">
-            <a href="https://book.squareup.com/appointments/7fdtqzj51090mo/location/LY0JN74T6NBHG/services"
+            <a href={BUSINESS.links.reservation}
                target="_blank"
                rel="noopener noreferrer"
                class="shop__btn shop__btn--outline">
                 予約する
             </a>
-            <a href="https://maps.app.goo.gl/nzqpWmvyuoDS8iPu8"
+            <a href={BUSINESS.links.map}
                target="_blank"
                rel="noopener noreferrer"
                class="shop__btn shop__btn--outline">
@@ -46,7 +47,7 @@ const baseUrl = import.meta.env.BASE_URL;
         </div>
 
         <div class="shop__social">
-            <a href="https://www.instagram.com/hayakawa_gyoza/"
+            <a href={BUSINESS.links.instagram}
                target="_blank"
                rel="noopener noreferrer"
                aria-label="Instagram"

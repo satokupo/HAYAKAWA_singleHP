@@ -1,13 +1,14 @@
 ---
 import AuthOverlay from '../components/AuthOverlay.astro';
+import { SITE, SEO, generateJsonLd } from '../config/site';
 import { DEFAULT_OGP } from '../lib/content';
 
 interface Props {
-    title: string;
+    title?: string;
     description?: string;
 }
 
-const { title: propTitle, description: propDescription = '' } = Astro.props;
+const { title: propTitle, description: propDescription } = Astro.props;
 const baseUrl = import.meta.env.BASE_URL;
 
 // SSG化により、OGP情報はビルド時にデフォルト値を使用
@@ -15,7 +16,7 @@ const baseUrl = import.meta.env.BASE_URL;
 const ogpTitle = propTitle || DEFAULT_OGP.title;
 const ogpDescription = propDescription || DEFAULT_OGP.description;
 const ogpImageUrl = `${baseUrl}images/ogp.webp`;
-const siteUrl = 'https://hayakawa-gyoza.com';
+const jsonLd = generateJsonLd();
 ---
 
 <!DOCTYPE html>
@@ -27,19 +28,24 @@ const siteUrl = 'https://hayakawa-gyoza.com';
 
     <title>{ogpTitle}</title>
     <meta name="description" content={ogpDescription}>
+    <meta name="keywords" content={SEO.keywords.join(', ')}>
+    <link rel="canonical" href={SITE.url}>
 
     <!-- OGP / Twitter Card -->
     <meta property="og:title" content={ogpTitle}>
     <meta property="og:description" content={ogpDescription}>
     <meta property="og:type" content="website">
-    <meta property="og:locale" content="ja_JP">
-    <meta property="og:url" content={siteUrl}>
+    <meta property="og:locale" content={SITE.locale}>
+    <meta property="og:url" content={SITE.url}>
     <meta property="og:image" content={ogpImageUrl}>
-    <meta property="og:site_name" content="HAYAKAWA">
+    <meta property="og:site_name" content={SITE.name}>
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content={ogpTitle}>
     <meta name="twitter:description" content={ogpDescription}>
     <meta name="twitter:image" content={ogpImageUrl}>
+
+    <!-- JSON-LD -->
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 
     <!-- Favicon -->
     <link rel="icon" href={`${baseUrl}favicon/favicon.ico`} sizes="any">
