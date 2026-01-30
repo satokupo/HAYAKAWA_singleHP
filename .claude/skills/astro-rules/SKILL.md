@@ -10,85 +10,99 @@ Astroプロジェクトの品質を均一化するためのルール集。
 
 ---
 
+## 3フェーズ構造
+
+このスキルは以下の3フェーズで構成されている。作業内容に応じて適切なフェーズを参照する。
+
+```
+Phase 1: setup/       ← 初回セットアップ
+Phase 2: development/ ← 開発
+Phase 3: deploy/      ← デプロイ
+```
+
+---
+
+## Phase 1: セットアップ（setup/）
+
+新規プロジェクトの初期構築時に参照。
+
+| ドキュメント | 内容 |
+|-------------|------|
+| `setup/index.md` | 概要、クイックスタート |
+| `setup/front.md` | 公開用HP（SSG）構築手順 |
+| `setup/admin.md` | 管理画面（SSR）構築手順 |
+| `setup/cloudflare-resources.md` | KV/R2作成、APIトークン、GitHub Secrets |
+
+**テンプレート:**
+- `_template/front/` - 公開用HP
+- `_template/admin/` - 管理画面
+
+---
+
+## Phase 2: 開発（development/）
+
+日常的な開発作業時に参照。
+
+| ドキュメント | 内容 |
+|-------------|------|
+| `development/structure.md` | ディレクトリ構造、コンポーネント設計 |
+| `development/css.md` | CSS設計ルール、Tailwind |
+| `development/workflow.md` | 開発フロー、ポート規則、環境変数 |
+| `development/front-admin-api.md` | Front/Admin API連携、CORS設定 |
+
+---
+
+## Phase 3: デプロイ（deploy/）
+
+Cloudflareへのデプロイ時に参照。
+
+| ドキュメント | 内容 |
+|-------------|------|
+| `deploy/index.md` | デプロイ全体像、Workers統一方針 |
+| `deploy/custom-domain.md` | カスタムドメイン設定、DNS注意点 |
+| `deploy/github-actions.md` | CI/CDワークフロー |
+| `deploy/troubleshooting.md` | トラブルシューティング |
+| `deploy/checklist.md` | デプロイ前後チェックリスト |
+
+---
+
 ## 参照タイミング
 
 以下の作業時にこのスキルを参照する：
 
+### Phase 1: セットアップ
 - 新規Astroプロジェクトの初期構築
+- Cloudflareリソース（KV/R2）の作成
+- GitHub Secrets設定
+
+### Phase 2: 開発
 - Astroディレクトリ構造の作成・変更
 - 新規セクション・コンポーネントの作成
 - レイアウトファイルの作成・編集
 - CSSの作成・レビュー・整形
-- .astroファイルの作成
-- Cloudflare設定・デプロイ
-- SSR実装
-- 運用規模の相談
 - **開発サーバー起動時**（ポート規則の確認）
+- Front/Admin連携の実装
+
+### Phase 3: デプロイ
+- Cloudflare設定・デプロイ
+- カスタムドメイン設定
+- GitHub Actions CI/CD設定
+- トラブルシューティング
+- 運用規模の相談
 
 ---
 
-## 初期構築
+## 重要な方針
 
-新規プロジェクト作成時は以下を参照：
+### Pages非推奨 → Workers統一
 
-| 用途 | ドキュメント | テンプレート |
-|------|-------------|-------------|
-| 公開用HP（SSG） | `init/front.md` | `_template/front/` |
-| 管理画面（SSR） | `init/admin.md` | `_template/admin/` |
+2025年4月以降、CloudflareはPagesを非推奨にし、Workersへの統合を発表。
+**今後は全てWorkers（Workers Static Assets含む）で構築する。**
 
-- `init/index.md` - 概要とクイックスタート
-
----
-
-## ルールファイル
-
-### init/
-
-初期構築ルール：
-- `index.md` - 概要、クイックスタート
-- `front.md` - 公開用HP の構築手順
-- `admin.md` - 管理画面の構築手順（Cloudflare KV/R2設定含む）
-
-### structure.md
-
-ディレクトリ構造とコンポーネント設計：
-- Astro標準ディレクトリ構造
-- layouts / sections / components の役割
-- ファイル命名規則
-- .astroファイルの基本構造
-
-### css.md
-
-CSS作成ルール：
-- リセット・基本設定
-- CSS変数
-- Tailwind優先
-- Astroの`<style>`タグ（スコープ付き / is:global）
-- レスポンシブ
-- BEM命名
-- ビューポート高さ（svh/lvh）
-
-### operations.md
-
-運用・ホスティング設定：
-- リポジトリ内ディレクトリ構成（front / admin）
-- Cloudflare構成（Pages, R2, KV）
-- Astro SSR + Cloudflare Adapter
-- 無料枠と運用規模の目安
-- 複数クライアント運用
-- キャッシュ対策
-- **Front/Admin連携**（APIでコンテンツ取得）
-
-### development.md
-
-開発フロー：
-- **構築順序**（front → admin → 連携 → デプロイ）
-- **開発サーバーポート規則**（admin: 8788, front: 8789）
-- npm run dev を使わない理由
-- 環境変数の設定
+詳細は `deploy/index.md` を参照。
 
 ---
 
 ## 使用方法
 
-必要に応じて各ルールファイルを参照し、ルールに従って実装する。
+必要に応じて各フェーズのルールファイルを参照し、ルールに従って実装する。

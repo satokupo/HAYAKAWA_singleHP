@@ -3,10 +3,13 @@
   "name": "your-project-front",
   "compatibility_date": "2025-01-01",
   "compatibility_flags": ["nodejs_compat"],
-  "pages_build_output_dir": "./dist",
 
-  // 開発サーバー設定（Wranglerモード）
-  // front は 8788 ポート固定（admin は 8789）
+  // ★ Pages非推奨: Workers Static Assetsを使用
+  "assets": {
+    "directory": "./dist"
+  },
+
+  // 開発サーバー設定（front: 8788）
   "dev": {
     "port": 8788
   },
@@ -16,4 +19,11 @@
   "vars": {
     "PUBLIC_ADMIN_API_URL": "https://your-admin-domain.com"
   }
+
+  // ★ 本番公開時に追加（deploy/custom-domain.md を参照）
+  // "workers_dev": false,
+  // "routes": [
+  //   { "pattern": "example.com", "custom_domain": true },
+  //   { "pattern": "www.example.com", "custom_domain": true }
+  // ]
 }

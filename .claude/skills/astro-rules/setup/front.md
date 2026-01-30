@@ -2,6 +2,11 @@
 
 公開用静的サイト（front/）の初期構築手順。
 
+> **Warning**
+> **Tailwind CDN禁止**: `<script src="https://cdn.tailwindcss.com">` は使用禁止。
+> Astro開発サーバーからCDNにアクセスするとCORSでブロックされる。
+> テンプレートに設定済みの `@astrojs/tailwind` 統合を使用すること。
+
 ---
 
 ## 1. 構築手順
@@ -27,12 +32,53 @@
    ```
 
 4. **ブラウザで確認**
-   - http://localhost:8789 にアクセス
+   - http://localhost:8788 にアクセス
    - エラーなくページが表示されればOK
 
 ---
 
-## 2. テンプレートの設計思想
+## 2. 静的ファイルの配置ルール
+
+### 画像ファイル
+
+静的ファイルは必ず `/images/` 配下に配置する。
+
+```
+front/
+└── public/
+    └── images/          ← 画像はここに配置
+        ├── hero.webp
+        ├── logo.webp
+        └── placeholder.webp
+```
+
+**ルート直下への配置は禁止**:
+```
+# NG
+public/hero.webp
+public/favicon.ico
+
+# OK
+public/images/hero.webp
+public/favicon.ico  ← favicon.icoのみ例外
+```
+
+### .assetsignore
+
+`.assetsignore` ファイルを使用すると、特定のファイルをビルド対象から除外できる。
+
+```
+# front/.assetsignore
+*.psd
+*.ai
+_drafts/
+```
+
+開発用ファイルや素材ファイルを `public/` に置いておきながら、本番ビルドから除外する場合に使用する。
+
+---
+
+## 3. テンプレートの設計思想
 
 ### ローファイ・最小限
 
@@ -54,7 +100,7 @@
 
 ---
 
-## 3. package.json の方針
+## 4. package.json の方針
 
 ### バージョン指定
 
@@ -79,7 +125,7 @@
 
 ---
 
-## 4. テンプレート各ファイルの役割
+## 5. テンプレート各ファイルの役割
 
 ### 設定ファイル
 
@@ -112,7 +158,7 @@
 
 ---
 
-## 5. Admin連携（オプション）
+## 6. Admin連携（オプション）
 
 admin/ と連携してコンテンツを取得する場合:
 
@@ -124,11 +170,11 @@ import { fetchContentSafe } from '../lib/content';
 const content = await fetchContentSafe('https://your-admin.pages.dev');
 ```
 
-詳細は `operations.md` の「Site/Admin連携」を参照。
+詳細は [../deploy/site-admin.md](../deploy/site-admin.md) の「Site/Admin連携」を参照。
 
 ---
 
-## 6. HTMLからの移行時の注意点
+## 7. HTMLからの移行時の注意点
 
 ### Tailwind CDN は使えない
 
@@ -148,7 +194,7 @@ const content = await fetchContentSafe('https://your-admin.pages.dev');
 
 **解決:**
 - 動的生成要素がある場合は `<style is:global>` を使用
-- 詳細は `css.md` の「スコープ付きCSSと動的生成要素」を参照
+- 詳細は [../development/css.md](../development/css.md) の「スコープ付きCSSと動的生成要素」を参照
 
 ---
 
@@ -165,3 +211,4 @@ const content = await fetchContentSafe('https://your-admin.pages.dev');
 
 - [ ] Tailwind CDNの記述を削除したか
 - [ ] JSで動的生成する要素に `is:global` を使っているか
+- [ ] 静的ファイルを `/images/` 配下に配置したか

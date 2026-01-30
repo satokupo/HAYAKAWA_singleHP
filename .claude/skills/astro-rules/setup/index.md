@@ -2,6 +2,9 @@
 
 プロジェクト構成に応じて適切なドキュメントを参照してください。
 
+> **Warning**
+> **Pages非推奨**: 全てWorkersで構築する。Cloudflare PagesではなくCloudflare Workersを使用すること。
+
 ---
 
 ## プロジェクト構成
@@ -52,10 +55,15 @@ cp .dev.vars.example .dev.vars
 
 サーバー起動は **chrome-check スキル** を使用すること。
 
+### Cloudflareリソースの準備
+
+adminを本番デプロイする前に、KV/R2の作成とSecretsの設定が必要。
+詳細は [cloudflare-resources.md](./cloudflare-resources.md) を参照。
+
 ---
 
 ## 関連ドキュメント
 
-- [structure.md](../structure.md) - ディレクトリ構造
-- [css.md](../css.md) - CSS設計
-- [operations.md](../operations.md) - 運用・ホスティング・Site/Admin連携
+- [../development/structure.md](../development/structure.md) - ディレクトリ構造
+- [../development/css.md](../development/css.md) - CSS設計
+- [../deploy/index.md](../deploy/index.md) - デプロイ手順

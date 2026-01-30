@@ -4,8 +4,7 @@
   "compatibility_date": "2025-01-01",
   "compatibility_flags": ["nodejs_compat"],
 
-  // 開発サーバー設定（Wranglerモード）
-  // admin は 8789 ポート固定（front は 8788）
+  // 開発サーバー設定（admin: 8789）
   "dev": {
     "port": 8789
   },
@@ -43,4 +42,10 @@
 
   // ADMIN_PASSWORD は Cloudflare Dashboard の Secrets で設定:
   //   wrangler secret put ADMIN_PASSWORD
+
+  // ★ 本番公開時に追加（deploy/custom-domain.md を参照）
+  // "workers_dev": false,
+  // "routes": [
+  //   { "pattern": "settei.example.com", "custom_domain": true }
+  // ]
 }

@@ -4,6 +4,20 @@ Astroプロジェクトの構築順序と開発サーバーのルール。
 
 ---
 
+## 環境の種類
+
+> **重要: ローカル/本番の2環境のみ**
+>
+> このプロジェクトでは **ローカル開発環境** と **本番環境** の2つのみを使用する。
+> 「ステージング環境」という概念は使用しない。
+
+| 環境 | 用途 | URL例 |
+|------|------|-------|
+| **ローカル** | 開発・テスト | `localhost:8788`, `localhost:8789` |
+| **本番** | 公開サイト | `example.com`, `settei.example.com` |
+
+---
+
 ## 構築順序
 
 ```
@@ -98,16 +112,16 @@ Astroプロジェクトの構築順序と開発サーバーのルール。
 
 | 項目 | ホットリロード (4321/4322) | Wrangler (8788/8789) |
 |------|--------------------------|---------------------|
-| HMR（即時反映） | ✅ あり | ❌ なし（再起動必要） |
-| KV/R2 | ❌ 動作しない | ✅ 動作する |
-| admin API連携 | ❌ 不可（.dev.varsが読まれない） | ✅ 可能 |
+| HMR（即時反映） | あり | なし（再起動必要） |
+| KV/R2 | 動作しない | 動作する |
+| admin API連携 | 不可（.dev.varsが読まれない） | 可能 |
 | 用途 | UI/CSS調整 | API連携テスト |
 
 ### 「連携できない」場合のチェックポイント
 
 1. ポート番号を確認 → 4321/4322ならホットリロードモード
 2. ホットリロードモードでは連携は設計上不可能
-3. Wranglerモードに切り替える（front:8788, admin:8789）
+3. Wranglerモードに切り替える（front:8789, admin:8788）
 
 ---
 
@@ -127,12 +141,24 @@ adminが起動していない場合、frontは以下のように動作する：
 
 ### Wranglerの環境変数の仕組み
 
-| ファイル | 用途 | 本番に含まれる |
-|----------|------|---------------|
-| `wrangler.jsonc` の vars | **本番用** | ✅ Yes |
-| `.dev.vars` | **ローカル開発用** | ❌ No |
+| ファイル | 用途 | 本番に含まれる | Gitにコミット |
+|----------|------|---------------|--------------|
+| `wrangler.jsonc` の vars | **本番用** | Yes | Yes |
+| `.dev.vars` | **ローカル開発用** | No | No |
 
-**重要**: `wrangler.jsonc` の `vars` は本番にもデプロイされる。ローカル専用の値は `.dev.vars` に書く。
+**重要**:
+- `wrangler.jsonc` の `vars` は本番にもデプロイされる
+- ローカル専用の値は `.dev.vars` に書く
+- `.dev.vars` は `.gitignore` に含め、リポジトリにコミットしない
+
+### 設定の使い分け
+
+| 設定内容 | 設定場所 | 理由 |
+|----------|----------|------|
+| 本番URL | `wrangler.jsonc` | 本番環境で使用するため |
+| ローカルURL | `.dev.vars` | ローカル開発でのみ使用 |
+| 公開可能な設定値 | `wrangler.jsonc` | 本番に反映される |
+| パスワード・シークレット | `wrangler secret put` | 安全に管理 |
 
 ### front側の PUBLIC_ADMIN_API_URL
 
@@ -141,7 +167,7 @@ frontがadmin APIからコンテンツを取得するためのURL。
 
 | 環境 | 設定ファイル | 値 |
 |------|-------------|---|
-| ローカル開発 | `.dev.vars` | `http://localhost:8789` |
+| ローカル開発 | `.dev.vars` | `http://localhost:8788` |
 | 本番 | `wrangler.jsonc` | `https://settei.{DOMAIN}` |
 
 #### front/wrangler.jsonc（本番用）
@@ -160,7 +186,7 @@ frontがadmin APIからコンテンツを取得するためのURL。
 # ローカル開発用環境変数
 # このファイルは .gitignore に含まれ、本番にはデプロイされない
 
-PUBLIC_ADMIN_API_URL=http://localhost:8789
+PUBLIC_ADMIN_API_URL=http://localhost:8788
 ```
 
 ### admin側の SITE_URL
@@ -169,7 +195,7 @@ adminのフッター「サイトを見る」リンク用。
 
 | 環境 | 設定ファイル | 値 |
 |------|-------------|---|
-| ローカル開発 | `.dev.vars` | `http://localhost:8788` |
+| ローカル開発 | `.dev.vars` | `http://localhost:8789` |
 | 本番 | `wrangler.jsonc` | `https://example.com` |
 
 #### admin/wrangler.jsonc（本番用）
@@ -186,7 +212,7 @@ adminのフッター「サイトを見る」リンク用。
 
 ```
 # ローカル開発用環境変数
-SITE_URL=http://localhost:8788
+SITE_URL=http://localhost:8789
 ADMIN_PASSWORD=開発用パスワード
 ```
 
@@ -229,5 +255,5 @@ chrome-checkスキルがポートの管理とブラウザ連携を行う。
 
 ## 関連ドキュメント
 
-- `operations.md` - Front/Admin連携の詳細
+- `front-admin-api.md` - Front/Admin連携の詳細
 - chrome-checkスキル - サーバー起動フロー
