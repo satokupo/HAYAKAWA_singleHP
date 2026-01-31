@@ -83,6 +83,10 @@ dev/tests/logs/*
 !front/public/placeholder/**/*.webp
 !front/public/placeholder/**/*.png
 
+# front/public/favicon以下も追跡対象（ファビコン）
+!front/public/favicon/
+!front/public/favicon/**/*.png
+
 # Adobe
 *.psd
 *.ai

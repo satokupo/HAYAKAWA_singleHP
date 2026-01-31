@@ -48,8 +48,8 @@ const jsonLd = generateJsonLd();
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 
     <!-- Favicon -->
-    <link rel="icon" href={`${baseUrl}favicon/favicon.ico`} sizes="any">
-    <link rel="icon" href={`${baseUrl}favicon/favicon.svg`} type="image/svg+xml">
+    <link rel="icon" href={`${baseUrl}favicon/favicon.ico`} sizes="32x32">
+    <link rel="apple-touch-icon" href={`${baseUrl}favicon/apple-touch-icon.png`}>
 
     <!-- Hero画像のプリロード（モバイル回線対策） -->
     <link rel="preload" as="image" href={`${baseUrl}images/hero-main-sp.webp`} media="(max-width: 767px)">
